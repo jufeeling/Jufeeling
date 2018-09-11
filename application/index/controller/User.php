@@ -29,6 +29,7 @@ class User extends Controller
 
     public function getUserJoinParty(){
         $data = $this->user->getUserJoinParty();
+        //ss
         return result($data);
     }
 }
