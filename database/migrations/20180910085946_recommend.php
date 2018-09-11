@@ -26,9 +26,10 @@ class Recommend extends Migrator
      * Remember to call "create()" or "update()" and NOT "save()" when working
      * with the Table class.
      */
+    //推荐
     public function change()
     {
-        $table = $this->table('Recommend',array('engine'=>'MyISAM'));
+        $table = $this->table('recommend',array('engine'=>'MyISAM'));
         $table
             ->addIndex(array('id',), array('unique' => true))
             ->addColumn('goods_id',     'integer') //商品id

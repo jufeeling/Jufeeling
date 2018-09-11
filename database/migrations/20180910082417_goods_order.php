@@ -28,7 +28,7 @@ class GoodsOrder extends Migrator
      */
     public function change()
     {
-        $table = $this->table('Goods_Order',array('engine'=>'MyISAM'));
+        $table = $this->table('goods_order',array('engine'=>'MyISAM'));
         $table
             ->addIndex(array('id',), array('unique' => true))
             ->addColumn('user_id',         'integer') //用户id

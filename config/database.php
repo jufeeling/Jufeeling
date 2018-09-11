@@ -13,13 +13,13 @@ return [
     // 数据库类型
     'type'            => 'mysql',
     // 服务器地址
-    'hostname'        => 'localhost',
+    'hostname'        => 'www.colocust.cn',
     // 数据库名
     'database'        => 'jufeeling',
     // 用户名
-    'username'        => 'root',
+    'username'        => 'jufeeling',
     // 密码
-    'password'        => '',
+    'password'        => 'locust0429',
     // 端口
     'hostport'        => '3306',
     // 连接dsn

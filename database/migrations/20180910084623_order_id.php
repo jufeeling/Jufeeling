@@ -28,7 +28,7 @@ class OrderId extends Migrator
      */
     public function change()
     {
-        $table = $this->table('Order_Id',array('engine'=>'MyISAM'));
+        $table = $this->table('order_id',array('engine'=>'MyISAM'));
         $table
             ->addIndex(array('id',), array('unique' => true))
             ->addColumn('order_id',    'integer') //订单id

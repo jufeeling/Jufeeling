@@ -28,7 +28,7 @@ class ShoppingCart extends Migrator
      */
     public function change()
     {
-        $table = $this->table('Shopping_Cart',array('engine'=>'MyISAM'));
+        $table = $this->table('shopping_cart',array('engine'=>'MyISAM'));
         $table
             ->addIndex(array('id',), array('unique' => true))
             ->addColumn('user_id', 'integer') //商品id

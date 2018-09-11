@@ -28,14 +28,14 @@ class DeliveryAddress extends Migrator
      */
     public function change()
     {
-        $table = $this->table('Delivery_Address',array('engine'=>'MyISAM'));
+        $table = $this->table('delivery_address',array('engine'=>'MyISAM'));
         $table
             ->addIndex(array('id',), array('unique' => true))
             ->addColumn('user_id',        'integer') //商品id
             ->addColumn('receipt_user',   'string')
             ->addColumn('receipt_address','string')
             ->addColumn('receipt_phone',  'integer')
-            ->addColumn('标签')
+            ->addColumn('label',          'string')  //标签(学校,公司)
             ->addForeignKey('user_id', 'user', 'id',['delete'=> 'SET_NULL', 'update'=> 'NO_ACTION'])
             ->create();
     }

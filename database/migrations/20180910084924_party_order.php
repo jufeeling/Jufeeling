@@ -28,7 +28,7 @@ class PartyOrder extends Migrator
      */
     public function change()
     {
-        $table = $this->table('Party_Order',array('engine'=>'MyISAM'));
+        $table = $this->table('party_order',array('engine'=>'MyISAM'));
         $table
             ->addIndex(array('id',), array('unique' => true))
             ->addColumn('user_id',     'integer') //用户id

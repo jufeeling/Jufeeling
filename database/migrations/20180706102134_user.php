@@ -34,7 +34,7 @@ class User extends Migrator
             ->addColumn('openid',     'string')   //微信id
             ->addColumn('nickname',   'string')   //昵称
             ->addColumn('avatar',     'string')   //头像
-            ->addColumn('state',      'integer',array('default'=>'0'))
+            ->addColumn('state',      'integer',array('default'=>'0')) //0为新用户,1为老用户
             ->addColumn('create_time','integer')
             ->addColumn('update_time','integer')
             ->create();

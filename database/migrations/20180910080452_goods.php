@@ -33,6 +33,7 @@ class Goods extends Migrator
             ->addIndex(array('id',), array('unique' => true))
             ->addColumn('category_id', 'integer') //分类id
             ->addColumn('price',       'decimal') //价格
+            ->addColumn('sale_price',  'decimal') //折扣价格
             ->addColumn('stock',       'integer') //库存
             ->addColumn('description', 'string')  //描述
             ->addColumn('notice',      'string')  //须知

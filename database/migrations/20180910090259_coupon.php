@@ -26,16 +26,18 @@ class Coupon extends Migrator
      * Remember to call "create()" or "update()" and NOT "save()" when working
      * with the Table class.
      */
+    //购物券
     public function change()
     {
-        $table = $this->table('Coupon',array('engine'=>'MyISAM'));
+        $table = $this->table('coupon',array('engine'=>'MyISAM'));
         $table
             ->addIndex(array('id',), array('unique' => true))
-            ->addColumn('user_id',        'integer') //商品id
-            ->addColumn('receipt_user',   'string')
-            ->addColumn('receipt_address','string')
-            ->addColumn('receipt_phone',  'integer')
-            ->addForeignKey('user_id', 'user', 'id',['delete'=> 'SET_NULL', 'update'=> 'NO_ACTION'])
+            ->addColumn('rule',       'decimal') //规则
+            ->addColumn('sale',       'decimal') //折扣价格
+            ->addColumn('category',   'integer') //折扣商品分类
+            ->addColumn('count',      'integer') //数量
+            ->addColumn('start_time', 'integer') //开始时间
+            ->addColumn('end_time',   'integer') //结束时间
             ->create();
     }
 }

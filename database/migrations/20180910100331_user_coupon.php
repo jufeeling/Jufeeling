@@ -26,9 +26,10 @@ class UserCoupon extends Migrator
      * Remember to call "create()" or "update()" and NOT "save()" when working
      * with the Table class.
      */
+    //用户购物券
     public function change()
     {
-        $table = $this->table('User_Coupon',array('engine'=>'MyISAM'));
+        $table = $this->table('user_coupon',array('engine'=>'MyISAM'));
         $table
             ->addIndex(array('id',), array('unique' => true))
             ->addColumn('user_id',   'integer') //商品id
