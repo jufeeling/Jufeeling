@@ -13,5 +13,12 @@ use think\Model;
 
 class PartyOrder extends Model
 {
-
+    protected $hidden =
+        [
+            'create_time',
+            'update_time'
+        ];
+    public function party(){
+        return $this->hasOne('Party','id','party_id');
+    }
 }
