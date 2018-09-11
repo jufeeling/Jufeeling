@@ -20,3 +20,11 @@ Route::group('token',function (){
 });
 
 Route::get('/','Index/index');
+/**
+ * 用户模块
+ */
+Route::group('user',function (){
+    Route::group('party',function (){
+        Route::get('host','User/getUserHostParty');
+    });
+});

@@ -3,7 +3,7 @@
 use think\migration\Migrator;
 use think\migration\db\Column;
 
-class ShoppingCart extends Migrator
+class Message extends Migrator
 {
     /**
      * Change Method.
@@ -28,15 +28,16 @@ class ShoppingCart extends Migrator
      */
     public function change()
     {
-        $table = $this->table('shopping_cart',array('engine'=>'MyISAM'));
+        $table = $this->table('message',array('engine'=>'MyISAM'));
         $table
             ->addIndex(array('id',), array('unique' => true))
-            ->addColumn('user_id', 'integer') //用户id
-            ->addColumn('goods_id','integer') //商品id
-            ->addColumn('count',   'integer') //数量
-            ->addColumn('select',  'integer') //是否被勾选
+            ->addColumn('user_id',    'integer') //用户id
+            ->addColumn('party_id',   'integer') //聚会id
+            ->addColumn('content',    'string')  //内容
+            ->addColumn('create_time','integer')
+            ->addColumn('update_time','integer')
             ->addForeignKey('user_id', 'user', 'id',['delete'=> 'SET_NULL', 'update'=> 'NO_ACTION'])
-            ->addForeignKey('goods_id','goods','id',['delete'=> 'SET_NULL', 'update'=> 'NO_ACTION'])
+            ->addForeignKey('party_id','party','id',['delete'=> 'SET_NULL', 'update'=> 'NO_ACTION'])
             ->create();
     }
 }

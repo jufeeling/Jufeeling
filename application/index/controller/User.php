@@ -22,8 +22,8 @@ class User extends Controller
         parent::__construct($app);
     }
 
-    public function getUserLaunchParty(){
-        $data = $this->user->getUserLaunchParty();
+    public function getUserHostParty(){
+        $data = $this->user->getUserHostParty();
         return result($data);
     }
 }

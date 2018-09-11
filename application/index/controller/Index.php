@@ -15,12 +15,8 @@ use think\Controller;
 class Index extends Controller
 {
     public function index(){
-        User::create([
-           'openid' => '1',
-            'nickname'=> 's',
-            'avatar' => 's',
-            'state' =>1,
-            'delete_time' => 1
-        ]);
+        $way = config('way.way');
+
+        return result($way[1]);
     }
 }
