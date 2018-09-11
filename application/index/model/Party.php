@@ -33,4 +33,12 @@ class Party extends Model
     public function message(){
         return $this->hasMany('Message','party_id','id');
     }
+
+    /**
+     * @return \think\model\relation\HasOne
+     * 用户
+     */
+    public function user(){
+        return $this->hasOne('User','id','user_id');
+    }
 }

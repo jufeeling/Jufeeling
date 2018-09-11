@@ -26,5 +26,6 @@ Route::get('/','Index/index');
 Route::group('user',function (){
     Route::group('party',function (){
         Route::get('host','User/getUserHostParty');
+        Route::get('join','User/getUserJoinParty');
     });
 });
