@@ -29,7 +29,7 @@ class User
     }
 
     public function getUserJoinParty(){
-        $uid = TokenService::getCurrentUid();
+        //$uid = TokenService::getCurrentUid();
         $data = PartyOrderModel::with(['party'=>function($query){
             $query->withCount('participants')
                 ->withCount('message');
