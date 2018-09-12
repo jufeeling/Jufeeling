@@ -48,13 +48,13 @@ class User
     private function getPartyWay($data,$type){
         $ways = config('way.way');
         if($type==1){
-            for($i = 0;$i<sizeof($data);$i++){
-                $data[$i]['way'] = $ways[$data[$i]['way']];
+            foreach ($data as $d){
+                $d['way'] = $ways[$d['way']];
             }
             return $data;
         }
-        for($i = 0;$i<sizeof($data);$i++){
-            $data[$i]['party']['way'] = $ways[$data[$i]['party']['way']];
+        foreach ($data as $d){
+            $d['party']['way'] = $ways[$d['party']['way']];
         }
         return $data;
     }
