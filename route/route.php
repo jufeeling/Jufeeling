@@ -28,4 +28,9 @@ Route::group('user',function (){
         Route::get('host','User/getUserHostParty');
         Route::get('join','User/getUserJoinParty');
     });
+    Route::group('address',function (){
+        Route::get('/',   'User/getUserDeliveryAddress');
+        Route::post('add','User/addUserDeliveryAddress');
+    });
+
 });

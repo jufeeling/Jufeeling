@@ -7,6 +7,7 @@
  */
 
 namespace app\index\service;
+use app\index\model\DeliveryAddress as DeliveryAddressModel;
 use app\index\service\Token as TokenService;
 use app\index\model\Party as PartyModel;
 use app\index\model\PartyOrder as PartyOrderModel;
@@ -18,10 +19,10 @@ class User
      * 获取用户举办的派对
      */
     public function getUserHostParty(){
-        $uid = TokenService::getCurrentUid();
+        //$uid = TokenService::getCurrentUid();
         $data = PartyModel::withCount('participants')
             ->withCount('message')
-            ->where('user_id',$uid)
+            ->where('user_id',1)
             ->order('create_time desc')
             ->select();
         $result = $this->getPartyWay($data,1);
@@ -48,14 +49,25 @@ class User
     private function getPartyWay($data,$type){
         $ways = config('way.way');
         if($type==1){
-            for($i = 0;$i<sizeof($data);$i++){
-                $data[$i]['way'] = $ways[$data[$i]['way']];
+            foreach ($data as $d){
+                $d['way'] = $ways[$d['way']];
             }
             return $data;
         }
-        for($i = 0;$i<sizeof($data);$i++){
-            $data[$i]['party']['way'] = $ways[$data[$i]['party']['way']];
+        foreach ($data as $d){
+            $d['party']['way'] = $ways[$d['party']['way']];
         }
         return $data;
+    }
+
+    /**
+     * @return array|\PDOStatement|string|\think\Collection
+     * 获取用户的收货地址
+     */
+    public function getUserDeliveryAddress(){
+        //$uid = Token::getCurrentUid();
+        $result = DeliveryAddressModel::where('user_id',1)
+            ->select();
+        return $result;
     }
 }

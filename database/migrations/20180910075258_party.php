@@ -36,12 +36,13 @@ class Party extends Migrator
             ->addColumn('description', 'string')   //聚说
             ->addColumn('way',         'integer',array('default'=>'0')) //方式
             ->addColumn('people_no',   'integer')  //人数
+            ->addColumn('remaining_people_no','integer') //还可以报名的数量
             ->addColumn('date',        'string')   //日期
             ->addColumn('time',        'string')   //时间
             ->addColumn('site',        'string')   //地点
             ->addColumn('create_time', 'integer')
             ->addColumn('update_time', 'integer')
-            ->addColumn('state',       'integer')
+            ->addColumn('state',       'integer')  //派对是否结束
             ->addForeignKey('user_id', 'user', 'id',['delete'=> 'SET_NULL', 'update'=> 'NO_ACTION'])
             ->create();
     }

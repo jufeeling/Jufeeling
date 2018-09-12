@@ -35,6 +35,7 @@ class DeliveryAddress extends Migrator
             ->addColumn('receipt_user',   'string')
             ->addColumn('receipt_address','string')
             ->addColumn('receipt_phone',  'integer')
+            ->addColumn('state',          'integer') //标记是否为默认地址(0为默认地址,1不为默认地址)
             ->addColumn('label',          'string')  //标签(学校,公司)
             ->addForeignKey('user_id', 'user', 'id',['delete'=> 'SET_NULL', 'update'=> 'NO_ACTION'])
             ->create();
