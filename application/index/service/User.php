@@ -25,6 +25,7 @@ class User
         $data = PartyModel::withCount('participants')
             ->withCount('message')
             ->where('user_id',$uid)
+            ->where('status',0)
             ->order('create_time desc')
             ->select();
         $result = getPartyWay($data,1);
@@ -41,6 +42,7 @@ class User
             $query->withCount('participants')
                 ->withCount('message');
         }])
+            ->where('status',0)
             ->where('user_id',$uid)
             ->order('create_time desc')
             ->select();

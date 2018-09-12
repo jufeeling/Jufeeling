@@ -60,3 +60,11 @@ Route::group('goods',function (){
     Route::get('detail',  'Goods/getGoodsDetail');
     Route::post('search', 'Goods/getSearchGoods');
 });
+
+/**
+ * 派对模块
+ */
+Route::group('party',function (){
+    Route::get('join',     'Party/joinParty');
+    Route::post('comment', 'Party/commentParty');
+});

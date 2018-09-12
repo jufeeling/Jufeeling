@@ -33,7 +33,7 @@ class PartyOrder extends Migrator
             ->addIndex(array('id',), array('unique' => true))
             ->addColumn('user_id',     'integer') //用户id
             ->addColumn('party_id',    'integer') //聚会id
-            ->addColumn('state',       'integer',array('default'=>'0')) //标记用户是否删除派对记录 0未删除1删除
+            ->addColumn('status',      'integer',array('default'=>'0')) //标记用户是否删除派对记录 0未删除1删除
             ->addColumn('create_time', 'integer')
             ->addColumn('update_time', 'integer')
             ->addForeignKey('party_id', 'party', 'id',['delete'=> 'SET_NULL', 'update'=> 'NO_ACTION'])
