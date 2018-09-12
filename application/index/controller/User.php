@@ -22,13 +22,30 @@ class User extends Controller
         parent::__construct($app);
     }
 
+    /**
+     * 获取用户举办的派对
+     * @return \think\response\Json
+     */
     public function getUserHostParty(){
         $data = $this->user->getUserHostParty();
         return result($data);
     }
 
+    /**
+     * @return \think\response\Json
+     * 获取用户参加的派对
+     */
     public function getUserJoinParty(){
         $data = $this->user->getUserJoinParty();
+        return result($data);
+    }
+
+    /**
+     * @return \think\response\Json
+     * 获取用户的收货地址
+     */
+    public function getUserDeliveryAddress(){
+        $data = $this->user->getUserDeliveryAddress();
         return result($data);
     }
 }

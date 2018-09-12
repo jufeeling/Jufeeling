@@ -36,6 +36,7 @@ class Coupon extends Migrator
             ->addColumn('sale',       'decimal') //折扣价格
             ->addColumn('category',   'integer') //折扣商品分类
             ->addColumn('count',      'integer') //数量
+            ->addColumn('state',      'integer') //状态
             ->addColumn('start_time', 'integer') //开始时间
             ->addColumn('end_time',   'integer') //结束时间
             ->create();

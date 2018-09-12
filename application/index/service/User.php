@@ -7,6 +7,8 @@
  */
 
 namespace app\index\service;
+
+use app\index\model\DeliveryAddress as DeliveryAddressModel;
 use app\index\service\Token as TokenService;
 use app\index\model\Party as PartyModel;
 use app\index\model\PartyOrder as PartyOrderModel;
@@ -24,39 +26,37 @@ class User
             ->where('user_id',1)
             ->order('create_time desc')
             ->select();
-        $result = $this->getPartyWay($data,1);
+        $result = getPartyWay($data,1);
         return $result;
     }
 
+    /**
+     * @return mixed
+     * 获取用户参加的派对
+     */
     public function getUserJoinParty(){
-        //$uid = TokenService::getCurrentUid();
+        $uid = TokenService::getCurrentUid();
         $data = PartyOrderModel::with(['party'=>function($query){
             $query->withCount('participants')
                 ->withCount('message');
         }])
-            ->where('user_id',1)
+            ->where('user_id',$uid)
             ->order('create_time desc')
             ->select();
-        $result = $this->getPartyWay($data,2);
+        $result = getPartyWay($data,2);
         return $result;
     }
+
     /**
-     * @param $data
-     * @return mixed
-     * 得到派对方式
+     * @return array|\PDOStatement|string|\think\Collection
+     * 获取用户收货地址
      */
-    private function getPartyWay($data,$type){
-        $ways = config('way.way');
-        if($type==1){
-            foreach ($data as $d){
-                $d['way'] = $ways[$d['way']];
-            }
-            return $data;
-        }
-        foreach ($data as $d){
-            $d['party']['way'] = $ways[$d['party']['way']];
-        }
-        return $data;
+    public function getUserDeliveryAddress(){
+        $uid = TokenService::getCurrentUid();
+        $data = DeliveryAddressModel::where('user_id',$uid)
+            ->select();
+        $result = getAddressLabel($data);
+        return $result;
     }
 
 }

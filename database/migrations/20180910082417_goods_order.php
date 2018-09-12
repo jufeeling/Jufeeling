@@ -35,7 +35,7 @@ class GoodsOrder extends Migrator
             ->addColumn('order_id',        'integer') //订单id
             ->addColumn('prepay_id',       'string')  //微信支付id
             ->addColumn('price',           'decimal') //价格
-            ->addColumn('receipt_user',    'string')  //收货人
+            ->addColumn('receipt_name',    'string')  //收货人
             ->addColumn('receipt_address', 'string')  //收获地址
             ->addColumn('receipt_phone',   'integer') //收获手机号码
             ->addColumn('create_time',     'integer')

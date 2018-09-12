@@ -13,7 +13,7 @@ use app\lib\exception\base\BaseException;
 
 class ParameterException extends BaseException
 {
-    public $code = 200;
+    public $code = 201;
     public $msg = '参数错误';
-    public $errorCode = 10000;
+    public $errorCode = 20001;
 }

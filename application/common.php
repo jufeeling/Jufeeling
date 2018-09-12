@@ -10,7 +10,7 @@
 // +----------------------------------------------------------------------
 
 // 应用公共文件
-function result($data = [],$msg = 'OK', $code = 200)
+function result($data = [],$msg = 'OK', $code = 0)
 {
     return json([
         'msg' => $msg,
@@ -65,28 +65,6 @@ function curl_post($url, array $params = array())
     curl_close($ch);
     return ($data);
 }
-
-function curl_post_raw($url, $rawData)
-{
-    $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL, $url);
-    curl_setopt($ch, CURLOPT_HEADER, 0);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-    curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10);
-    curl_setopt($ch, CURLOPT_POST, 1);
-    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-    curl_setopt($ch, CURLOPT_POSTFIELDS, $rawData);
-    curl_setopt(
-        $ch, CURLOPT_HTTPHEADER,
-        array(
-            'Content-Type: text'
-        )
-    );
-    $data = curl_exec($ch);
-    curl_close($ch);
-    return ($data);
-}
-
 
 function getRandChar($length)
 {
@@ -161,4 +139,37 @@ function week($day){
         "6"=>"星期六"
     );
     return $week[$day];
+};
+
+/**
+ * @param $data
+ * @param $type
+ * @return mixed
+ * 获取派对方式
+ */
+function getPartyWay($data,$type){
+    $ways = config('jufeel_config.way');
+    if($type==1){
+        foreach ($data as $d){
+            $d['way'] = $ways[$d['way']];
+        }
+        return $data;
+    }
+    foreach ($data as $d){
+        $d['party']['way'] = $ways[$d['party']['way']];
+    }
+    return $data;
+}
+
+/**
+ * @param $data
+ * @return mixed
+ * 获取收获地址标签
+ */
+function getAddressLabel($data){
+    $label = config('jufeel_config.label');
+    foreach ($data as $d){
+        $d['label'] = $label[$d['label']];
+    }
+    return $data;
 }

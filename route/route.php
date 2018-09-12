@@ -19,7 +19,6 @@ Route::group('token',function (){
     Route::post('verify', 'Token/verifyToken');
 });
 
-Route::get('/','Index/index');
 /**
  * 用户模块
  */
@@ -28,4 +27,17 @@ Route::group('user',function (){
         Route::get('host','User/getUserHostParty');
         Route::get('join','User/getUserJoinParty');
     });
+    Route::group('address',function (){
+        Route::get('/','User/getUserDeliveryAddress');
+    });
+});
+
+/**
+ * 收货地址模块
+ */
+Route::group('address',function (){
+    Route::get('get',      'DeliveryAddress/getDeliveryAddress');
+    Route::post('add',     'DeliveryAddress/addDeliveryAddress');
+    Route::post('update',  'DeliveryAddress/updateDeliveryAddress');
+    Route::delete('delete','DeliveryAddress/deleteDeliveryAddress');
 });

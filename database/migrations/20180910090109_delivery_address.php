@@ -32,10 +32,12 @@ class DeliveryAddress extends Migrator
         $table
             ->addIndex(array('id',), array('unique' => true))
             ->addColumn('user_id',        'integer') //商品id
-            ->addColumn('receipt_user',   'string')
-            ->addColumn('receipt_address','string')
-            ->addColumn('receipt_phone',  'integer')
-            ->addColumn('label',          'string')  //标签(学校,公司)
+            ->addColumn('receipt_name',   'string')  //收货人
+            ->addColumn('receipt_area',   'string')  //收获地区
+            ->addColumn('receipt_address','string')  //收获详细地址
+            ->addColumn('receipt_phone',  'integer') //收获电话号码
+            ->addColumn('label',          'integer')  //标签(学校,公司)
+            ->addColumn('state',          'integer') //标记是否为默认收货地址 0是1不是
             ->addForeignKey('user_id', 'user', 'id',['delete'=> 'SET_NULL', 'update'=> 'NO_ACTION'])
             ->create();
     }
