@@ -18,10 +18,10 @@ class User
      * 获取用户举办的派对
      */
     public function getUserHostParty(){
-        $uid = TokenService::getCurrentUid();
+        //$uid = TokenService::getCurrentUid();
         $data = PartyModel::withCount('participants')
             ->withCount('message')
-            ->where('user_id',$uid)
+            ->where('user_id',1)
             ->order('create_time desc')
             ->select();
         $result = $this->getPartyWay($data,1);
