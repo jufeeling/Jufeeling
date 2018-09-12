@@ -40,9 +40,7 @@ class DeliveryAddress
                 'label'           => $data['label'],
                 'state'           => $data['state']
             ])
-        ){
-            return result();
-        }
+        );
         else{
                 throw new DeliveryAddressException();
         }
@@ -58,9 +56,7 @@ class DeliveryAddress
         $address = DeliveryAddressModel::getDeliveryAddress($data['id']);
         if($address){
             if($address['user_id'] == TokenService::getCurrentUid()){
-                if($address->delete()){
-                    return result();
-                }
+                if($address->delete());
                 else{
                     throw new DeliveryAddressException(
                         [
@@ -108,9 +104,7 @@ class DeliveryAddress
                        'label'           => $data['label'],
                        'state'           => $data['state']
                    ])
-               ){
-                   return result();
-               }
+               );
                throw new DeliveryAddressException(
                    [
                        'code'      => '100',
@@ -136,6 +130,12 @@ class DeliveryAddress
         );
     }
 
+    /**
+     * @param $data
+     * @return array|null|\PDOStatement|string|\think\Model
+     * @throws DeliveryAddressException
+     * 收货地址详情
+     */
     public function getDeliveryAddress($data){
         $address = DeliveryAddressModel::getDeliveryAddress($data['id']);
         if($address){

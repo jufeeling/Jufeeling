@@ -9,8 +9,11 @@
 namespace app\index\controller;
 
 use app\index\service\Goods as GoodsService;
+use app\index\validate\GoodsValidate;
+use app\lib\exception\GoodsException;
 use think\App;
 use think\Controller;
+use think\facade\Request;
 
 class Goods extends Controller
 {
@@ -21,8 +24,37 @@ class Goods extends Controller
         parent::__construct($app);
     }
 
+    /**
+     * @return \think\response\Json
+     * 获取所有商品
+     */
     public function getAllGoods(){
-        $data = $this->goods->getAllGoods();
+        (new GoodsValidate())->scene('category')->goCheck(Request::param());
+        $data = $this->goods->getAllGoods(Request::param());
+        return result($data);
+    }
+
+    /**
+     * @return \think\response\Json
+     * 获取商品详情
+     */
+    public function getGoodsDetail(){
+        (new GoodsValidate())->scene('id')->goCheck(Request::param());
+        try{
+            $data = $this->goods->getGoodsDetail(Request::param());
+        }catch (GoodsException $e){
+            return result('',$e->msg,$e->code);
+        }
+        return result($data);
+    }
+
+    /**
+     * @return \think\response\Json
+     * 获取搜索的内容
+     */
+    public function getSearchGoods(){
+        (new GoodsValidate())->scene('search')->goCheck(Request::param());
+        $data = $this->goods->getSearchGoods(Request::param());
         return result($data);
     }
 }

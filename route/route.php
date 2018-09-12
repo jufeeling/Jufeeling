@@ -48,12 +48,15 @@ Route::group('address',function (){
  * 购物券模块
  */
 Route::group('coupon',function (){
-    Route::get('all','Coupon/getAllCoupon');
+    Route::get('all',     'Coupon/getAllCoupon');
+    Route::get('receive', 'Coupon/receiveCoupon');
 });
 
 /**
  * 商品模块
  */
 Route::group('goods',function (){
-    Route::get('all','Goods/getAllGoods');
+    Route::get('all',     'Goods/getAllGoods');
+    Route::get('detail',  'Goods/getGoodsDetail');
+    Route::post('search', 'Goods/getSearchGoods');
 });

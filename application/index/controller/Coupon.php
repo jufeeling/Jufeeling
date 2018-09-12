@@ -9,8 +9,11 @@
 namespace app\index\controller;
 
 use app\index\service\Coupon as CouponService;
+use app\index\validate\CouponValidate;
+use app\lib\exception\CouponException;
 use think\App;
 use think\Controller;
+use think\facade\Request;
 
 class Coupon extends Controller
 {
@@ -29,5 +32,19 @@ class Coupon extends Controller
     public function getAllCoupon(){
         $data = $this->coupon->getAllCoupon();
         return result($data);
+    }
+
+    /**
+     * @return \think\response\Json
+     * 领取优惠券
+     */
+    public function receiveCoupon(){
+        (new CouponValidate())->scene('id')->goCheck(Request::param());
+        try{
+            $this->coupon->receiveCoupon(Request::param());
+        }catch (CouponException $e){
+            return result('',$e->msg,$e->code);
+        }
+        return result();
     }
 }
