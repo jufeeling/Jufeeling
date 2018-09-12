@@ -70,4 +70,8 @@ class User
             ->select();
         return $result;
     }
+
+    public function test(){
+        
+    }
 }
