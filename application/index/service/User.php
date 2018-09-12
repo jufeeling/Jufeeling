@@ -58,5 +58,5 @@ class User
         }
         return $data;
     }
-  
+
 }
