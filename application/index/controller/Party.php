@@ -44,6 +44,10 @@ class Party extends Controller
         return result('','参加成功');
     }
 
+    /**
+     * @return \think\response\Json
+     * 评论派对
+     */
     public function commentParty(){
         (new PartyValidate())->scene('comment')->goCheck(Request::param());
         try{
@@ -52,5 +56,9 @@ class Party extends Controller
             return result('',$e->msg,$e->code);
         }
         return result('','评论成功');
+    }
+
+    public function getParty(){
+
     }
 }
