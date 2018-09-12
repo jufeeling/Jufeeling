@@ -31,6 +31,7 @@ class Goods extends Migrator
         $table = $this->table('goods',array('engine'=>'MyISAM'));
         $table
             ->addIndex(array('id',), array('unique' => true))
+            ->addColumn('name',        'string')  //商品名
             ->addColumn('category_id', 'integer') //分类id
             ->addColumn('price',       'decimal') //价格
             ->addColumn('sale_price',  'decimal') //折扣价格
@@ -44,6 +45,7 @@ class Goods extends Migrator
             ->addColumn('state',       'integer') //状态 标记是否上架或下架
             ->addColumn('create_time', 'integer')
             ->addColumn('update_time', 'integer')
+            ->addForeignKey('category_id', 'goods_category', 'id',['delete'=> 'SET_NULL', 'update'=> 'NO_ACTION'])
             ->create();
     }
 }

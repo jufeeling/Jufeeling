@@ -3,7 +3,7 @@
 use think\migration\Migrator;
 use think\migration\db\Column;
 
-class Coupon extends Migrator
+class GoodsCategory extends Migrator
 {
     /**
      * Change Method.
@@ -26,19 +26,12 @@ class Coupon extends Migrator
      * Remember to call "create()" or "update()" and NOT "save()" when working
      * with the Table class.
      */
-    //购物券
     public function change()
     {
-        $table = $this->table('coupon',array('engine'=>'MyISAM'));
+        $table = $this->table('goods_category',array('engine'=>'MyISAM'));
         $table
             ->addIndex(array('id',), array('unique' => true))
-            ->addColumn('rule',       'decimal') //规则
-            ->addColumn('sale',       'decimal') //折扣价格
-            ->addColumn('category',   'integer') //折扣商品分类
-            ->addColumn('count',      'integer') //数量
-            ->addColumn('state',      'integer') //状态 0可以领取1不能领取
-            ->addColumn('start_time', 'integer') //开始时间
-            ->addColumn('end_time',   'integer') //结束时间
+            ->addColumn('name',    'string') //商品类别名字
             ->create();
     }
 }

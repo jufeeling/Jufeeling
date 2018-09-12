@@ -173,3 +173,23 @@ function getAddressLabel($data){
     }
     return $data;
 }
+
+/**
+ * @param $data
+ * @return mixed
+ * 获取购物券类别
+ */
+function getCouponCategory($data,$type){
+    $goods_category = config('jufeel_config.goods_category');
+    if($type == 1){
+        foreach ($data as $d){
+            $d['category'] = $goods_category[$d['coupon']['category']];
+        }
+    }
+    else{
+        foreach ($data as $d){
+            $d['category'] = $goods_category[$d['category']];
+        }
+    }
+    return $data;
+}

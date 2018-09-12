@@ -8,7 +8,6 @@
 
 namespace app\index\controller;
 
-
 use think\App;
 use app\index\service\User as UserService;
 use think\Controller;
@@ -48,4 +47,14 @@ class User extends Controller
         $data = $this->user->getUserDeliveryAddress();
         return result($data);
     }
+
+    /**
+     * @return \think\response\Json
+     * 获取用户的购物券
+     */
+    public function getUserCoupon(){
+        $data = $this->user->getUserCoupon();
+        return result($data);
+    }
+
 }

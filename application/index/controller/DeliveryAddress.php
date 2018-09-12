@@ -13,12 +13,13 @@ use think\App;
 use think\Controller;
 use think\facade\Request;
 use app\index\validate\DeliveryAddressValidate;
-use app\index\service\DeliveryAddress as DeliveryAddressSerivce;
+use app\index\service\DeliveryAddress as DeliveryAddressService;
 
 class DeliveryAddress extends Controller
 {
     private $deliveryAddress;
-    public function __construct(App $app = null,DeliveryAddressSerivce $deliveryAddress)
+
+    public function __construct(App $app = null,DeliveryAddressService $deliveryAddress)
     {
         $this->deliveryAddress = $deliveryAddress;
         parent::__construct($app);
@@ -66,6 +67,10 @@ class DeliveryAddress extends Controller
         return result('','修改成功');
     }
 
+    /**
+     * @return \think\response\Json
+     * 获取收货地址
+     */
     public function getDeliveryAddress(){
         (new DeliveryAddressValidate())->scene('id')->goCheck(Request::param());
         try{

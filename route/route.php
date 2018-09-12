@@ -10,7 +10,6 @@
 // +----------------------------------------------------------------------
 use think\facade\Route;
 
-
 /**
  * Token
  */
@@ -30,6 +29,9 @@ Route::group('user',function (){
     Route::group('address',function (){
         Route::get('/','User/getUserDeliveryAddress');
     });
+    Route::group('coupon',function (){
+       Route::get('/','User/getUserCoupon') ;
+    });
 });
 
 /**
@@ -40,4 +42,18 @@ Route::group('address',function (){
     Route::post('add',     'DeliveryAddress/addDeliveryAddress');
     Route::post('update',  'DeliveryAddress/updateDeliveryAddress');
     Route::delete('delete','DeliveryAddress/deleteDeliveryAddress');
+});
+
+/**
+ * 购物券模块
+ */
+Route::group('coupon',function (){
+    Route::get('all','Coupon/getAllCoupon');
+});
+
+/**
+ * 商品模块
+ */
+Route::group('goods',function (){
+    Route::get('all','Goods/getAllGoods');
 });
