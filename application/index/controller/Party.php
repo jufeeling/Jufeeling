@@ -74,6 +74,6 @@ class Party extends Controller
         }catch (PartyException $e){
             return result('',$e->msg,$e->code);
         }
-        return result($data,'参加成功');
+        return result($data,'查看成功');
     }
 }

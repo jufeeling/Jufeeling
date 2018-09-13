@@ -71,3 +71,10 @@ Route::group('party',function (){
     Route::post('comment', 'Party/commentParty');
 
 });
+
+/**
+ * 抽奖模块
+ */
+Route::group('prize',function (){
+    Route::get('draw','Prize/prizeDraw');
+});
