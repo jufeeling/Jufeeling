@@ -38,6 +38,7 @@ class GoodsOrder extends Migrator
             ->addColumn('receipt_name',    'string')  //收货人
             ->addColumn('receipt_address', 'string')  //收获地址
             ->addColumn('receipt_phone',   'integer') //收获手机号码
+            ->addColumn('state',           'integer') //标记用户是否删除此订单,0未删除1删除
             ->addColumn('create_time',     'integer')
             ->addColumn('update_time',     'integer')
             ->addForeignKey('user_id', 'user', 'id',['delete'=> 'SET_NULL', 'update'=> 'NO_ACTION'])

@@ -33,11 +33,14 @@ class OrderId extends Migrator
             ->addIndex(array('id',), array('unique' => true))
             ->addColumn('order_id',    'integer') //订单id
             ->addColumn('goods_id',    'integer') //商品id
-            ->addColumn('count',       'integer') //数量
-            ->addColumn('select',      'integer') //是否已使用
+            ->addColumn('user_id',     'integer') //数量
+            ->addColumn('select',      'integer') //是否已使用 0未使用1使用
+            ->addColumn('price',       'decimal') //购买时的价格
             ->addColumn('create_time', 'integer')
             ->addColumn('update_time', 'integer')
             ->addForeignKey('goods_id', 'goods', 'id',['delete'=> 'SET_NULL', 'update'=> 'NO_ACTION'])
+            ->addForeignKey('order_id', 'order', 'id',['delete'=> 'SET_NULL', 'update'=> 'NO_ACTION'])
+            ->addForeignKey('user_id',  'user', 'id',['delete'=> 'SET_NULL', 'update'=> 'NO_ACTION'])
             ->create();
     }
 }

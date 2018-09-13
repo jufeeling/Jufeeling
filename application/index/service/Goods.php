@@ -18,18 +18,18 @@ class Goods
      * @return array|\PDOStatement|string|\think\Collection
      * 获取所有商品
      */
-    public function getAllGoods($data){
-        if($data['category'] == 0){
+    public function getAllGoods($data)
+    {
+        if ($data['category'] == 0) {
             $goods = GoodsModel::with('category')
-                ->where('stock','>',0)
+                ->where('stock', '>', 0)
                 ->order('create_time desc')
                 ->field('id,name,pic_url,price,sale_price,category_id')
                 ->select();
-        }
-        else{
+        } else {
             $goods = GoodsModel::with('category')
-                ->where('stock','>',0)
-                ->where('category_id',$data['category'])
+                ->where('stock', '>', 0)
+                ->where('category_id', $data['category'])
                 ->field('id,name,pic_url,price,sale_price,category_id')
                 ->order('create_time desc')
                 ->select();
@@ -43,11 +43,12 @@ class Goods
      * @throws GoodsException
      * 获取商品详情
      */
-    public function getGoodsDetail($data){
+    public function getGoodsDetail($data)
+    {
         $goods = GoodsModel::with('category')
-            ->where('id',$data['id'])
+            ->where('id', $data['id'])
             ->find();
-        if($goods){
+        if ($goods) {
             return $goods;
         }
         throw new GoodsException();
@@ -58,10 +59,11 @@ class Goods
      * @return array|\PDOStatement|string|\think\Collection
      * 获取搜索内容
      */
-    public function getSearchGoods($data){
+    public function getSearchGoods($data)
+    {
         $goods = GoodsModel::with('category')
-            ->where('stock','>',0)
-            ->where('name|description','like','%'.$data['content'].'%')
+            ->where('stock', '>', 0)
+            ->where('name|description', 'like', '%' . $data['content'] . '%')
             ->field('name,pic_url,price,sale_price,category_id')
             ->order('create_time desc')
             ->select();

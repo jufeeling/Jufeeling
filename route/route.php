@@ -32,6 +32,15 @@ Route::group('user',function (){
     Route::group('coupon',function (){
        Route::get('/','User/getUserCoupon') ;
     });
+    Route::group('goods',function (){
+       Route::get('/',      'user/getUserGoods');
+       Route::post('select','user/selectUserGoods'); //未测试
+    });
+    Route::group('order',function (){
+       Route::get('/',    'user/getUserOrder');
+       Route::get('info', 'user/getUserOrderInfo');
+       Route::delete('/', 'user/deleteUserOrder');
+    });
 });
 
 /**

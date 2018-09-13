@@ -40,12 +40,9 @@ class BaseValidate extends Validate
         $value, $rule = '',
         $data = '', $field = '')
     {
-        if (is_numeric($value) && is_int($value + 0) && ($value + 0) > 0)
-        {
+        if (is_numeric($value) && is_int($value + 0) && ($value + 0) > 0) {
             return true;
-        }
-        else
-        {
+        } else {
             return false;
             //            return $field.'必须是正整数';
         }
@@ -64,12 +61,9 @@ class BaseValidate extends Validate
 
     protected function isNotEmpty($value, $rule = '', $data = '', $field = '')
     {
-        if (empty($value))
-        {
+        if (empty($value)) {
             return false;
-        }
-        else
-        {
+        } else {
             return true;
         }
     }
@@ -78,8 +72,7 @@ class BaseValidate extends Validate
     {
         if (array_key_exists('user_id', $arrays) |
             array_key_exists('uid', $arrays)
-        )
-        {
+        ) {
             // 不允许包含user_id或者uid，防止恶意覆盖user_id外键
             throw new ParameterException(
                 [
@@ -89,8 +82,7 @@ class BaseValidate extends Validate
 
         $newArray = [];
 
-        foreach ($this->rule as $key => $value)
-        {
+        foreach ($this->rule as $key => $value) {
             $newArray[$key] = $arrays[$key];
         }
         return $newArray;
