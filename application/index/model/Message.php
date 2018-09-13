@@ -13,5 +13,11 @@ use think\Model;
 
 class Message extends Model
 {
-
+    /**
+     * @return \think\model\relation\HasOne
+     * 用户
+     */
+    public function user(){
+        return $this->hasOne('User','id','user_id');
+    }
 }

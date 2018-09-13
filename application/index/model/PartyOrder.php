@@ -21,4 +21,8 @@ class PartyOrder extends Model
     public function party(){
         return $this->hasOne('Party','id','party_id');
     }
+
+    public function user(){
+        return $this->hasOne('User','id','user_id');
+    }
 }

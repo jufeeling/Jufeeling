@@ -13,14 +13,26 @@ class PartyValidate extends BaseValidate
 {
     protected $rule =
         [
-            'id'      => 'require|isPositiveInteger',
-            'content' => 'require'
+            'id'          => 'require|isPositiveInteger',
+            'content'     => 'require',
+            'description' => 'require',
+            'way'         => 'require|number|between:1,3',
+            'people_no'   => 'integer|require',
+            'date'        => 'require',
+            'time'        => 'require',
+            'site'        => 'require',
         ];
 
     protected $message =
         [
-            'id'      => '请传入正确的id',
-            'content' => '评论内容不能为空'
+            'id'          => '请传入正确的id',
+            'content'     => '评论内容不能为空',
+            'description' => '聚说不能为空',
+            'way'         => '方式不能为空',
+            'people_no'   => '人数不能为空',
+            'date'        => '日期不能为空',
+            'time'        => '时间不能为空',
+            'site'        => '地点不能为空'
         ];
 
     protected $scene =
@@ -34,6 +46,16 @@ class PartyValidate extends BaseValidate
                 [
                     'id',
                     'content'
+                ],
+
+            'host' =>
+                [
+                    'description',
+                    'way',
+                    'people_no',
+                    'date',
+                    'time',
+                    'site'
                 ]
         ];
 }

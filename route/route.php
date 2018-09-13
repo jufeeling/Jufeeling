@@ -65,6 +65,9 @@ Route::group('goods',function (){
  * 派对模块
  */
 Route::group('party',function (){
+    Route::get('get',      'Party/getParty');
     Route::get('join',     'Party/joinParty');
+    Route::post('host',    'Party/hostParty'); //举办派对
     Route::post('comment', 'Party/commentParty');
+
 });

@@ -8,7 +8,6 @@
 
 namespace app\index\controller;
 
-
 use app\index\validate\PartyValidate;
 use app\lib\exception\PartyException;
 use think\App;
@@ -27,7 +26,13 @@ class Party extends Controller
     }
 
     public function hostParty(){
-
+        (new PartyValidate())->scene('host')->goCheck(Request::param());
+        try{
+            $this->party->hostParty(Request::param());
+        }catch (PartyException $e){
+            return result('',$e->msg,$e->code);
+        }
+        return result('','举办成功');
     }
 
     /**
@@ -58,7 +63,17 @@ class Party extends Controller
         return result('','评论成功');
     }
 
+    /**
+     * @return \think\response\Json
+     * 查看派对详情
+     */
     public function getParty(){
-
+        (new PartyValidate())->scene('id')->goCheck(Request::param());
+        try{
+            $data = $this->party->getParty(Request::param());
+        }catch (PartyException $e){
+            return result('',$e->msg,$e->code);
+        }
+        return result($data,'参加成功');
     }
 }

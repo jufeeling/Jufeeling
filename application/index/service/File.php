@@ -15,8 +15,9 @@ class File
     /**
      * 多图片上传
      */
-    public function uploadImage($id){
+    public function uploadImage(){
         $files = request()->file('image');
+        $url = '';
         if($files){
             foreach ($files as $file){
                 if($file) {
@@ -25,20 +26,15 @@ class File
                     if ($info) {
                         //组装url
                         $url = 'http://x2018062501.aweyu.cn/static/image/upload/'.str_replace('\\', '/', $info->getSaveName());
-                        ImageModel::create([
-                            'post_id' => $id,
-                            'url'     => $url
-                        ]);
-                        return 1;
+                        return $url;
                     } else {
                         // 上传失败获取错误信息
-                        echo $file->getError();
+                        return $file->getError();
                     }
                 }
-                return 2;
             }
         }
-        return 3;
+        return $url;
     }
 
 

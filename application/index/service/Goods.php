@@ -23,14 +23,14 @@ class Goods
             $goods = GoodsModel::with('category')
                 ->where('stock','>',0)
                 ->order('create_time desc')
-                ->field('name,pic_url,price,sale_price,category_id')
+                ->field('id,name,pic_url,price,sale_price,category_id')
                 ->select();
         }
         else{
             $goods = GoodsModel::with('category')
                 ->where('stock','>',0)
                 ->where('category_id',$data['category'])
-                ->field('name,pic_url,price,sale_price,category_id')
+                ->field('id,name,pic_url,price,sale_price,category_id')
                 ->order('create_time desc')
                 ->select();
         }

@@ -7,11 +7,13 @@
  */
 
 namespace app\index\service;
+
 use app\index\model\Message;
 use app\index\model\Party as PartyModel;
 use app\index\model\PartyOrder;
 use app\index\service\Token as TokenService;
 use app\lib\exception\PartyException;
+use app\index\service\File as FileService;
 
 class Party
 {
@@ -36,7 +38,14 @@ class Party
             }
             else{
                 $start_time = $party['date'].' '.$party['time'];
-                if($party['state'] == 1){
+                if($party['user_id'] == TokenService::getCurrentUid()){
+                    throw new PartyException([
+                        'code'     => '608',
+                        'msg'      => '您是该派对的发起者,已参加',
+                        'errorMsg' => '60008'
+                    ]);
+                }
+                else if($party['state'] == 1){
                     throw new PartyException([
                         'code'     => '602',
                         'msg'      => '该派对暂时不能参加',
@@ -107,5 +116,75 @@ class Party
         else{
             throw new PartyException();
         }
+    }
+
+    /**
+     * @param $data
+     * @throws PartyException
+     * 举办派对
+     */
+    public function hostParty($data){
+        $url = (new FileService())->uploadImage();
+        if(
+            PartyModel::create([
+                'way'                 => $data['way'],
+                'date'                => $data['date'],
+                'time'                => $data['time'],
+                'site'                => $data['site'],
+                'image'               => $url,
+                'user_id'             => TokenService::getCurrentUid(),
+                'people_no'           => $data['people_no'],
+                'description'         => $data['description'],
+                'remaining_people_no' => $data['people_no'] - 1,
+            ])
+        );
+        else{
+            throw new PartyException([
+                    'code'     => '607',
+                    'msg'      => '举办失败,可能是服务器内部错误',
+                    'errorMsg' => '60007'
+                ]);
+        }
+    }
+
+    /**
+     * @param $data
+     * @return mixed
+     * 得到聚会详情
+     */
+    public function getParty($data){
+        $party = PartyModel::with(['participants'=>function($query){
+            $query->with('user');
+        }])
+            ->with(['message'=>function($query){
+                $query->with('user');
+            }])
+            ->where('id',$data['id'])
+            ->find();
+        $party['way'] = config('jufeel_config.way')[$party['way']];
+        $data = $this->getMessageIdentity($party);
+        return $data;
+    }
+
+    /**
+     * @param $data
+     * @return mixed
+     * 获取评论人的身份
+     */
+    public function getMessageIdentity($data){
+        foreach ($data['message'] as $d_m){
+            foreach ($data['participants'] as $d_p){
+                if($d_m['user_id'] == $data['user_id']){
+                    $d_m['identity'] = 1; //标记未发起者
+                }
+                else if($d_m['user_id'] == $d_p['user_id']){
+                    $d_m['identity'] = 2; //标记为参与者
+                }
+                else{
+                    $d_m['identity'] = 3; //标记为路人
+                }
+            }
+        }
+        return $data;
     }
 }
