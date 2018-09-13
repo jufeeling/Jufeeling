@@ -18,7 +18,8 @@ class DeliveryAddress extends Model
      * @return array|null|\PDOStatement|string|Model
      * 通过id获取收货地址
      */
-    public static function getDeliveryAddress($id){
+    public static function getDeliveryAddress($id)
+    {
         $address = self::find($id);
         return $address;
     }

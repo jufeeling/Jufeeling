@@ -13,8 +13,8 @@ use think\Model;
 
 class User extends Model
 {
-    public static function getAll(){
-
+    public static function getAll()
+    {
         $data =
             [
                 'id' => 1,
@@ -23,7 +23,7 @@ class User extends Model
         $order =
             [
                 'list' => 'list',
-                'id'   => 'id'
+                'id' => 'id'
             ];
         $result = self::where($data)->order($order['id'])->select();
         return $result;

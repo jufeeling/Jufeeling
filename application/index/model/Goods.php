@@ -19,7 +19,8 @@ class Goods extends Model
             'update_time'
         ];
 
-    public function category(){
-        return $this->belongsTo('GoodsCategory','category_id','id');
+    public function category()
+    {
+        return $this->belongsTo('GoodsCategory', 'category_id', 'id');
     }
 }

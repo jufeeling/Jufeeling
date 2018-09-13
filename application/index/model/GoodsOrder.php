@@ -13,7 +13,8 @@ use think\Model;
 
 class GoodsOrder extends Model
 {
-    public function goods(){
-        return $this->hasMany('OrderId','order_id','id');
+    public function goods()
+    {
+        return $this->hasMany('OrderId', 'order_id', 'id');
     }
 }

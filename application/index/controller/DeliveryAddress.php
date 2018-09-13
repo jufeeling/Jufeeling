@@ -19,7 +19,7 @@ class DeliveryAddress extends Controller
 {
     private $deliveryAddress;
 
-    public function __construct(App $app = null,DeliveryAddressService $deliveryAddress)
+    public function __construct(App $app = null, DeliveryAddressService $deliveryAddress)
     {
         $this->deliveryAddress = $deliveryAddress;
         parent::__construct($app);
@@ -29,55 +29,59 @@ class DeliveryAddress extends Controller
      * @return \think\response\Json
      * 用户添加收货地址
      */
-    public function addDeliveryAddress(){
+    public function addDeliveryAddress()
+    {
         (new DeliveryAddressValidate())->scene('add')->goCheck(Request::param());
-        try{
+        try {
             $this->deliveryAddress->addDeliveryAddress(Request::param());
-        }catch (DeliveryAddressException $e){
-            return result('',$e->msg,$e->code);
+        } catch (DeliveryAddressException $e) {
+            return result('', $e->msg, $e->code);
         }
-        return result('','添加成功');
+        return result('', '添加成功');
     }
 
     /**
      * @return \think\response\Json
      * 删除收货地址
      */
-    public function deleteDeliveryAddress(){
+    public function deleteDeliveryAddress()
+    {
         (new DeliveryAddressValidate())->scene('id')->goCheck(Request::param());
-        try{
+        try {
             $this->deliveryAddress->deleteDeliveryAddress(Request::param());
-        }catch (DeliveryAddressException $e){
-            return result('',$e->msg,$e->code);
+        } catch (DeliveryAddressException $e) {
+            return result('', $e->msg, $e->code);
         }
-        return result('','删除成功');
+        return result('', '删除成功');
     }
 
     /**
      * @return \think\response\Json
      * 更新收获地址
      */
-    public function updateDeliveryAddress(){
+    public function updateDeliveryAddress()
+    {
         (new DeliveryAddressValidate())->scene('update')->goCheck(Request::param());
-        try{
+        try {
             $this->deliveryAddress->updateDeliveryAddress(Request::param());
-        }catch (DeliveryAddressException $e){
-            return result('',$e->msg,$e->code);
+        } catch (DeliveryAddressException $e) {
+            return result('', $e->msg, $e->code);
         }
-        return result('','修改成功');
+        return result('', '修改成功');
     }
 
     /**
      * @return \think\response\Json
      * 获取收货地址
      */
-    public function getDeliveryAddress(){
+    public function getDeliveryAddress()
+    {
         (new DeliveryAddressValidate())->scene('id')->goCheck(Request::param());
-        try{
+        try {
             $data = $this->deliveryAddress->getDeliveryAddress(Request::param());
-        }catch (DeliveryAddressException $e){
-            return result('',$e->msg,$e->code);
+        } catch (DeliveryAddressException $e) {
+            return result('', $e->msg, $e->code);
         }
-        return result($data,'获取成功');
+        return result($data, '获取成功');
     }
 }

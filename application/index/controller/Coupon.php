@@ -19,7 +19,7 @@ class Coupon extends Controller
 {
     private $coupon;
 
-    public function __construct(App $app = null,CouponService $coupon)
+    public function __construct(App $app = null, CouponService $coupon)
     {
         $this->coupon = $coupon;
         parent::__construct($app);
@@ -29,7 +29,8 @@ class Coupon extends Controller
      * @return mixed
      * 获取所有购物券
      */
-    public function getAllCoupon(){
+    public function getAllCoupon()
+    {
         $data = $this->coupon->getAllCoupon();
         return result($data);
     }
@@ -38,12 +39,13 @@ class Coupon extends Controller
      * @return \think\response\Json
      * 领取优惠券
      */
-    public function receiveCoupon(){
+    public function receiveCoupon()
+    {
         (new CouponValidate())->scene('id')->goCheck(Request::param());
-        try{
+        try {
             $this->coupon->receiveCoupon(Request::param());
-        }catch (CouponException $e){
-            return result('',$e->msg,$e->code);
+        } catch (CouponException $e) {
+            return result('', $e->msg, $e->code);
         }
         return result();
     }

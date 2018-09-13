@@ -18,7 +18,8 @@ use think\facade\Request;
 class Goods extends Controller
 {
     private $goods;
-    public function __construct(App $app = null,GoodsService $goods)
+
+    public function __construct(App $app = null, GoodsService $goods)
     {
         $this->goods = $goods;
         parent::__construct($app);
@@ -28,7 +29,8 @@ class Goods extends Controller
      * @return \think\response\Json
      * 获取所有商品
      */
-    public function getAllGoods(){
+    public function getAllGoods()
+    {
         (new GoodsValidate())->scene('category')->goCheck(Request::param());
         $data = $this->goods->getAllGoods(Request::param());
         return result($data);
@@ -38,12 +40,13 @@ class Goods extends Controller
      * @return \think\response\Json
      * 获取商品详情
      */
-    public function getGoodsDetail(){
+    public function getGoodsDetail()
+    {
         (new GoodsValidate())->scene('id')->goCheck(Request::param());
-        try{
+        try {
             $data = $this->goods->getGoodsDetail(Request::param());
-        }catch (GoodsException $e){
-            return result('',$e->msg,$e->code);
+        } catch (GoodsException $e) {
+            return result('', $e->msg, $e->code);
         }
         return result($data);
     }
@@ -52,7 +55,8 @@ class Goods extends Controller
      * @return \think\response\Json
      * 获取搜索的内容
      */
-    public function getSearchGoods(){
+    public function getSearchGoods()
+    {
         (new GoodsValidate())->scene('search')->goCheck(Request::param());
         $data = $this->goods->getSearchGoods(Request::param());
         return result($data);

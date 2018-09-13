@@ -19,61 +19,65 @@ class Party extends Controller
 {
     private $party;
 
-    public function __construct(App $app = null,PartyService $party)
+    public function __construct(App $app = null, PartyService $party)
     {
         $this->party = $party;
         parent::__construct($app);
     }
 
-    public function hostParty(){
+    public function hostParty()
+    {
         (new PartyValidate())->scene('host')->goCheck(Request::param());
-        try{
+        try {
             $this->party->hostParty(Request::param());
-        }catch (PartyException $e){
-            return result('',$e->msg,$e->code);
+        } catch (PartyException $e) {
+            return result('', $e->msg, $e->code);
         }
-        return result('','举办成功');
+        return result('', '举办成功');
     }
 
     /**
      * @return \think\response\Json
      * 参加聚会
      */
-    public function joinParty(){
+    public function joinParty()
+    {
         (new PartyValidate())->scene('id')->goCheck(Request::param());
-        try{
+        try {
             $this->party->joinParty(Request::param());
-        }catch (PartyException $e){
-            return result('',$e->msg,$e->code);
+        } catch (PartyException $e) {
+            return result('', $e->msg, $e->code);
         }
-        return result('','参加成功');
+        return result('', '参加成功');
     }
 
     /**
      * @return \think\response\Json
      * 评论派对
      */
-    public function commentParty(){
+    public function commentParty()
+    {
         (new PartyValidate())->scene('comment')->goCheck(Request::param());
-        try{
+        try {
             $this->party->commentParty(Request::param());
-        }catch (PartyException $e){
-            return result('',$e->msg,$e->code);
+        } catch (PartyException $e) {
+            return result('', $e->msg, $e->code);
         }
-        return result('','评论成功');
+        return result('', '评论成功');
     }
 
     /**
      * @return \think\response\Json
      * 查看派对详情
      */
-    public function getParty(){
+    public function getParty()
+    {
         (new PartyValidate())->scene('id')->goCheck(Request::param());
-        try{
+        try {
             $data = $this->party->getParty(Request::param());
-        }catch (PartyException $e){
-            return result('',$e->msg,$e->code);
+        } catch (PartyException $e) {
+            return result('', $e->msg, $e->code);
         }
-        return result($data,'查看成功');
+        return result($data, '查看成功');
     }
 }

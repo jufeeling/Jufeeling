@@ -13,13 +13,13 @@ use app\lib\exception\UserException;
 use think\App;
 use app\index\service\User as UserService;
 use think\Controller;
-use think\Exception;
 use think\facade\Request;
 
 class User extends Controller
 {
     private $user;
-    public function __construct(App $app = null,UserService $user)
+
+    public function __construct(App $app = null, UserService $user)
     {
         $this->user = $user;
         parent::__construct($app);
@@ -29,7 +29,8 @@ class User extends Controller
      * 获取用户举办的派对
      * @return \think\response\Json
      */
-    public function getUserHostParty(){
+    public function getUserHostParty()
+    {
         $data = $this->user->getUserHostParty();
         return result($data);
     }
@@ -38,7 +39,8 @@ class User extends Controller
      * @return \think\response\Json
      * 获取用户参加的派对
      */
-    public function getUserJoinParty(){
+    public function getUserJoinParty()
+    {
         $data = $this->user->getUserJoinParty();
         return result($data);
     }
@@ -47,7 +49,8 @@ class User extends Controller
      * @return \think\response\Json
      * 获取用户的收货地址
      */
-    public function getUserDeliveryAddress(){
+    public function getUserDeliveryAddress()
+    {
         $data = $this->user->getUserDeliveryAddress();
         return result($data);
     }
@@ -56,7 +59,8 @@ class User extends Controller
      * @return \think\response\Json
      * 获取用户的购物券
      */
-    public function getUserCoupon(){
+    public function getUserCoupon()
+    {
         $data = $this->user->getUserCoupon();
         return result($data);
     }
@@ -65,7 +69,8 @@ class User extends Controller
      * @return \think\response\Json
      * 获取用户的商品
      */
-    public function getUserGoods(){
+    public function getUserGoods()
+    {
         $data = $this->user->getUserGoods();
         return result($data);
     }
@@ -74,12 +79,13 @@ class User extends Controller
      * @return \think\response\Json
      * 用户选择使用的商品
      */
-    public function selectUserGoods(){
+    public function selectUserGoods()
+    {
         (new UserValidate())->scene('check')->goCheck(Request::param());
-        try{
+        try {
             $this->user->selectUserGoods(Request::param());
-        }catch (UserException $e){
-            return result('',$e->msg,$e->code);
+        } catch (UserException $e) {
+            return result('', $e->msg, $e->code);
         }
         return result();
     }
@@ -88,7 +94,8 @@ class User extends Controller
      * @return \think\response\Json
      * 获取用户所有订单
      */
-    public function getUserOrder(){
+    public function getUserOrder()
+    {
         $data = $this->user->getUserOrder();
         return result($data);
     }
@@ -97,17 +104,23 @@ class User extends Controller
      * @return \think\response\Json
      * 用户删除订单
      */
-    public function deleteUserOrder(){
+    public function deleteUserOrder()
+    {
         (new UserValidate())->scene('id')->goCheck(Request::param());
-        try{
+        try {
             $this->user->deleteUserOrder(Request::param());
-        }catch (UserException $e){
-            return result('',$e->msg,$e->code);
+        } catch (UserException $e) {
+            return result('', $e->msg, $e->code);
         }
         return result();
     }
 
-    public function getUserOrderInfo(){
+    /**
+     * @return \think\response\Json
+     * 获取订单详情
+     */
+    public function getUserOrderInfo()
+    {
         (new UserValidate())->scene('id')->goCheck(Request::param());
         $data = $this->user->getUserOrderInfo(Request::param());
         return result($data);

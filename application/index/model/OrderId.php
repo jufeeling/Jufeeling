@@ -13,8 +13,9 @@ use think\Model;
 
 class OrderId extends Model
 {
-    public function goods(){
-        return $this->belongsTo('Goods','goods_id','id');
+    public function goods()
+    {
+        return $this->belongsTo('Goods', 'goods_id', 'id');
     }
 
     /**
@@ -24,12 +25,13 @@ class OrderId extends Model
      * @return mixed
      * 获取用户的商品
      */
-    public static function getUserGoods($type,$user_id){
-        $data['used'] = self::with(['goods'=>function($query){
+    public static function getUserGoods($type, $user_id)
+    {
+        $data['used'] = self::with(['goods' => function ($query) {
             $query->field('id,name,pic_url,sale_price');
         }])
-            ->where('select',$type)
-            ->where('user_id',$user_id)
+            ->where('select', $type)
+            ->where('user_id', $user_id)
             ->order('update_time desc')
             ->field('id,price,goods_id')
             ->select();

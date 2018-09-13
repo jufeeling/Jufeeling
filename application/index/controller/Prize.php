@@ -19,7 +19,7 @@ class Prize extends Controller
 {
     private $prize;
 
-    public function __construct(App $app = null,PrizeService $prize)
+    public function __construct(App $app = null, PrizeService $prize)
     {
         $this->prize = $prize;
         parent::__construct($app);
@@ -29,12 +29,13 @@ class Prize extends Controller
      * @return \think\response\Json
      * 抽奖
      */
-    public function prizeDraw(){
+    public function prizeDraw()
+    {
         (new PrizeValidate())->scene('id')->goCheck(Request::param());
-        try{
+        try {
             $this->prize->prizeDraw(Request::param());
-        }catch (PrizeException $e){
-            return result('',$e->msg,$e->code);
+        } catch (PrizeException $e) {
+            return result('', $e->msg, $e->code);
         }
         return result();
     }

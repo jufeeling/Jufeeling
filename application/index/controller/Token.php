@@ -17,17 +17,17 @@ class Token extends Controller
         (new TokenGet())->scene('check')->goCheck(Request::param());
         $ut = new UserToken(Request::param('code'));
         $token = $ut->get();
-        return result(['token' => $token,],'获取成功');
+        return result(['token' => $token,], '获取成功');
     }
 
-    public function verifyToken($token='')
+    public function verifyToken($token = '')
     {
-        if(!$token){
+        if (!$token) {
             throw new ParameterException([
                 'token不允许为空'
             ]);
         }
         $valid = TokenService::verifyToken($token);
-        return result(['isValid' => $valid],'获取成功');
+        return result(['isValid' => $valid], '获取成功');
     }
 }

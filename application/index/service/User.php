@@ -199,7 +199,7 @@ class User
             ->find();
         $order['goods'] = $this->getSameOrderGoods($order['goods']);
         $order['goods'] = $this->removeRepeatData($order['goods']);
-        return $order['goods'] ;
+        return $order['goods'];
     }
 
     /**
@@ -207,11 +207,12 @@ class User
      * @return mixed
      * 计算重复商品的个数
      */
-    private function getSameOrderGoods($data){
-        for($i=0;$i<sizeof($data);$i++){
+    private function getSameOrderGoods($data)
+    {
+        for ($i = 0; $i < sizeof($data); $i++) {
             $data[$i]['count'] = 0;
-            for($j=0;$j<sizeof($data);$j++){
-                if($data[$i]['goods']['id'] == $data[$j]['goods']['id']){
+            for ($j = 0; $j < sizeof($data); $j++) {
+                if ($data[$i]['goods']['id'] == $data[$j]['goods']['id']) {
                     $data[$i]['count'] += 1;
                 }
             }
@@ -224,10 +225,11 @@ class User
      * @return array
      * 去掉重复的数据
      */
-    private function removeRepeatData($array){
+    private function removeRepeatData($array)
+    {
         $out = array();
-        foreach ($array as $key=>$value) {
-            if (!in_array($value, $out)){
+        foreach ($array as $key => $value) {
+            if (!in_array($value, $out)) {
                 $out[$key] = $value;
             }
         }

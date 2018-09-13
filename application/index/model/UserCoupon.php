@@ -17,11 +17,13 @@ class UserCoupon extends Model
         [
             'user_id'
         ];
+
     /**
      * @return \think\model\relation\BelongsTo
      * 购物券
      */
-    public function coupon(){
-        return $this->belongsTo('Coupon','coupon_id','id');
+    public function coupon()
+    {
+        return $this->belongsTo('Coupon', 'coupon_id', 'id');
     }
 }
