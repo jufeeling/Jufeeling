@@ -105,11 +105,11 @@ class User
      */
     public function getUserGoods()
     {
-        $uid = TokenService::getCurrentUid();
+        //$uid = TokenService::getCurrentUid();
         //获取用户使用过的商品
-        $data['used'] = OrderIdModel::getUserGoods(1, $uid);
+        $data['used'] = OrderIdModel::getUserGoods(1, 1);
         //获取用户未使用过的商品
-        $data['not_use'] = OrderIdModel::getUserGoods(0, $uid);
+        $data['not_use'] = OrderIdModel::getUserGoods(0, 1);
         return $data;
     }
 

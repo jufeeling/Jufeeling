@@ -22,7 +22,9 @@ class DeliveryAddress
      */
     public function addDeliveryAddress($data)
     {
+        //判断用户是否设置为用户地址
         if ($data['state'] == 0) {
+            //判断用户是否已有默认地址
             $address = DeliveryAddressModel::where('user_id', TokenService::getCurrentUid())
                 ->where('state', 0)
                 ->find();
@@ -57,6 +59,7 @@ class DeliveryAddress
     {
         $address = DeliveryAddressModel::getDeliveryAddress($data['id']);
         if ($address) {
+            //判断此默认地址是否为该用户的
             if ($address['user_id'] == TokenService::getCurrentUid()) {
                 if ($address->delete()) ;
                 else {
@@ -96,6 +99,7 @@ class DeliveryAddress
     {
         $address = DeliveryAddressModel::getDeliveryAddress($data['id']);
         if ($address) {
+            //判断此收货地址是否为该用户的
             if ($address['user_id'] == TokenService::getCurrentUid()) {
                 if (
                 $address->update([

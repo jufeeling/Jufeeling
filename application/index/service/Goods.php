@@ -20,13 +20,16 @@ class Goods
      */
     public function getAllGoods($data)
     {
+        //获取全部商品
         if ($data['category'] == 0) {
             $goods = GoodsModel::with('category')
                 ->where('stock', '>', 0)
                 ->order('create_time desc')
                 ->field('id,name,pic_url,price,sale_price,category_id')
                 ->select();
-        } else {
+        }
+        //获取分类下的商品
+        else {
             $goods = GoodsModel::with('category')
                 ->where('stock', '>', 0)
                 ->where('category_id', $data['category'])
@@ -45,6 +48,7 @@ class Goods
      */
     public function getGoodsDetail($data)
     {
+        //获取商品详情
         $goods = GoodsModel::with('category')
             ->where('id', $data['id'])
             ->find();
