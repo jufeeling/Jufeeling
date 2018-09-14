@@ -27,7 +27,7 @@ class OrderId extends Model
      */
     public static function getUserGoods($type, $user_id)
     {
-        $data['used'] = self::with(['goods' => function ($query) {
+        $data = self::with(['goods' => function ($query) {
             $query->field('id,name,pic_url,sale_price');
         }])
             ->where('select', $type)
