@@ -17,6 +17,7 @@ use app\index\model\Party as PartyModel;
 use app\index\model\PartyOrder as PartyOrderModel;
 use app\lib\exception\UserException;
 use think\Exception;
+use think\facade\Cache;
 
 class User
 {
@@ -33,8 +34,7 @@ class User
             ->where('status', 0)
             ->order('create_time desc')
             ->select();
-        $result = getPartyWay($data, 1);
-        return $result;
+        return $data;
     }
 
     /**
@@ -52,8 +52,7 @@ class User
             ->where('user_id', $uid)
             ->order('create_time desc')
             ->select();
-        $result = getPartyWay($data, 2);
-        return $result;
+        return $data;
     }
 
     /**
@@ -120,8 +119,8 @@ class User
      */
     public function selectUserGoods($data)
     {
-        foreach ($data['check'] as $d) {
-            $orderId = OrderIdModel::find($d);
+        for($i=0;$i<sizeof($data['check']);$i++){
+            $orderId = OrderIdModel::find($data['check'][$i]);
             if ($orderId['user_id'] != TokenService::getCurrentUid()) {
                 throw new UserException([
                     'code' => 902,
@@ -134,9 +133,8 @@ class User
                     'msg' => '该商品已使用'
                 ]);
             }
-            $orderId['select'] = 1;
-            $orderId->save();
         }
+        Cache::set('select',$data['check']);
     }
 
     /**

@@ -141,25 +141,6 @@ function week($day){
     return $week[$day];
 };
 
-/**
- * @param $data
- * @param $type
- * @return mixed
- * 获取派对方式
- */
-function getPartyWay($data,$type){
-    $ways = config('jufeel_config.way');
-    if($type==1){
-        foreach ($data as $d){
-            $d['way'] = $ways[$d['way']];
-        }
-        return $data;
-    }
-    foreach ($data as $d){
-        $d['party']['way'] = $ways[$d['party']['way']];
-    }
-    return $data;
-}
 
 /**
  * @param $data

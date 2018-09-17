@@ -9,11 +9,14 @@
 namespace app\index\service;
 
 use app\index\model\Message;
+use app\index\model\OrderId;
 use app\index\model\Party as PartyModel;
 use app\index\model\PartyOrder;
 use app\index\service\Token as TokenService;
 use app\lib\exception\PartyException;
 use app\index\service\File as FileService;
+use think\Exception;
+use think\facade\Cache;
 
 class Party
 {
@@ -56,12 +59,14 @@ class Party
                         'msg' => '抱歉,已经过了报名时间',
                         'errorMsg' => '60003'
                     ]);
-                } else if ($party['remaining_people_no'] == 0) {
-                    throw new PartyException([
-                        'code' => '604',
-                        'msg' => '抱歉,报名人数已满',
-                        'errorMsg' => '60004'
-                    ]);
+                } else if ($party['people_no'] != 11) {
+                    if ($party['remaining_people_no'] == 0) {
+                        throw new PartyException([
+                            'code' => '604',
+                            'msg' => '抱歉,报名人数已满',
+                            'errorMsg' => '60004'
+                        ]);
+                    }
                 } else if (
                 PartyOrder::create([
                     'party_id' => $party['id'],
@@ -114,12 +119,22 @@ class Party
 
     /**
      * @param $data
+     * @return \think\response\Json
      * @throws PartyException
      * 举办派对
      */
     public function hostParty($data)
     {
-        $url = (new FileService())->uploadImage();
+        if($data['url']){
+            $url = $data['url'];
+        }
+        else{
+            try{
+                $url = (new FileService())->uploadImage();
+            }catch (PartyException $e){
+                return result('',$e->msg);
+            }
+        }
         if (
         PartyModel::create([
             'way' => $data['way'],
@@ -132,7 +147,15 @@ class Party
             'description' => $data['description'],
             'remaining_people_no' => $data['people_no'] - 1,
         ])
-        ) ;
+        ){
+            //获取并删除缓存
+            $check = Cache::pull('select');
+            for($i=0;$i<sizeof($check);$i++){
+                $orderId = OrderId::find($check[$i]);
+                $orderId['select'] = 1;
+                $orderId->save();
+            }
+        }
         else {
             throw new PartyException([
                 'code' => '607',
@@ -179,6 +202,23 @@ class Party
                     $d_m['identity'] = 3; //标记为路人
                 }
             }
+        }
+        return $data;
+    }
+
+    /**
+     * @return array|null|\PDOStatement|string|\think\Model
+     * 获取派对已选择的商品
+     */
+    public function getPartyGoods(){
+        $select = Cache::get('select');
+        for($i=0;$i<sizeof($select);$i++){
+            $data[$i] = OrderId::with(['goods'=>function($query){
+                $query->field('id,name,pic_url');
+            }])
+                ->order('create_time desc')
+                ->field('goods_id')
+                ->find($select[$i]);
         }
         return $data;
     }

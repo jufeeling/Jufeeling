@@ -19,8 +19,8 @@ class UserValidate extends BaseValidate
 
     protected $message =
         [
-            'check'          => '请选择您要使用的商品',
-            'id' => '请传入正确的id',
+            'check' => '请选择您要使用的商品',
+            'id'    => '请传入正确的id',
         ];
 
     protected $scene =

@@ -33,7 +33,7 @@ Route::group('user',function (){
        Route::get('/','User/getUserCoupon') ;
     });
     Route::group('goods',function (){
-       Route::get('/',      'user/getUserGoods');
+       Route::get('/',      'user/getUserGoods');    //测试成功
        Route::post('select','user/selectUserGoods'); //未测试
     });
     Route::group('order',function (){
@@ -65,7 +65,7 @@ Route::group('coupon',function (){
  * 商品模块
  */
 Route::group('goods',function (){
-    Route::get('all',     'Goods/getAllGoods');
+    Route::get('all',     'Goods/getAllGoods');     //测试成功
     Route::get('detail',  'Goods/getGoodsDetail');
     Route::post('search', 'Goods/getSearchGoods');
 });
@@ -76,9 +76,11 @@ Route::group('goods',function (){
 Route::group('party',function (){
     Route::get('get',      'Party/getParty');
     Route::get('join',     'Party/joinParty');
-    Route::post('host',    'Party/hostParty'); //举办派对
+    //获取派对所需要的商品
+    Route::get('goods',    'Party/getPartyGoods');
+    //举办派对
+    Route::post('host',    'Party/hostParty');
     Route::post('comment', 'Party/commentParty');
-
 });
 
 /**

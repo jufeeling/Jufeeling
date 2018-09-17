@@ -13,6 +13,7 @@ use app\lib\exception\UserException;
 use think\App;
 use app\index\service\User as UserService;
 use think\Controller;
+use think\facade\Cache;
 use think\facade\Request;
 
 class User extends Controller

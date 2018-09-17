@@ -8,7 +8,8 @@
 
 namespace app\index\service;
 
-use app\index\model\Image as ImageModel;
+use app\lib\exception\PartyException;
+use think\Exception;
 
 class File
 {
@@ -19,7 +20,6 @@ class File
     public function uploadImage()
     {
         $files = request()->file('image');
-        $url = '';
         if ($files) {
             foreach ($files as $file) {
                 if ($file) {
@@ -36,7 +36,11 @@ class File
                 }
             }
         }
-        return $url;
+        else{
+            throw new PartyException([
+               'msg' => '文件不存在'
+            ]);
+        }
     }
 
 
