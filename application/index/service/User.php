@@ -120,7 +120,7 @@ class User
     public function selectUserGoods($data)
     {
         for($i=0;$i<sizeof($data['check']);$i++){
-            $orderId[$i] = OrderIdModel::find($data['check'][$i]);
+            $orderId[$i] = OrderIdModel::find((int)$data['check'][$i]);
             if ($orderId[$i]['user_id'] != 1) {
                 throw new UserException([
                     'code' => 902,
