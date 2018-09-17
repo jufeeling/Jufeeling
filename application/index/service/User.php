@@ -119,7 +119,6 @@ class User
      */
     public function selectUserGoods($data)
     {
-        echo $data['check'];
         for($i=0;$i<sizeof($data['check']);$i++){
             $orderId[$i] = OrderIdModel::find($data['check'][$i]);
             if ($orderId[$i]['user_id'] != 1) {
