@@ -84,36 +84,11 @@ class User extends Controller
     {
         (new UserValidate())->scene('check')->goCheck(Request::param());
         try {
-            $this->user->selectUserGoods(Request::param());
+            $a = $this->user->selectUserGoods(Request::param());
         } catch (UserException $e) {
             return result('', $e->msg, $e->code);
         }
-        return result();
-    }
-
-    /**
-     * @return \think\response\Json
-     * 获取用户所有订单
-     */
-    public function getUserOrder()
-    {
-        $data = $this->user->getUserOrder();
-        return result($data);
-    }
-
-    /**
-     * @return \think\response\Json
-     * 用户删除订单
-     */
-    public function deleteUserOrder()
-    {
-        (new UserValidate())->scene('id')->goCheck(Request::param());
-        try {
-            $this->user->deleteUserOrder(Request::param());
-        } catch (UserException $e) {
-            return result('', $e->msg, $e->code);
-        }
-        return result();
+        return result($a);
     }
 
     /**
