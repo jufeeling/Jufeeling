@@ -121,6 +121,7 @@ class User
     {
         for($i=0;$i<sizeof($data['check']);$i++){
             $orderId[$i] = OrderIdModel::find($data['check'][$i]);
+            echo $orderId[$i];
             if ($orderId[$i]['user_id'] != 1) {
                 throw new UserException([
                     'code' => 902,
