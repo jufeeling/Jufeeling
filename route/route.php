@@ -96,4 +96,4 @@ Route::group('prize',function (){
     Route::get('draw','Prize/prizeDraw');
 });
 
-Route::get('test','Pay/payOrder');
+Route::get('test','User/test');

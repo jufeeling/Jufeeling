@@ -127,4 +127,9 @@ class User extends Controller
         return result($data);
     }
 
+    public function test(){
+        $data = Cache::get('select');
+        return result($data);
+    }
+
 }
