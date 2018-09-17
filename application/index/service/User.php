@@ -135,6 +135,7 @@ class User
             }
         }
         Cache::set('select',$data['check']);
+        var_dump('s');
     }
 
     /**
