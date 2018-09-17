@@ -88,7 +88,7 @@ class User extends Controller
         } catch (UserException $e) {
             return result('', $e->msg, $e->code);
         }
-        return result();
+        return result('','s');
     }
 
     /**

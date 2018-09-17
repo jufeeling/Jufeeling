@@ -120,14 +120,14 @@ class User
     public function selectUserGoods($data)
     {
         for($i=0;$i<sizeof($data['check']);$i++){
-            $orderId = OrderIdModel::find($data['check'][$i]);
-            if ($orderId['user_id'] != 1) {
+            $orderId[$i] = OrderIdModel::find($data['check'][$i]);
+            if ($orderId[$i]['user_id'] != 1) {
                 throw new UserException([
                     'code' => 902,
                     'msg' => '您无权使用该商品'
                 ]);
             }
-            if ($orderId['select'] == 1) {
+            if ($orderId[$i]['select'] == 1) {
                 throw new UserException([
                     'code' => 902,
                     'msg' => '该商品已使用'
