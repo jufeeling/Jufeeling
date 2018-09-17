@@ -8,12 +8,10 @@
 
 namespace app\index\controller;
 
-use app\index\model\OrderId;
 use app\index\validate\PartyValidate;
 use app\lib\exception\PartyException;
 use think\App;
 use think\Controller;
-use think\facade\Cache;
 use think\facade\Request;
 use app\index\service\Party as PartyService;
 

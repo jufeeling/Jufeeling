@@ -121,7 +121,7 @@ class User
     {
         for($i=0;$i<sizeof($data['check']);$i++){
             $orderId = OrderIdModel::find($data['check'][$i]);
-            if ($orderId['user_id'] != TokenService::getCurrentUid()) {
+            if ($orderId['user_id'] != 1) {
                 throw new UserException([
                     'code' => 902,
                     'msg' => '您无权使用该商品'
