@@ -121,22 +121,20 @@ class User
     {
         for($i=0;$i<sizeof($data['check']);$i++){
             $orderId[$i] = OrderIdModel::find((int)$data['check'][$i]);
-//            if ($orderId[$i]['user_id'] != 1) {
-//                throw new UserException([
-//                    'code' => 902,
-//                    'msg' => '您无权使用该商品'
-//                ]);
-//            }
-//            if ($orderId[$i]['select'] == 1) {
-//                throw new UserException([
-//                    'code' => 903,
-//                    'msg' => '该商品已使用'
-//                ]);
-//            }
+            if ($orderId[$i]['user_id'] != 1) {
+                throw new UserException([
+                    'code' => 902,
+                    'msg' => '您无权使用该商品'
+                ]);
+            }
+            if ($orderId[$i]['select'] == 1) {
+                throw new UserException([
+                    'code' => 903,
+                    'msg' => '该商品已使用'
+                ]);
+            }
         }
-        return $orderId;
-        //Cache::set('select',$data['check']);
-        //var_dump('s');
+        Cache::set('select',$data['check']);
     }
 
     /**
