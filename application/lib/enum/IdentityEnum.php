@@ -11,6 +11,7 @@ namespace app\lib\enum;
 
 class IdentityEnum
 {
+
     // 发起者
     const SPONSOR = '发起者';
 

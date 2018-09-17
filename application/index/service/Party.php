@@ -14,6 +14,7 @@ use app\index\model\Party as PartyModel;
 use app\index\model\PartyOrder;
 use app\index\service\Token as TokenService;
 use app\lib\enum\IdentityEnum;
+use app\lib\enum\PartyEnum;
 use app\lib\exception\PartyException;
 use app\index\service\File as FileService;
 use think\facade\Cache;
@@ -47,7 +48,7 @@ class Party
                         'msg' => '您是该派对的发起者,已参加',
                         'errorMsg' => '60008'
                     ]);
-                } else if ($party['state'] == 1) {
+                } else if ($party['state'] == PartyEnum::CLOSE) {
                     throw new PartyException([
                         'code' => '602',
                         'msg' => '该派对暂时不能参加',
@@ -59,7 +60,8 @@ class Party
                         'msg' => '抱歉,已经过了报名时间',
                         'errorMsg' => '60003'
                     ]);
-                } else if ($party['people_no'] != 11) {
+                } //判断该聚会是否符合10人以上规格
+                else if ($party['people_no'] != 11) {
                     if ($party['remaining_people_no'] == 0) {
                         throw new PartyException([
                             'code' => '604',
