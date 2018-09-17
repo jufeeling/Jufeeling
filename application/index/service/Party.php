@@ -127,22 +127,22 @@ class Party
      */
     public function hostParty($data)
     {
-//        if ($data['url']) {
-//            $url = $data['url'];
-//        } else {
-//            try {
-//                $url = (new FileService())->uploadImage();
-//            } catch (PartyException $e) {
-//                return result('', $e->msg);
-//            }
-//        }
+        if ($data['url']) {
+            $url = $data['url'];
+        } else {
+            try {
+                $url = (new FileService())->uploadImage();
+            } catch (PartyException $e) {
+                return result('', $e->msg);
+            }
+        }
         if (
         PartyModel::create([
             'way' => $data['way'],
             'date' => $data['date'],
             'time' => $data['time'],
             'site' => $data['site'],
-
+            'image' => $data['url'],
             'user_id' => 1,
             'people_no' => (int)$data['people_no'],
             'description' => $data['description'],

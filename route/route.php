@@ -97,5 +97,10 @@ Route::group('party',function (){
 Route::group('prize',function (){
     Route::get('draw','Prize/prizeDraw');
 });
-
+/**
+ *文件
+ */
+Route::group('file',function (){
+    Route::post('upload',    'File/uploadImage');
+});
 Route::get('test','User/test');
