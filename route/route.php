@@ -37,7 +37,7 @@ Route::group('user',function (){
         //获取用户所有商品
        Route::get('/',      'user/getUserGoods');    //测试成功
         //用户选择聚会要使用的商品
-       Route::post('select','user/selectUserGoods'); //未测试
+       Route::post('select','user/selectUserGoods'); //测试成功
     });
     Route::group('order',function (){
         //获取用户所有订单
@@ -80,10 +80,12 @@ Route::group('goods',function (){
  * 派对模块
  */
 Route::group('party',function (){
+    //获取派对详情
     Route::get('get',      'Party/getParty');
+    //参加派对
     Route::get('join',     'Party/joinParty');
     //获取派对所需要的商品
-    Route::get('goods',    'Party/getPartyGoods');
+    Route::get('goods',    'Party/getPartyGoods'); //测试成功
     //举办派对
     Route::post('host',    'Party/hostParty');
     Route::post('comment', 'Party/commentParty');
