@@ -16,7 +16,7 @@ class PartyValidate extends BaseValidate
             'id'          => 'require|isPositiveInteger',
             'content'     => 'require',
             'description' => 'require',
-            'way'         => 'require|number|between:1,3',
+            'way'         => 'require',
             'people_no'   => 'integer|require',
             'date'        => 'require',
             'time'        => 'require',
