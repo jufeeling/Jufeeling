@@ -27,8 +27,7 @@ class Goods
                 ->order('create_time desc')
                 ->field('id,name,pic_url,price,sale_price,category_id')
                 ->select();
-        }
-        //获取分类下的商品
+        } //获取分类下的商品
         else {
             $goods = GoodsModel::with('category')
                 ->where('stock', '>', 0)

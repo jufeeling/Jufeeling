@@ -18,13 +18,14 @@ class Pay extends Controller
 {
     private $pay;
 
-    public function __construct(App $app = null,PayService $pay)
+    public function __construct(App $app = null, PayService $pay)
     {
         $this->pay = $pay;
         parent::__construct($app);
     }
 
-    public function payOrder(){
+    public function payOrder()
+    {
         (new OrderValidate())->scene('id')->goCheck(Request::param());
         $result = $this->pay->payOrder(Request::param());
         return result($result);

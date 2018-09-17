@@ -128,8 +128,9 @@ class Order
      * @return array
      * 根据订单号检查产品的库存
      */
-    public function checkOrderStock($order_id){
-        $Goods =  OrderId::where('order_id',$order_id)
+    public function checkOrderStock($order_id)
+    {
+        $Goods = OrderId::where('order_id', $order_id)
             ->field('goods_id,order_id')
             ->select();
         $oGoods = (new UserService())->getSameOrderGoods($Goods);

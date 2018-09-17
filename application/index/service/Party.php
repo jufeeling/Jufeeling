@@ -13,9 +13,9 @@ use app\index\model\OrderId;
 use app\index\model\Party as PartyModel;
 use app\index\model\PartyOrder;
 use app\index\service\Token as TokenService;
+use app\lib\enum\IdentityEnum;
 use app\lib\exception\PartyException;
 use app\index\service\File as FileService;
-use think\Exception;
 use think\facade\Cache;
 
 class Party
@@ -125,14 +125,13 @@ class Party
      */
     public function hostParty($data)
     {
-        if($data['url']){
+        if ($data['url']) {
             $url = $data['url'];
-        }
-        else{
-            try{
+        } else {
+            try {
                 $url = (new FileService())->uploadImage();
-            }catch (PartyException $e){
-                return result('',$e->msg);
+            } catch (PartyException $e) {
+                return result('', $e->msg);
             }
         }
         if (
@@ -147,16 +146,15 @@ class Party
             'description' => $data['description'],
             'remaining_people_no' => $data['people_no'] - 1,
         ])
-        ){
+        ) {
             //获取并删除缓存
             $check = Cache::pull('select');
-            for($i=0;$i<sizeof($check);$i++){
+            for ($i = 0; $i < sizeof($check); $i++) {
                 $orderId = OrderId::find($check[$i]);
                 $orderId['select'] = 1;
                 $orderId->save();
             }
-        }
-        else {
+        } else {
             throw new PartyException([
                 'code' => '607',
                 'msg' => '举办失败,可能是服务器内部错误',
@@ -195,11 +193,11 @@ class Party
         foreach ($data['message'] as $d_m) {
             foreach ($data['participants'] as $d_p) {
                 if ($d_m['user_id'] == $data['user_id']) {
-                    $d_m['identity'] = 1; //标记未发起者
+                    $d_m['identity'] = IdentityEnum::SPONSOR; //标记为发起者
                 } else if ($d_m['user_id'] == $d_p['user_id']) {
-                    $d_m['identity'] = 2; //标记为参与者
+                    $d_m['identity'] = IdentityEnum::PARTICIPANT; //标记为参与者
                 } else {
-                    $d_m['identity'] = 3; //标记为路人
+                    $d_m['identity'] = IdentityEnum::PEDESTRIANS; //标记为路人
                 }
             }
         }
@@ -210,10 +208,11 @@ class Party
      * @return array|null|\PDOStatement|string|\think\Model
      * 获取派对已选择的商品
      */
-    public function getPartyGoods(){
+    public function getPartyGoods()
+    {
         $select = Cache::get('select');
-        for($i=0;$i<sizeof($select);$i++){
-            $data[$i] = OrderId::with(['goods'=>function($query){
+        for ($i = 0; $i < sizeof($select); $i++) {
+            $data[$i] = OrderId::with(['goods' => function ($query) {
                 $query->field('id,name,pic_url');
             }])
                 ->order('create_time desc')

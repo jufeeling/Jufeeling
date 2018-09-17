@@ -17,7 +17,7 @@ class Order extends Controller
 {
     private $order;
 
-    public function __construct(App $app = null,OrderService $order)
+    public function __construct(App $app = null, OrderService $order)
     {
         $this->order = $order;
         parent::__construct($app);
@@ -26,10 +26,11 @@ class Order extends Controller
     /**
      * 生成订单
      */
-    public function generateOrder(){
+    public function generateOrder()
+    {
         $data = input('post.goods/a');
         (new OrderValidate())->scene('generate')->goCheck($data);
-        $status = $this->order->generateOrder($data['goods'],$data['salePrice'],$data['receipt_id']);
+        $status = $this->order->generateOrder($data['goods'], $data['salePrice'], $data['receipt_id']);
         return result($status);
     }
 }

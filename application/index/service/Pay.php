@@ -24,12 +24,12 @@ class Pay
 
     private $order_id; //自己定义的order_id
 
-    public function payOrder($data){
+    public function payOrder($data)
+    {
         $this->id = $data['id'];
         $this->checkOrderValid();
         $status = (new OrderService())->checkOrderStock($this->order_id);
-        if (!$status['pass'])
-        {
+        if (!$status['pass']) {
             return $status;
         }
         return $this->makeWxPreOrder($status['orderPrice']);
@@ -45,17 +45,16 @@ class Pay
     {
         //openid
         $openid = TokenService::getCurrentTokenVar('openid');
-        if (!$openid)
-        {
+        if (!$openid) {
             throw new TokenException();
         }
         $order = GoodsOrderModel::with(['goods'])
-            ->where('id','=',$this->id)
+            ->where('id', '=', $this->id)
             ->find();
         $wxOrderData = new \WxPayUnifiedOrder();
         $wxOrderData->SetOut_trade_no($this->order_id);
         $wxOrderData->SetTrade_type('JSAPI');
-        $wxOrderData->SetTotal_fee($totalPrice*100);
+        $wxOrderData->SetTotal_fee($totalPrice * 100);
         $wxOrderData->SetBody($order['goods']['name']);
         $wxOrderData->SetOpenid($openid);
         $wxOrderData->SetNotify_url('http://sqq.coolcoder.io/index/.php/api/v1/pay/notify');
@@ -67,8 +66,7 @@ class Pay
         $wxOrder = \WxPayApi::unifiedOrder($wxOrderData);
         if ($wxOrder['return_code'] != 'SUCCESS' ||
             $wxOrder['result_code'] != 'SUCCESS'
-        )
-        {
+        ) {
             Log::record($wxOrder, 'error');
             Log::record('获取预支付订单失败', 'error');
         }
@@ -85,7 +83,7 @@ class Pay
         $jsApiPayData->SetTimeStamp((string)time());
         $rand = md5(time() . mt_rand(0, 1000));
         $jsApiPayData->SetNonceStr($rand);
-        $jsApiPayData->SetPackage('prepay_id='.$wxOrder['prepay_id']);
+        $jsApiPayData->SetPackage('prepay_id=' . $wxOrder['prepay_id']);
         $jsApiPayData->SetSignType('md5');
         $sign = $jsApiPayData->MakeSign();
         $rawValues = $jsApiPayData->GetValues();
@@ -107,25 +105,23 @@ class Pay
      * @throws TokenException
      * 检查订单是否合法
      */
-    public function checkOrderValid(){
+    public function checkOrderValid()
+    {
         $order = GoodsOrderModel::find($this->id);
-        if (!$order)
-        {
+        if (!$order) {
             throw new OrderException([
                 'code' => 511,
-                'msg'  => '订单不存在'
+                'msg' => '订单不存在'
             ]);
         }
-        if (!Token::isValidOperate($order['user_id']))
-        {
+        if (!Token::isValidOperate($order['user_id'])) {
             throw new TokenException(
                 [
                     'msg' => '订单与用户不匹配',
                     'errorCode' => 10003
                 ]);
         }
-        if ($order['status'] != OrderStatusEnum::UNPAID)
-        {
+        if ($order['status'] != OrderStatusEnum::UNPAID) {
             throw new OrderException(
                 [
                     'msg' => '订单已支付过啦',
