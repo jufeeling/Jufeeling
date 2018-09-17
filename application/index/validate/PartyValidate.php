@@ -17,7 +17,7 @@ class PartyValidate extends BaseValidate
             'content'     => 'require',
             'description' => 'require',
             'way'         => 'require',
-            'people_no'   => 'require',
+            'people_no'   => 'integer|require',
             'date'        => 'require',
             'time'        => 'require',
             'site'        => 'require',

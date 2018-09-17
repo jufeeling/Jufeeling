@@ -144,9 +144,9 @@ class Party
             'site' => $data['site'],
 
             'user_id' => 1,
-            'people_no' => $data['people_no'],
+            'people_no' => (int)$data['people_no'],
             'description' => $data['description'],
-            'remaining_people_no' => $data['people_no'] - 1,
+            'remaining_people_no' => (int)$data['people_no'] - 1,
         ])
         ) {
             //获取并删除缓存
