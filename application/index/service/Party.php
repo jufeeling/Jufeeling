@@ -127,15 +127,6 @@ class Party
      */
     public function hostParty($data)
     {
-        if ($data['url']) {
-            $url = $data['url'];
-        } else {
-            try {
-                $url = (new FileService())->uploadImage();
-            } catch (PartyException $e) {
-                return result('', $e->msg);
-            }
-        }
         if (
         PartyModel::create([
             'way' => $data['way'],

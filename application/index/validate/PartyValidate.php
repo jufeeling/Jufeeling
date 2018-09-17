@@ -16,6 +16,7 @@ class PartyValidate extends BaseValidate
             'id'          => 'require|isPositiveInteger',
             'content'     => 'require',
             'description' => 'require',
+            'url'         => 'require',
             'way'         => 'require',
             'people_no'   => 'integer|require',
             'date'        => 'require',
@@ -32,7 +33,8 @@ class PartyValidate extends BaseValidate
             'people_no'   => '人数不能为空',
             'date'        => '日期不能为空',
             'time'        => '时间不能为空',
-            'site'        => '地点不能为空'
+            'site'        => '地点不能为空',
+            'url'         => '图片地址不能为空'
         ];
 
     protected $scene =
@@ -55,7 +57,8 @@ class PartyValidate extends BaseValidate
                     'people_no',
                     'date',
                     'time',
-                    'site'
+                    'site',
+                    'url'
                 ]
         ];
 }
