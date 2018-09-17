@@ -30,15 +30,21 @@ Route::group('user',function (){
         Route::get('/','User/getUserDeliveryAddress');
     });
     Route::group('coupon',function (){
+        //获取用户所有优惠券
        Route::get('/','User/getUserCoupon') ;
     });
     Route::group('goods',function (){
+        //获取用户所有商品
        Route::get('/',      'user/getUserGoods');    //测试成功
+        //用户选择聚会要使用的商品
        Route::post('select','user/selectUserGoods'); //未测试
     });
     Route::group('order',function (){
+        //获取用户所有订单
        Route::get('/',    'user/getUserOrder');
+       //获取用户单个订单详情
        Route::get('info', 'user/getUserOrderInfo');
+       //用户删除订单
        Route::delete('/', 'user/deleteUserOrder');
     });
 });
@@ -89,3 +95,5 @@ Route::group('party',function (){
 Route::group('prize',function (){
     Route::get('draw','Prize/prizeDraw');
 });
+
+Route::get('test','Pay/payOrder');

@@ -196,7 +196,6 @@ class User
             ->where('id', $data['id'])
             ->find();
         $order['goods'] = $this->getSameOrderGoods($order['goods']);
-        $order['goods'] = $this->removeRepeatData($order['goods']);
         return $order['goods'];
     }
 
@@ -205,17 +204,18 @@ class User
      * @return mixed
      * 计算重复商品的个数
      */
-    private function getSameOrderGoods($data)
+    public function getSameOrderGoods($data)
     {
         for ($i = 0; $i < sizeof($data); $i++) {
             $data[$i]['count'] = 0;
             for ($j = 0; $j < sizeof($data); $j++) {
-                if ($data[$i]['goods']['id'] == $data[$j]['goods']['id']) {
+                if ($data[$i]['goods_id'] == $data[$j]['goods_id']) {
                     $data[$i]['count'] += 1;
                 }
             }
         }
-        return $data;
+        $result = $this->removeRepeatData($data);
+        return $result;
     }
 
     /**

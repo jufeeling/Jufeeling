@@ -15,6 +15,7 @@ class OrderValidate extends BaseValidate
 {
     protected $rule =
         [
+            'id'         => 'isPositiveInteger',
             'goods'      => 'checkProducts',
             'salePrice'  => 'require',
             'receipt_id' => 'isPositiveInteger'
@@ -22,6 +23,7 @@ class OrderValidate extends BaseValidate
 
     protected $message =
         [
+            'id'         => '订单号不能为空',
             'goods'      => '商品列表不能为空',
             'totalPrice' => '支付价格不能为空',
             'receipt_id' => '收获信息不能为空'
@@ -35,6 +37,10 @@ class OrderValidate extends BaseValidate
                     'orderPrice',
                     'receipt_id'
                 ],
+            'pay' =>
+                [
+                    'id'
+                ]
         ];
 
 

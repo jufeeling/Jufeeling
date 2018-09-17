@@ -13,6 +13,7 @@ use app\index\model\GoodsOrder as GoodsOrderModel;
 use app\index\model\OrderId;
 use app\lib\exception\GoodsException;
 use app\index\model\DeliveryAddress as DeliveryAddressModel;
+use app\index\service\User as UserService;
 
 class Order
 {
@@ -85,7 +86,7 @@ class Order
                 ]);
             }
         }
-        return $orderId;
+        return $order['id'];
     }
 
     /**
@@ -122,6 +123,21 @@ class Order
         return $goods;
     }
 
+    /**
+     * @param $order_id
+     * @return array
+     * 根据订单号检查产品的库存
+     */
+    public function checkOrderStock($order_id){
+        $Goods =  OrderId::where('order_id',$order_id)
+            ->field('goods_id,order_id')
+            ->select();
+        $oGoods = (new UserService())->getSameOrderGoods($Goods);
+        $this->oGoods = $oGoods;
+        $this->Goods = $this->getGoodsByOrder($oGoods);
+        $status = $this->getOrderStatus();
+        return $status;
+    }
 
     /**
      * @return array
