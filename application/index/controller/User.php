@@ -84,11 +84,11 @@ class User extends Controller
     {
         (new UserValidate())->scene('check')->goCheck(Request::param());
         try {
-            $this->user->selectUserGoods(Request::param());
+            $a = $this->user->selectUserGoods(Request::param());
         } catch (UserException $e) {
             return result('', $e->msg, $e->code);
         }
-        return result();
+        return result($a);
     }
 
     /**
