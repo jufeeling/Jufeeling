@@ -213,14 +213,14 @@ class Party
     public function getPartyGoods()
     {
         $select = Cache::get('select');
-        for ($i = 0; $i < sizeof($select); $i++) {
-            $data[$i] = OrderId::with(['goods' => function ($query) {
-                $query->field('id,name,pic_url');
-            }])
-                ->order('create_time desc')
-                ->field('goods_id')
-                ->find($select[$i]);
-        }
-        return $data;
+//        for ($i = 0; $i < sizeof($select); $i++) {
+//            $data[$i] = OrderId::with(['goods' => function ($query) {
+//                $query->field('id,name,pic_url');
+//            }])
+//                ->order('create_time desc')
+//                ->field('goods_id')
+//                ->find($select[$i]);
+//        }
+        return $select;
     }
 }
