@@ -16,7 +16,6 @@ use app\index\service\Token as TokenService;
 use app\lib\enum\IdentityEnum;
 use app\lib\enum\PartyEnum;
 use app\lib\exception\PartyException;
-use app\index\service\File as FileService;
 use think\facade\Cache;
 
 class Party

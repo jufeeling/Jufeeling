@@ -34,7 +34,9 @@ class ShoppingCart extends Migrator
             ->addColumn('user_id', 'integer') //用户id
             ->addColumn('goods_id','integer') //商品id
             ->addColumn('count',   'integer') //数量
-            ->addColumn('select',  'integer') //是否被勾选
+            ->addColumn('select',  'integer',array('default'=>0)) //是否被勾选
+            ->addColumn('create_time', 'integer')
+            ->addColumn('update_time', 'integer')
             ->addForeignKey('user_id', 'user', 'id',['delete'=> 'SET_NULL', 'update'=> 'NO_ACTION'])
             ->addForeignKey('goods_id','goods','id',['delete'=> 'SET_NULL', 'update'=> 'NO_ACTION'])
             ->create();

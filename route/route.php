@@ -103,4 +103,8 @@ Route::group('prize',function (){
 Route::group('file',function (){
     Route::post('upload',    'File/uploadImage');
 });
+Route::group('cart',function (){
+    Route::post('add','Cart/addShoppingCart');
+    Route::get('info','Cart/getShoppingCartInfo');
+});
 Route::get('test','User/test');
