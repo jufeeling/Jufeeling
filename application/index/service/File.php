@@ -9,11 +9,11 @@
 namespace app\index\service;
 
 use app\lib\exception\PartyException;
-use think\Exception;
 
 class File
 {
 
+    private $url = 'localhost/Jufeeling/public/static/image/upload/';
     /**
      * 多图片上传
      */
@@ -27,7 +27,7 @@ class File
                     $info = $files->move(ROOT_PATH . 'public' . DS . 'static' . DS . 'image' . DS . 'upload');
                     if ($info) {
                         //组装url
-                        $url = 'http://x2018062501.aweyu.cn/static/image/upload/' . str_replace('\\', '/', $info->getSaveName());
+                        $url =  $this->url. str_replace('\\', '/', $info->getSaveName());
                         return $url;
                     } else {
                         // 上传失败获取错误信息

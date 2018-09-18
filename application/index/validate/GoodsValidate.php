@@ -13,7 +13,7 @@ class GoodsValidate extends BaseValidate
     protected $rule =
         [
             'id'         => 'require|isPositiveInteger',
-            'category'   => 'require|isPositiveInteger',
+            'category'   => 'require',
             'content'    => 'require',
         ];
 
