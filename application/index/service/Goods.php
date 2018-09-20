@@ -25,14 +25,14 @@ class Goods
             $goods = GoodsModel::with('category')
                 ->where('stock', '>', 0)
                 ->order('create_time desc')
-                ->field('id,name,pic_url,price,sale_price,category_id')
+                ->field('id,name,thu_url,price,sale_price,category_id')
                 ->select();
         } //获取分类下的商品
         else {
             $goods = GoodsModel::with('category')
                 ->where('stock', '>', 0)
                 ->where('category_id', $data['category'])
-                ->field('id,name,pic_url,price,sale_price,category_id')
+                ->field('id,name,thu_url,price,sale_price,category_id')
                 ->order('create_time desc')
                 ->select();
         }
@@ -67,7 +67,7 @@ class Goods
         $goods = GoodsModel::with('category')
             ->where('stock', '>', 0)
             ->where('name|description', 'like', '%' . $data['content'] . '%')
-            ->field('name,pic_url,price,sale_price,category_id')
+            ->field('name,thu_url,price,sale_price,category_id')
             ->order('create_time desc')
             ->select();
         return $goods;

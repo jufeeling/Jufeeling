@@ -103,8 +103,12 @@ class User extends BaseController
         return result($data);
     }
 
-    public function test(){
-
+    /**
+     * @return \think\response\Json
+     * 获取用户的订单
+     */
+    public function getUserOrder(){
+        $data = $this->user->getUserOrder();
+        return result($data);
     }
-
 }

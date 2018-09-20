@@ -34,7 +34,7 @@ class Coupon extends Migrator
             ->addIndex(array('id',), array('unique' => true))
             ->addColumn('rule',       'decimal') //规则
             ->addColumn('sale',       'decimal') //折扣价格
-            ->addColumn('category',   'integer') //折扣商品分类
+            ->addColumn('category',   'integer',array('default' => 1)) //折扣商品分类
             ->addColumn('count',      'integer') //数量
             ->addColumn('state',      'integer') //状态 0可以领取1不能领取
             ->addColumn('start_time', 'integer') //开始时间

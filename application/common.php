@@ -162,14 +162,12 @@ function getAddressLabel($data){
  */
 function getCouponCategory($data,$type){
     $goods_category = config('jufeel_config.goods_category');
-    if($type == 1){
-        foreach ($data as $d){
-            $d['category'] = $goods_category[$d['coupon']['category']];
+    for($i=0;$i<sizeof($data);$i++){
+        if($type == 1){
+            $data[$i]['category'] = $goods_category[$data[$i]['coupon']['category']];
         }
-    }
-    else{
-        foreach ($data as $d){
-            $d['category'] = $goods_category[$d['category']];
+        else{
+            $data[$i]['category'] = $goods_category[$data[$i]['category']];
         }
     }
     return $data;

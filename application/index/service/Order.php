@@ -11,6 +11,7 @@ namespace app\index\service;
 use app\index\model\Goods as GoodsModel;
 use app\index\model\GoodsOrder as GoodsOrderModel;
 use app\index\model\OrderId;
+use app\index\model\ShoppingCart;
 use app\lib\exception\GoodsException;
 use app\index\model\DeliveryAddress as DeliveryAddressModel;
 use app\index\service\User as UserService;
@@ -76,7 +77,11 @@ class Order
         $create_time = $order['create_time'];
         //判断单个商品购买的个数,并在OrderId表中存进相应的次数
         for ($i = 0; $i < sizeof($this->oGoods); $i++) {
+            //查询真实的商品
             $goods = GoodsModel::find($this->oGoods[$i]['goods_id']);
+            //删除购物车记录
+            $this->deleteCartRecord($this->oGoods[$i]['goods_id']);
+            //生成购买订单
             for ($j = 0; $j < $this->oGoods[$i]['count']; $j++) {
                 OrderId::create([
                     'order_id' => $orderId,
@@ -86,7 +91,24 @@ class Order
                 ]);
             }
         }
+        //检测是否为新用户(改变状态)
+        (new UserService())->checkNewUser();
         return $order['id'];
+    }
+
+    /**
+     * @param $id
+     * 下订单时删除购物车记录
+     */
+    public function deleteCartRecord($id){
+        $data = [
+            'user_id' => Token::getCurrentUid(),
+            'goods_id' => $id
+        ];
+        $cart = ShoppingCart::where($data)->find();
+        if($cart){
+            $cart->delete();
+        }
     }
 
     /**

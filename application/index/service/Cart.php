@@ -19,21 +19,20 @@ class Cart
      */
     public function addShoppingCart($data)
     {
-        foreach ($data as $d) {
-            $cart = ShoppingCart::where('goods_id', $d['goods_id'])
-                ->where('user_id', TokenService::getCurrentUid())
-                ->find();
-            if ($cart) {
-                $cart['count'] += $d['count'];
-            } else {
-                ShoppingCart::create(
-                    [
-                        'user_id' => 1,
-                        'goods_id' => $d['goods_id'],
-                        'count' => $d['count']
-                    ]
-                );
-            }
+        $cart = ShoppingCart::where('goods_id', $data['goods_id'])
+            ->where('user_id', TokenService::getCurrentUid())
+            ->find();
+        if ($cart) {
+            $cart['count'] += $data['count'];
+            $cart->save();
+        } else {
+            ShoppingCart::create(
+                [
+                    'user_id' => TokenService::getCurrentUid(),
+                    'goods_id' => $data['goods_id'],
+                    'count' => $data['count']
+                ]
+            );
         }
     }
 
@@ -44,11 +43,11 @@ class Cart
     public function getShoppingCartInfo()
     {
         $data = ShoppingCart::with(['goods'=>function($query){
-            $query->field('id,name,pic_url,stock');
+            $query->field('id,name,thu_url,stock');
         }])
             ->field('id,goods_id,count')
             ->order('update_time desc')
-            ->where('user_id',1)
+            ->where('user_id',TokenService::getCurrentUid())
             ->select();
         return $data;
     }

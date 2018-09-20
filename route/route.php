@@ -23,15 +23,15 @@ Route::group('token',function (){
  */
 Route::group('user',function (){
     Route::group('party',function (){
-        Route::get('host','User/getUserHostParty');
-        Route::get('join','User/getUserJoinParty');
+        Route::get('host','User/getUserHostParty');  //测试成功
+        Route::get('join','User/getUserJoinParty');  //测试成功
     });
     Route::group('address',function (){
-        Route::get('/','User/getUserDeliveryAddress');
+        Route::get('/','User/getUserDeliveryAddress'); //测试成功
     });
     Route::group('coupon',function (){
         //获取用户所有优惠券
-       Route::get('/','User/getUserCoupon') ;
+       Route::get('/','User/getUserCoupon') ;  //测试成功
     });
     Route::group('goods',function (){
         //获取用户所有商品
@@ -41,7 +41,7 @@ Route::group('user',function (){
     });
     Route::group('order',function (){
         //获取用户所有订单
-       Route::get('/',    'user/getUserOrder');
+       Route::get('/',    'user/getUserOrder');  //测试成功
        //获取用户单个订单详情
        Route::get('info', 'user/getUserOrderInfo');
        //用户删除订单
@@ -53,8 +53,8 @@ Route::group('user',function (){
  * 收货地址模块
  */
 Route::group('address',function (){
-    Route::get('get',      'DeliveryAddress/getDeliveryAddress');
-    Route::post('add',     'DeliveryAddress/addDeliveryAddress');
+    Route::get('get',      'DeliveryAddress/getDeliveryAddress'); //测试成功
+    Route::post('add',     'DeliveryAddress/addDeliveryAddress'); //测试成功
     Route::post('update',  'DeliveryAddress/updateDeliveryAddress');
     Route::delete('delete','DeliveryAddress/deleteDeliveryAddress');
 });
@@ -106,8 +106,8 @@ Route::group('file',function (){
 });
 Route::group('cart',function (){
     //添加商品到购物车
-    Route::post('add','Cart/addShoppingCart');
+    Route::post('add','Cart/addShoppingCart');    //测试成功
     //获取购物车商品信息
-    Route::get('info','Cart/getShoppingCartInfo');
+    Route::get('info','Cart/getShoppingCartInfo');  //测试成功
 });
 Route::get('test','User/test');

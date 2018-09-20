@@ -36,7 +36,7 @@ class DeliveryAddress extends Migrator
             ->addColumn('receipt_area',   'string')  //收获地区
             ->addColumn('receipt_address','string')  //收获详细地址
             ->addColumn('receipt_phone',  'integer') //收获电话号码
-            ->addColumn('label',          'integer')  //标签(学校,公司)
+            ->addColumn('label',          'integer',array('default'=> 1))  //标签(学校,公司)
             ->addColumn('state',          'integer') //标记是否为默认收货地址 0是1不是
             ->addForeignKey('user_id', 'user', 'id',['delete'=> 'SET_NULL', 'update'=> 'NO_ACTION'])
             ->create();

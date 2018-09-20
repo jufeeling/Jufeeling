@@ -34,7 +34,7 @@ class UserCoupon extends Migrator
             ->addIndex(array('id',), array('unique' => true))
             ->addColumn('user_id',   'integer') //商品id
             ->addColumn('coupon_id', 'integer') //优惠券id
-            ->addColumn('state',     'integer') //0未使用,1已使用
+            ->addColumn('state',     'integer',array('default' => 0)) //0未使用,1已使用
             ->addColumn('start_time', 'integer') //开始时间
             ->addColumn('end_time',   'integer') //结束时间
             ->addForeignKey('user_id',   'user',  'id',['delete'=> 'SET_NULL', 'update'=> 'NO_ACTION'])

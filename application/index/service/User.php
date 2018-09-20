@@ -12,6 +12,7 @@ use app\index\model\DeliveryAddress as DeliveryAddressModel;
 use app\index\model\GoodsOrder as GoodsOrderModel;
 use app\index\model\OrderId as OrderIdModel;
 use app\index\model\UserCoupon as UserCouponModel;
+use app\index\model\User as UserModel;
 use app\index\service\Token as TokenService;
 use app\index\model\Party as PartyModel;
 use app\index\model\PartyOrder as PartyOrderModel;
@@ -104,7 +105,6 @@ class User
      */
     public function getUserGoods()
     {
-        //$uid = TokenService::getCurrentUid();
         //获取用户使用过的商品
         $data['used'] = OrderIdModel::getUserGoods(1, TokenService::getCurrentUid());
         //获取用户未使用过的商品
@@ -146,7 +146,7 @@ class User
         $order = GoodsOrderModel::field('id,order_id,price')
             ->with(['goods' => function ($query) {
                 $query->with(['goods' => function ($query) {
-                    $query->field('id,pic_url');
+                    $query->field('id,thu_url');
                 }]);
             }])
             ->withCount('goods')
@@ -190,7 +190,7 @@ class User
         $order = GoodsOrderModel::with(['goods' => function ($query) {
             $query->field('order_id,goods_id,price')
                 ->with(['goods' => function ($query) {
-                    $query->field('id,name,pic_url');
+                    $query->field('id,name,thu_url');
                 }]);
         }])
             ->where('id', $data['id'])
@@ -233,5 +233,16 @@ class User
         }
         $out = array_values($out);
         return $out;
+    }
+
+    /**
+     *检测是否为新用户
+     */
+    public function checkNewUser(){
+        $user = UserModel::find(TokenService::getCurrentUid());
+        if($user['state'] == 0){
+            $user['state'] == 1;
+            $user->save();
+        }
     }
 }

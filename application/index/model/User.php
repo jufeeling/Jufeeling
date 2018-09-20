@@ -13,7 +13,7 @@ use think\Model;
 
 class User extends Model
 {
-    public function getByOpenID($openid){
+    public static function getByOpenID($openid){
         $user = self::where('openid',$openid)->find();
         return $user;
     }
