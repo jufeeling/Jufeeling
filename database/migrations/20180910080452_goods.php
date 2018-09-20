@@ -39,7 +39,8 @@ class Goods extends Migrator
             ->addColumn('description', 'string')  //描述
             ->addColumn('notice',      'string')  //须知
             ->addColumn('carriage',    'decimal') //运费
-            ->addColumn('pic_url',     'string')  //封面图
+            ->addColumn('thu_url',     'string')  //缩略图
+            ->addColumn('cov_url',     'string')  //封面图
             ->addColumn('det_url',     'string')  //详情图
             ->addColumn('shop_id',     'integer') //商家id
             ->addColumn('state',       'integer') //状态 标记是否上架或下架

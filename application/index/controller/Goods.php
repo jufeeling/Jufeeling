@@ -15,7 +15,7 @@ use think\App;
 use think\Controller;
 use think\facade\Request;
 
-class Goods extends Controller
+class Goods extends BaseController
 {
     private $goods;
 

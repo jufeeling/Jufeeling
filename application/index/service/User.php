@@ -106,9 +106,9 @@ class User
     {
         //$uid = TokenService::getCurrentUid();
         //获取用户使用过的商品
-        $data['used'] = OrderIdModel::getUserGoods(1, 1);
+        $data['used'] = OrderIdModel::getUserGoods(1, TokenService::getCurrentUid());
         //获取用户未使用过的商品
-        $data['not_use'] = OrderIdModel::getUserGoods(0, 1);
+        $data['not_use'] = OrderIdModel::getUserGoods(0, TokenService::getCurrentUid());
         return $data;
     }
 
@@ -121,7 +121,7 @@ class User
     {
         for($i=0;$i<sizeof($data['check']);$i++){
             $orderId[$i] = OrderIdModel::find((int)$data['check'][$i]);
-            if ($orderId[$i]['user_id'] != 1) {
+            if ($orderId[$i]['user_id'] != TokenService::getCurrentUid()) {
                 throw new UserException([
                     'code' => 902,
                     'msg' => '您无权使用该商品'

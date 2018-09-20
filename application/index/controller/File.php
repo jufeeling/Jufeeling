@@ -11,7 +11,7 @@ namespace app\index\controller;
 use app\index\service\File as FileService;
 use think\Controller;
 
-class File extends Controller
+class File extends BaseController
 {
     /**
      * @return \think\response\Json

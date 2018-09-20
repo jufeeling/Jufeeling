@@ -13,7 +13,7 @@ use app\index\validate\OrderValidate;
 use think\App;
 use think\Controller;
 
-class Order extends Controller
+class Order extends BaseController
 {
     private $order;
 

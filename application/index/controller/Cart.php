@@ -14,7 +14,7 @@ use think\App;
 use think\Controller;
 use think\facade\Request;
 
-class Cart extends Controller
+class Cart extends BaseController
 {
     private $cart;
     public function __construct(App $app = null,CartService $cart)

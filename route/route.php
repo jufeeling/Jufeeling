@@ -72,7 +72,7 @@ Route::group('coupon',function (){
  */
 Route::group('goods',function (){
     Route::get('all',     'Goods/getAllGoods');     //测试成功
-    Route::get('detail',  'Goods/getGoodsDetail');
+    Route::get('detail',  'Goods/getGoodsDetail');  //测试成功
     Route::post('search', 'Goods/getSearchGoods');
 });
 
@@ -101,10 +101,13 @@ Route::group('prize',function (){
  *文件
  */
 Route::group('file',function (){
+    //图片上传
     Route::post('upload',    'File/uploadImage');
 });
 Route::group('cart',function (){
+    //添加商品到购物车
     Route::post('add','Cart/addShoppingCart');
+    //获取购物车商品信息
     Route::get('info','Cart/getShoppingCartInfo');
 });
 Route::get('test','User/test');

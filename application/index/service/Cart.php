@@ -21,7 +21,7 @@ class Cart
     {
         foreach ($data as $d) {
             $cart = ShoppingCart::where('goods_id', $d['goods_id'])
-                ->where('user_id', 1)
+                ->where('user_id', TokenService::getCurrentUid())
                 ->find();
             if ($cart) {
                 $cart['count'] += $d['count'];

@@ -46,6 +46,18 @@ class Token
         }
     }
 
+    /**
+     * @throws TokenException
+     * 检测是否存在Token
+     */
+    public static function checkExistToken(){
+        $token = Request::header('token');
+        $vars = Cache::get($token);
+        if (!$vars) {
+            throw new TokenException();
+        }
+    }
+
     public static function getCurrentUid()
     {
         $uid = self::getCurrentTokenVar('uid');

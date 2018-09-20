@@ -13,19 +13,8 @@ use think\Model;
 
 class User extends Model
 {
-    public static function getAll()
-    {
-        $data =
-            [
-                'id' => 1,
-                'openid' => 1
-            ];
-        $order =
-            [
-                'list' => 'list',
-                'id' => 'id'
-            ];
-        $result = self::where($data)->order($order['id'])->select();
-        return $result;
+    public function getByOpenID($openid){
+        $user = self::where('openid',$openid)->find();
+        return $user;
     }
 }
