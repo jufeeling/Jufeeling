@@ -31,10 +31,9 @@ class Admin extends Migrator
         $table = $this->table('admin',array('engine'=>'MyISAM'));
         $table
             ->addIndex(array('id',), array('unique' => true))
-            ->addColumn('account',    'string')  //账号
-            ->addColumn('password',   'string')  //密码
-            ->addColumn('nickname',   'string')  //昵称
-            ->addColumn('avatar',     'string' ,array('default'=>'0'))  //0还可以参与抽奖,1抽奖结束
+            ->addColumn('phone',      'string')  //账号
+            ->addColumn('nickname',   'string', array('default' => 'Jufeel'))
+            ->addColumn('avatar',     'string' ,array('default'=>'0'))
             ->addColumn('scope',      'integer',array('default'=>'16')) //权限
             ->addColumn('create_time','integer')
             ->addColumn('update_time','integer')

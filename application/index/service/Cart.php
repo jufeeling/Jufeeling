@@ -42,13 +42,15 @@ class Cart
      */
     public function getShoppingCartInfo()
     {
-        $data = ShoppingCart::with(['goods'=>function($query){
-            $query->field('id,name,thu_url,stock');
+        $data['goods'] = ShoppingCart::with(['goods'=>function($query){
+            $query->field('id,name,thu_url,stock,price');
         }])
             ->field('id,goods_id,count')
             ->order('update_time desc')
             ->where('user_id',TokenService::getCurrentUid())
             ->select();
+        $data['count'] = ShoppingCart::where('user_id',TokenService::getCurrentUid())
+            ->count();
         return $data;
     }
 }

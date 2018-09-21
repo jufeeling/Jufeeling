@@ -24,26 +24,34 @@ class Pay extends BaseController
         parent::__construct($app);
     }
 
+    /**
+     * @return \think\response\Json
+     * 支付订单
+     */
     public function payOrder()
     {
         (new OrderValidate())->scene('id')->goCheck(Request::param());
         $result = $this->pay->payOrder(Request::param());
         return result($result);
-//        $oGoods = [
-//            [
-//                'goods_id' => 1,
-//            ],
-//            [
-//                'goods_id' => 2
-//            ]
-//        ];
-//        $oGIDs = [];
-//        foreach ($oGoods as $item) {
-//            array_push($oGIDs, $item['goods_id']);
-//        }
-//        $goods = \app\index\model\Goods::all($oGIDs)
-//            ->visible(['id', 'price', 'stock'])
-//            ->toArray();
-//        return result($goods);
+    }
+
+    /**
+     * @return \think\response\Json
+     * 支付成功
+     */
+    public function paySuccess(){
+        (new OrderValidate())->scene('id')->goCheck(Request::param());
+        $this->pay->paySuccess(Request::param());
+        return result();
+    }
+
+    /**
+     * @return \think\response\Json
+     * 支付失败
+     */
+    public function payFail(){
+        (new OrderValidate())->scene('id')->goCheck(Request::param());
+        $this->pay->payFail(Request::param());
+        return result();
     }
 }

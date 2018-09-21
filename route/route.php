@@ -97,6 +97,7 @@ Route::group('party',function (){
 Route::group('prize',function (){
     Route::get('draw','Prize/prizeDraw');
 });
+
 /**
  *文件
  */
@@ -110,4 +111,13 @@ Route::group('cart',function (){
     //获取购物车商品信息
     Route::get('info','Cart/getShoppingCartInfo');  //测试成功
 });
-Route::get('test','User/test');
+
+/**
+ * 支付
+ */
+Route::group('pay',function (){
+    //支付
+    Route::post('/',      'Pay/payOrder');
+    Route::post('fail',   'Pay/payFail');
+    Route::post('success','Pay/paySuccess');
+});

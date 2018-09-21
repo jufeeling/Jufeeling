@@ -9,6 +9,8 @@
 namespace app\index\service;
 
 use app\index\model\GoodsOrder as GoodsOrderModel;
+use app\index\model\OrderId;
+use app\index\model\Goods as GoodsModel;
 use app\lib\enum\OrderStatusEnum;
 use app\lib\exception\OrderException;
 use app\lib\exception\TokenException;
@@ -94,7 +96,7 @@ class Pay
 
     private function recordPreOrder($wxOrder)
     {
-        $order = GoodsOrderModel::where('id', '=', $this->id)->find();
+        $order = GoodsOrderModel::getOrderById($this->id);
         $order['prepay_id'] = $wxOrder['prepay_id'];
         $order->save();
     }
@@ -107,7 +109,7 @@ class Pay
      */
     public function checkOrderValid()
     {
-        $order = GoodsOrderModel::find($this->id);
+        $order = GoodsOrderModel::getOrderById($this->id);
         if (!$order) {
             throw new OrderException([
                 'code' => 511,
@@ -131,5 +133,33 @@ class Pay
         }
         $this->order_id = $order['order_id'];
         return true;
+    }
+
+    /**
+     * @param $data
+     * 支付成功后的处理
+     */
+    public function paySuccess($data){
+        $order = GoodsOrderModel::getOrderById($data['id']);
+        $order['status'] = OrderStatusEnum::PAID;
+        $order->save();
+    }
+
+    /**
+     * @param $data
+     * 支付失败
+     */
+    public function payFail($data){
+        $order = GoodsOrderModel::getOrderById($data['id']);
+        $orderRecord = OrderId::where('order_id',$order['order_id'])
+            ->select();
+        foreach ($orderRecord as $o){
+            $goods = GoodsModel::where('id',$o['goods_id'])
+                ->find();
+            $goods['stock'] += 1;
+            $goods->save();
+        }
+        //删除订单记录
+        OrderId::where('order_id',$order['order_id'])->delete();
     }
 }

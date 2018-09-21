@@ -12,6 +12,7 @@ use app\index\model\Goods as GoodsModel;
 use app\index\model\GoodsOrder as GoodsOrderModel;
 use app\index\model\OrderId;
 use app\index\model\ShoppingCart;
+use app\lib\enum\OrderStatusEnum;
 use app\lib\exception\GoodsException;
 use app\index\model\DeliveryAddress as DeliveryAddressModel;
 use app\index\service\User as UserService;
@@ -73,6 +74,7 @@ class Order
         $order['receipt_name'] = $orderSnap['receipt']['receipt_name'];
         $order['receipt_phone'] = $orderSnap['receipt']['receipt_phone'];
         $order['receipt_address'] = $orderSnap['receipt']['receipt_address'];
+        $order['status'] = OrderStatusEnum::UNPAID;
         $order->save();
         $create_time = $order['create_time'];
         //判断单个商品购买的个数,并在OrderId表中存进相应的次数

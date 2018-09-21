@@ -13,6 +13,10 @@ use think\Model;
 
 class GoodsOrder extends Model
 {
+    public static function getOrderById($id){
+        $order = self::find($id);
+        return $order;
+    }
     public function goods()
     {
         return $this->hasMany('OrderId', 'order_id', 'order_id');
