@@ -86,14 +86,13 @@ class Order
             //删除购物车记录
             $this->deleteCartRecord($this->oGoods[$i]['goods_id']);
             //生成购买订单
-            for ($j = 0; $j < $this->oGoods[$i]['count']; $j++) {
-                OrderId::create([
-                    'order_id' => $orderId,
-                    'goods_id' => $this->oGoods[$i]['goods_id'],
-                    'price' => $goods['sale_price'],
-                    'create_time' => $create_time
-                ]);
-            }
+            OrderId::create([
+                'order_id' => $orderId,
+                'goods_id' => $this->oGoods[$i]['goods_id'],
+                'price' => $goods['sale_price'] * $this->oGoods[$i]['count'],
+                'count' => $this->oGoods[$i]['count'],
+                'create_time' => $create_time
+            ]);
         }
         //检测是否为新用户(改变状态)
         (new UserService())->checkNewUser();
@@ -104,7 +103,8 @@ class Order
      * @param $id
      * 下订单时删除购物车记录
      */
-    public function deleteCartRecord($id){
+    public function deleteCartRecord($id)
+    {
         $data = [
             'user_id' => Token::getCurrentUid(),
             'goods_id' => $id
@@ -244,9 +244,10 @@ class Order
      * @return mixed
      * 得到预订单
      */
-    public function generatePreOrder($data){
-        foreach ($data as $d){
-            $d['info'] = GoodsModel::where('id',$d['id'])
+    public function generatePreOrder($data)
+    {
+        foreach ($data as $d) {
+            $d['info'] = GoodsModel::where('id', $d['id'])
                 ->field('name,category_id,price,sale_price,stock')
                 ->find();
         }
@@ -261,26 +262,26 @@ class Order
      * @return array
      * 得到订单可用的优惠券
      */
-    private function getOrderCoupon($data){
+    private function getOrderCoupon($data)
+    {
         $coupon = array();
-        $coupons = CouponModel::where('user_id',TokenService::getCurrentUid())
+        $coupons = CouponModel::where('user_id', TokenService::getCurrentUid())
             ->select();
-        foreach ($coupons as $c){
+        foreach ($coupons as $c) {
             $count = sizeof($coupon);
             $price = 0;
-            if($c['category'] == 0){
-                for($i=0;$i<sizeof($data);$i++){
+            if ($c['category'] == 0) {
+                for ($i = 0; $i < sizeof($data); $i++) {
                     $price += $data[$i]['info']['price'];
                 }
-            }
-            else{
-                for($i=0;$i<sizeof($data);$i++){
-                    if($data[$i]['info']['category_id'] == $c['category']){
+            } else {
+                for ($i = 0; $i < sizeof($data); $i++) {
+                    if ($data[$i]['info']['category_id'] == $c['category']) {
                         $price += $data[$i]['info']['price'];
                     }
                 }
             }
-            if($c['rule'] < $price){
+            if ($c['rule'] < $price) {
                 $coupon[$count] = $c['id'];
             }
         }

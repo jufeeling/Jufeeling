@@ -36,6 +36,7 @@ class OrderId extends Migrator
             ->addColumn('user_id',     'integer') //数量
             ->addColumn('select',      'integer') //是否已使用 0未使用1使用
             ->addColumn('price',       'decimal') //购买时的价格
+            ->addColumn('count',       'integer') //单个商品买的个数
             ->addColumn('create_time', 'integer')
             ->addColumn('update_time', 'integer')
             ->addForeignKey('goods_id', 'goods', 'id',['delete'=> 'SET_NULL', 'update'=> 'NO_ACTION'])

@@ -24,6 +24,7 @@ class Goods
         if ($data['category'] == 0) {
             $goods = GoodsModel::with('category')
                 ->where('stock', '>', 0)
+                ->where('state',0)
                 ->order('create_time desc')
                 ->field('id,name,thu_url,price,sale_price,category_id')
                 ->select();
@@ -31,6 +32,7 @@ class Goods
         else {
             $goods = GoodsModel::with('category')
                 ->where('stock', '>', 0)
+                ->where('state',0)
                 ->where('category_id', $data['category'])
                 ->field('id,name,thu_url,price,sale_price,category_id')
                 ->order('create_time desc')
@@ -67,6 +69,7 @@ class Goods
         $goods = GoodsModel::with('category')
             ->where('stock', '>', 0)
             ->where('name|description', 'like', '%' . $data['content'] . '%')
+            ->where('state',0)
             ->field('name,thu_url,price,sale_price,category_id')
             ->order('create_time desc')
             ->select();

@@ -82,17 +82,22 @@ class User
             ->where('user_id', $uid)
             ->where('state', 0)
             ->select();
+        $data['not_use']['count'] = sizeof($data['not_use']);
+
         //获取使用过的购物券
         $data['used'] = UserCouponModel::with('coupon')
             ->where('user_id', $uid)
             ->where('state', 1)
             ->select();
+        $data['used']['count'] = sizeof($data['used']);
+
         //获取过期且未使用过的购物券
         $data['overdue'] = UserCouponModel::with('coupon')
             ->where('end_time', '<', time())
             ->where('user_id', $uid)
             ->where('state', 0)
             ->select();
+        $data['overdue']['count'] = sizeof($data['overdue']);
         $result['not_use'] = getCouponCategory($data['not_use'], 1);
         $result['used'] = getCouponCategory($data['used'], 1);
         $result['overdue'] = getCouponCategory($data['overdue'], 1);
@@ -195,45 +200,9 @@ class User
         }])
             ->where('id', $data['id'])
             ->find();
-        $order['goods'] = $this->getSameOrderGoods($order['goods']);
         return $order['goods'];
     }
 
-    /**
-     * @param $data
-     * @return mixed
-     * 计算重复商品的个数
-     */
-    public function getSameOrderGoods($data)
-    {
-        for ($i = 0; $i < sizeof($data); $i++) {
-            $data[$i]['count'] = 0;
-            for ($j = 0; $j < sizeof($data); $j++) {
-                if ($data[$i]['goods_id'] == $data[$j]['goods_id']) {
-                    $data[$i]['count'] += 1;
-                }
-            }
-        }
-        $result = $this->removeRepeatData($data);
-        return $result;
-    }
-
-    /**
-     * @param $array
-     * @return array
-     * 去掉重复的数据
-     */
-    private function removeRepeatData($array)
-    {
-        $out = array();
-        foreach ($array as $key => $value) {
-            if (!in_array($value, $out)) {
-                $out[$key] = $value;
-            }
-        }
-        $out = array_values($out);
-        return $out;
-    }
 
     /**
      *检测是否为新用户
