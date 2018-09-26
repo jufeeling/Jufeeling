@@ -38,7 +38,47 @@ class Cart extends BaseController
      * 获取购物车商品
      */
     public function getShoppingCartInfo(){
-        $data = $this->cart->getShoppingCartInfo(Request::param());
+        $data = $this->cart->getShoppingCartInfo();
         return result($data);
+    }
+
+    /**
+     * @return \think\response\Json
+     * 修改购物车商品个数
+     */
+    public function changeCartCount(){
+        (new CartValidate())->scene('count')->goCheck(Request::param());
+        $this->cart->changeCartCount(Request::param());
+        return result();
+    }
+
+    /**
+     * @return \think\response\Json
+     * 删除购物车内容
+     */
+    public function deleteCart(){
+        (new CartValidate())->scene('id')->goCheck(Request::param());
+        $this->cart->deleteCart(Request::param());
+        return result();
+    }
+
+    /**
+     * @return \think\response\Json
+     * 修改购物车选择状态
+     */
+    public function selectCart(){
+        (new CartValidate())->scene('select')->goCheck(Request::param());
+        $this->cart->selectCart(Request::param());
+        return result();
+    }
+
+    /**
+     * @return \think\response\Json
+     * 全选
+     */
+    public function selectAllCart(){
+        (new CartValidate())->scene('all')->goCheck(Request::param());
+        $this->cart->selectAllCart(Request::param());
+        return result();
     }
 }

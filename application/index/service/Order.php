@@ -10,6 +10,8 @@ namespace app\index\service;
 
 use app\index\model\Goods as GoodsModel;
 use app\index\model\GoodsOrder as GoodsOrderModel;
+use app\index\model\Coupon as CouponModel;
+use app\index\service\Token as TokenService;
 use app\index\model\OrderId;
 use app\index\model\ShoppingCart;
 use app\lib\enum\OrderStatusEnum;
@@ -107,10 +109,7 @@ class Order
             'user_id' => Token::getCurrentUid(),
             'goods_id' => $id
         ];
-        $cart = ShoppingCart::where($data)->find();
-        if($cart){
-            $cart->delete();
-        }
+        ShoppingCart::where($data)->delete();
     }
 
     /**
@@ -238,6 +237,54 @@ class Order
                 'd') . substr(time(), -5) . substr(microtime(), 2, 5) . sprintf(
                 '%02d', rand(0, 99));
         return $orderSn;
+    }
+
+    /**
+     * @param $data
+     * @return mixed
+     * 得到预订单
+     */
+    public function generatePreOrder($data){
+        foreach ($data as $d){
+            $d['info'] = GoodsModel::where('id',$d['id'])
+                ->field('name,category_id,price,sale_price,stock')
+                ->find();
+        }
+        $result['goods'] = $data;
+        $result['coupon'] = $this->getOrderCoupon($data);
+        $result['count'] = sizeof($result['coupon']);
+        return $result;
+    }
+
+    /**
+     * @param $data
+     * @return array
+     * 得到订单可用的优惠券
+     */
+    private function getOrderCoupon($data){
+        $coupon = array();
+        $coupons = CouponModel::where('user_id',TokenService::getCurrentUid())
+            ->select();
+        foreach ($coupons as $c){
+            $count = sizeof($coupon);
+            $price = 0;
+            if($c['category'] == 0){
+                for($i=0;$i<sizeof($data);$i++){
+                    $price += $data[$i]['info']['price'];
+                }
+            }
+            else{
+                for($i=0;$i<sizeof($data);$i++){
+                    if($data[$i]['info']['category_id'] == $c['category']){
+                        $price += $data[$i]['info']['price'];
+                    }
+                }
+            }
+            if($c['rule'] < $price){
+                $coupon[$count] = $c['id'];
+            }
+        }
+        return $coupon;
     }
 
 }

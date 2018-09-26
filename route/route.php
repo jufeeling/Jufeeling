@@ -105,11 +105,23 @@ Route::group('file',function (){
     //图片上传
     Route::post('upload',    'File/uploadImage');
 });
+
+/**
+ * 购物车
+ */
 Route::group('cart',function (){
     //添加商品到购物车
     Route::post('add','Cart/addShoppingCart');    //测试成功
     //获取购物车商品信息
     Route::get('info','Cart/getShoppingCartInfo');  //测试成功
+    //修改购物车商品数量
+    Route::post('count','Cart/changeCartCount');
+    //删除购物车
+    Route::delete('/','Cart/deleteCart');
+    //选择物车
+    Route::post('select','Cart/selectCart');
+    //全选
+    Route::post('all/select','Cart/selectAllCart');
 });
 
 /**
@@ -120,4 +132,15 @@ Route::group('pay',function (){
     Route::post('/',      'Pay/payOrder');
     Route::post('fail',   'Pay/payFail');
     Route::post('success','Pay/paySuccess');
+});
+
+/**
+ * 订单
+ */
+Route::group('order',function (){
+    //生成预订单
+    Route::post('pre',     'Order/generatePreOrder');
+    //生成订单
+    Route::post('generate','Order/generateOrder');
+
 });

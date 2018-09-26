@@ -40,6 +40,10 @@ class OrderValidate extends BaseValidate
             'pay' =>
                 [
                     'id'
+                ],
+            'pre' =>
+                [
+                    'goods'
                 ]
         ];
 

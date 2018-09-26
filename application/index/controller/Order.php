@@ -33,4 +33,14 @@ class Order extends BaseController
         $status = $this->order->generateOrder($data['goods'], $data['salePrice'], $data['receipt_id']);
         return result($status);
     }
+
+    /**
+     * 得到预订单
+     */
+    public function generatePreOrder(){
+        $data = input('post.goods/a');
+        (new OrderValidate())->scene('pre')->goCheck($data);
+        $status = $this->order->generatePreOrder($data['goods']);
+        return result($status);
+    }
 }
