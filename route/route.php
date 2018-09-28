@@ -71,9 +71,11 @@ Route::group('coupon',function (){
  * 商品模块
  */
 Route::group('goods',function (){
-    Route::get('all',     'Goods/getAllGoods');     //测试成功
-    Route::get('detail',  'Goods/getGoodsDetail');  //测试成功
-    Route::post('search', 'Goods/getSearchGoods');
+    Route::get('recommend',  'Goods/getRecommendGoods');
+    Route::get('all',        'Goods/getAllGoods');     //测试成功
+    Route::get('detail',     'Goods/getGoodsDetail');  //测试成功
+    Route::post('search',    'Goods/getSearchGoods');
+    Route::post('condition', 'Goods/conditionGoods');
 });
 
 /**

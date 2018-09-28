@@ -35,7 +35,7 @@ class Order extends BaseController
     }
 
     /**
-     * 得到预订单
+     * 得到预订单  重写(先存缓存 并返回收货地址)
      */
     public function generatePreOrder(){
         $data = input('post.goods/a');

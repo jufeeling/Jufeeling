@@ -82,14 +82,14 @@ class User
             ->where('user_id', $uid)
             ->where('state', 0)
             ->select();
-        $data['not_use']['count'] = sizeof($data['not_use']);
+        $data['count']['not_use'] = sizeof($data['not_use']);
 
         //获取使用过的购物券
         $data['used'] = UserCouponModel::with('coupon')
             ->where('user_id', $uid)
             ->where('state', 1)
             ->select();
-        $data['used']['count'] = sizeof($data['used']);
+        $data['count']['used'] = sizeof($data['used']);
 
         //获取过期且未使用过的购物券
         $data['overdue'] = UserCouponModel::with('coupon')
@@ -97,11 +97,11 @@ class User
             ->where('user_id', $uid)
             ->where('state', 0)
             ->select();
-        $data['overdue']['count'] = sizeof($data['overdue']);
-        $result['not_use'] = getCouponCategory($data['not_use'], 1);
-        $result['used'] = getCouponCategory($data['used'], 1);
-        $result['overdue'] = getCouponCategory($data['overdue'], 1);
-        return $result;
+        $data['count']['overdue'] = sizeof($data['overdue']);
+        $data['not_use'] = getCouponCategory($data['not_use'], 1);
+        $data['used']    = getCouponCategory($data['used'],    1);
+        $data['overdue'] = getCouponCategory($data['overdue'], 1);
+        return $data;
     }
 
     /**
@@ -148,7 +148,7 @@ class User
      */
     public function getUserOrder()
     {
-        $order = GoodsOrderModel::field('id,order_id,price')
+        $order = GoodsOrderModel::field('id,order_id,price,status,overdue')
             ->with(['goods' => function ($query) {
                 $query->with(['goods' => function ($query) {
                     $query->field('id,thu_url');

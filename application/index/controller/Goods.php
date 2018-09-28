@@ -36,6 +36,20 @@ class Goods extends BaseController
         return result($data);
     }
 
+    public function conditionGoods(){
+        //$data = $this->goods->conditionGoods(Request::param());
+        return result(Request::param());
+    }
+
+    /**
+     * @return \think\response\Json
+     * 获取推荐商品
+     */
+    public function getRecommendGoods(){
+        $data = $this->goods->getRecommendGoods();
+        return result($data);
+    }
+
     /**
      * @return \think\response\Json
      * 获取商品详情

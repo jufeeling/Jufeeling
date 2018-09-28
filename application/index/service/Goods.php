@@ -9,10 +9,12 @@
 namespace app\index\service;
 
 use app\index\model\Goods as GoodsModel;
+use app\index\model\Recommend as RecommendModel;
 use app\lib\exception\GoodsException;
 
 class Goods
 {
+    private $condition = array();
     /**
      * @param $data
      * @return array|\PDOStatement|string|\think\Collection
@@ -20,9 +22,10 @@ class Goods
      */
     public function getAllGoods($data)
     {
+        $condition = config('jufeel_config.goods_condition');
         //获取全部商品
         if ($data['category'] == 0) {
-            $goods = GoodsModel::with('category')
+            $goods['data'] = GoodsModel::with('category')
                 ->where('stock', '>', 0)
                 ->where('state',0)
                 ->order('create_time desc')
@@ -38,6 +41,37 @@ class Goods
                 ->order('create_time desc')
                 ->select();
         }
+        $goods['condition'] = $condition[$data['category']];
+        return $goods;
+    }
+
+    public function conditionGoods($data){
+        $condition_value = config('jufeel_config.goods_condition_value');
+        $this->condition['name'] = $condition_value[1]['name'][$data['condition'][0]];
+        $this->condition['description'] = $condition_value[1]['description'][$data['condition'][1]];
+        $this->condition['price'] = $condition_value[1]['price'][$data['condition'][2]];
+        $goods = GoodsModel::with('category')
+            ->where('stock', '>', 0)
+            ->where('state',0)
+            ->where($this->condition)
+            ->field('id,name,thu_url,price,sale_price,category_id')
+            ->order('create_time desc')
+            ->select();
+        return $goods;
+    }
+
+    /**
+     * @return array|\PDOStatement|string|\think\Collection
+     * 获取推荐商品
+     */
+    public function getRecommendGoods(){
+        $goods = RecommendModel::with(['goods'=>function($query){
+            $query->where('stock','>',0)
+                ->where('state',0)
+                ->field('id,name,thu_url,price,sale_price,category_id')
+                ->with('category');
+        }])
+            ->select();
         return $goods;
     }
 

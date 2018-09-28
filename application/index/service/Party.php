@@ -20,6 +20,7 @@ use think\facade\Cache;
 
 class Party
 {
+
     /**
      * @param $data
      * @return array|null|\PDOStatement|string|\think\Model
@@ -105,7 +106,7 @@ class Party
                 'party_id' => $data['id'],
                 'content' => $data['content']
             ])
-            ) ;
+            );
             else {
                 throw new PartyException([
                     'code' => '605',

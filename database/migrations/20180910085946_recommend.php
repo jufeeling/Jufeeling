@@ -33,6 +33,8 @@ class Recommend extends Migrator
         $table
             ->addIndex(array('id',), array('unique' => true))
             ->addColumn('goods_id',     'integer') //商品id
+            ->addColumn('create_time','integer')
+            ->addColumn('update_time','integer')
             ->addForeignKey('goods_id', 'goods', 'id',['delete'=> 'SET_NULL', 'update'=> 'NO_ACTION'])
             ->create();
     }
