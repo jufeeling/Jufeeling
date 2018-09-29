@@ -34,7 +34,7 @@ class Pay
         if (!$status['pass']) {
             return $status;
         }
-        return $this->makeWxPreOrder($status['orderPrice']);
+        return $this->makeWxPreOrder($status['totalPrice']);
     }
 
     /**
@@ -50,14 +50,12 @@ class Pay
         if (!$openid) {
             throw new TokenException();
         }
-        $order = GoodsOrderModel::with(['goods'])
-            ->where('id', '=', $this->id)
-            ->find();
+
         $wxOrderData = new \WxPayUnifiedOrder();
         $wxOrderData->SetOut_trade_no($this->order_id);
         $wxOrderData->SetTrade_type('JSAPI');
         $wxOrderData->SetTotal_fee($totalPrice * 100);
-        $wxOrderData->SetBody($order['goods']['name']);
+        $wxOrderData->SetBody('Jufeel');
         $wxOrderData->SetOpenid($openid);
         $wxOrderData->SetNotify_url('http://sqq.coolcoder.io/index/.php/api/v1/pay/notify');
         return $this->getPaySignature($wxOrderData);
@@ -131,6 +129,14 @@ class Pay
                     'code' => 400
                 ]);
         }
+        if($order['create_time'] - time() >86400){
+            throw new OrderException(
+                [
+                    'msg' => '该订单已过期',
+                    'errorCode' => 80003,
+                    'code' => 403
+                ]);
+        }
         $this->order_id = $order['order_id'];
         return true;
     }
@@ -150,16 +156,16 @@ class Pay
      * 支付失败
      */
     public function payFail($data){
-        $order = GoodsOrderModel::getOrderById($data['id']);
-        $orderRecord = OrderId::where('order_id',$order['order_id'])
+        $orderRecord = OrderId::where('order_id',$data['id'])
             ->select();
         foreach ($orderRecord as $o){
+            //恢复库存
             $goods = GoodsModel::where('id',$o['goods_id'])
                 ->find();
             $goods['stock'] += 1;
             $goods->save();
+            //删除订单记录
+            $o->delete();
         }
-        //删除订单记录
-        OrderId::where('order_id',$order['order_id'])->delete();
     }
 }

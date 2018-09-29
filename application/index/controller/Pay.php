@@ -30,7 +30,7 @@ class Pay extends BaseController
      */
     public function payOrder()
     {
-        (new OrderValidate())->scene('id')->goCheck(Request::param());
+        (new OrderValidate())->scene('pay')->goCheck(Request::param());
         $result = $this->pay->payOrder(Request::param());
         return result($result);
     }
@@ -40,7 +40,7 @@ class Pay extends BaseController
      * 支付成功
      */
     public function paySuccess(){
-        (new OrderValidate())->scene('id')->goCheck(Request::param());
+        (new OrderValidate())->scene('pay')->goCheck(Request::param());
         $this->pay->paySuccess(Request::param());
         return result();
     }
@@ -50,7 +50,7 @@ class Pay extends BaseController
      * 支付失败
      */
     public function payFail(){
-        (new OrderValidate())->scene('id')->goCheck(Request::param());
+        (new OrderValidate())->scene('pay')->goCheck(Request::param());
         $this->pay->payFail(Request::param());
         return result();
     }

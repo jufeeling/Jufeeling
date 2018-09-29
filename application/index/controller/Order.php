@@ -12,6 +12,7 @@ use app\index\service\Order as OrderService;
 use app\index\validate\OrderValidate;
 use think\App;
 use think\Controller;
+use think\facade\Request;
 
 class Order extends BaseController
 {
@@ -28,9 +29,8 @@ class Order extends BaseController
      */
     public function generateOrder()
     {
-        $data = input('post.goods/a');
-        (new OrderValidate())->scene('generate')->goCheck($data);
-        $status = $this->order->generateOrder($data['goods'], $data['salePrice'], $data['receipt_id']);
+        (new OrderValidate())->scene('generate')->goCheck(Request::param());
+        $status = $this->order->generateOrder(Request::param('goods'), Request::param('coupon_id'), Request::param('receipt_id'));
         return result($status);
     }
 
@@ -38,9 +38,8 @@ class Order extends BaseController
      * 得到预订单  重写(先存缓存 并返回收货地址)
      */
     public function generatePreOrder(){
-        $data = input('post.goods/a');
-        (new OrderValidate())->scene('pre')->goCheck($data);
-        $status = $this->order->generatePreOrder($data['goods']);
+        (new OrderValidate())->scene('pre')->goCheck(Request::param());
+        $status = $this->order->generatePreOrder(Request::param());
         return result($status);
     }
 }

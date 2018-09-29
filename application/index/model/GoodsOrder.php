@@ -19,6 +19,7 @@ class GoodsOrder extends Model
     }
     public function goods()
     {
-        return $this->hasMany('OrderId', 'order_id', 'order_id');
+        return $this->hasMany('OrderId', 'order_id', 'id');
     }
+
 }

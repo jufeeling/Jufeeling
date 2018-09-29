@@ -26,4 +26,5 @@ class UserCoupon extends Model
     {
         return $this->belongsTo('Coupon', 'coupon_id', 'id');
     }
+
 }

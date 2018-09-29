@@ -80,6 +80,7 @@ class User
         $data['not_use'] = UserCouponModel::with('coupon')
             ->where('end_time', '>', time())
             ->where('user_id', $uid)
+            ->where('status',0)
             ->where('state', 0)
             ->select();
         $data['count']['not_use'] = sizeof($data['not_use']);

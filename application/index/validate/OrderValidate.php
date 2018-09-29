@@ -17,8 +17,11 @@ class OrderValidate extends BaseValidate
         [
             'id'         => 'isPositiveInteger',
             'goods'      => 'checkProducts',
-            'salePrice'  => 'require',
-            'receipt_id' => 'isPositiveInteger'
+            'coupon_id'  => 'isPositiveInteger',
+            'receipt_id' => 'isPositiveInteger',
+            'delivery_address' => 'require',
+            'count'      => 'require|number',
+            'goods_id' => 'require|number',
         ];
 
     protected $message =
@@ -26,7 +29,10 @@ class OrderValidate extends BaseValidate
             'id'         => '订单号不能为空',
             'goods'      => '商品列表不能为空',
             'totalPrice' => '支付价格不能为空',
-            'receipt_id' => '收获信息不能为空'
+            'receipt_id' => '收获信息不能为空',
+            'delivery_address' => '收货信息不能为空',
+            'count'      => '数量不能为空',
+            'goods_id' => 'goods_id不能为空'
         ];
 
     protected $scene =
@@ -34,7 +40,7 @@ class OrderValidate extends BaseValidate
             'generate' =>
                 [
                     'goods',
-                    'orderPrice',
+                    'coupon_id',
                     'receipt_id'
                 ],
             'pay' =>
@@ -43,7 +49,9 @@ class OrderValidate extends BaseValidate
                 ],
             'pre' =>
                 [
-                    'goods'
+                    'delivery_address',
+                    'goods_id',
+                    'count'
                 ]
         ];
 
@@ -52,6 +60,7 @@ class OrderValidate extends BaseValidate
         'goods_id' => 'require|isPositiveInteger',
         'count'    => 'require|isPositiveInteger',
     ];
+
 
 
     /**
@@ -95,4 +104,7 @@ class OrderValidate extends BaseValidate
             ]);
         }
     }
+
+
+
 }
