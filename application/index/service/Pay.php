@@ -57,7 +57,7 @@ class Pay
         $wxOrderData->SetTotal_fee($totalPrice * 100);
         $wxOrderData->SetBody('Jufeel');
         $wxOrderData->SetOpenid($openid);
-        $wxOrderData->SetNotify_url('http://sqq.coolcoder.io/index/.php/api/v1/pay/notify');
+        $wxOrderData->SetNotify_url(config('jufeel_config.redirect_notify'));
         return $this->getPaySignature($wxOrderData);
     }
 

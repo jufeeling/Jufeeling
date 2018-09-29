@@ -11,7 +11,6 @@ namespace app\index\controller;
 use app\index\service\Pay as PayService;
 use app\index\validate\OrderValidate;
 use think\App;
-use think\Controller;
 use think\facade\Request;
 
 class Pay extends BaseController
@@ -53,5 +52,19 @@ class Pay extends BaseController
         (new OrderValidate())->scene('pay')->goCheck(Request::param());
         $this->pay->payFail(Request::param());
         return result();
+    }
+
+    public function redirectNotify()
+    {
+        $notify = new \WxPayNotify();
+        $notify->Handle();
+    }
+
+    public function receiveNotify()
+    {
+        $xmlData = file_get_contents('php://input');
+        $result = curl_post('http:/z.cn/api/v1/pay/re_notify?XDEBUG_SESSION_START=13322',
+            $xmlData);
+
     }
 }

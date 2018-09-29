@@ -24,6 +24,8 @@ return [
             3 => '花式饮料'
         ],
 
+    'redirect_notify' => 'jufeel.jufeeling.com/pay/notify',
+
     'goods_condition' =>
         [
             0 =>

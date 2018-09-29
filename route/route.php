@@ -134,6 +134,7 @@ Route::group('pay',function (){
     Route::post('/',      'Pay/payOrder');
     Route::post('fail',   'Pay/payFail');
     Route::post('success','Pay/paySuccess');
+    Route::get('notify',  'Pay/redirectNotify');
 });
 
 /**
