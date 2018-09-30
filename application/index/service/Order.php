@@ -37,7 +37,6 @@ class Order
 
     private $receipt_id;
 
-    private $sale_price;
 
 
     /**
@@ -81,12 +80,12 @@ class Order
             ->find();
         $userCoupon['status'] = 1;
         $userCoupon->save();
-
         $orderId = $this->makeOrderNo();
         $order = new GoodsOrderModel();
         $order['order_id'] = $orderId;
         $order['user_id'] = $this->uid;
-        $order['price'] = $orderSnap['price'] - $coupon['sale'];
+        $order['price'] = $orderSnap['price'];
+        $order['sale_price'] = $orderSnap['price'] - $coupon['sale'];
         $order['receipt_name'] = $orderSnap['receipt']['receipt_name'];
         $order['receipt_phone'] = $orderSnap['receipt']['receipt_phone'];
         $order['receipt_address'] = $orderSnap['receipt']['receipt_address'];

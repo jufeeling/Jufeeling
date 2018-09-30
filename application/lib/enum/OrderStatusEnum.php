@@ -11,9 +11,4 @@ class OrderStatusEnum
     // 已支付
     const PAID = 1;
 
-    // 已发货
-    const DELIVERED = 2;
-
-    // 已支付，但库存不足
-    const PAID_BUT_OUT_OF = 3;
 }

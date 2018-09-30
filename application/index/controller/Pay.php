@@ -65,6 +65,5 @@ class Pay extends BaseController
         $xmlData = file_get_contents('php://input');
         $result = curl_post('http:/z.cn/api/v1/pay/re_notify?XDEBUG_SESSION_START=13322',
             $xmlData);
-
     }
 }

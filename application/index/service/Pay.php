@@ -45,12 +45,10 @@ class Pay
      */
     private function makeWxPreOrder($totalPrice)
     {
-        //openid
         $openid = TokenService::getCurrentTokenVar('openid');
         if (!$openid) {
             throw new TokenException();
         }
-
         $wxOrderData = new \WxPayUnifiedOrder();
         $wxOrderData->SetOut_trade_no($this->order_id);
         $wxOrderData->SetTrade_type('JSAPI');
@@ -108,7 +106,7 @@ class Pay
     public function checkOrderValid()
     {
         $order = GoodsOrderModel::getOrderById($this->id);
-        if (!$order) {
+        if (!$order){
             throw new OrderException([
                 'code' => 511,
                 'msg' => '订单不存在'
@@ -129,7 +127,7 @@ class Pay
                     'code' => 400
                 ]);
         }
-        if($order['create_time'] - time() >86400){
+        if($order['create_time'] - time() > 86400){
             throw new OrderException(
                 [
                     'msg' => '该订单已过期',
