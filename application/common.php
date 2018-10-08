@@ -157,12 +157,12 @@ function getAddressLabel($data){
 
 /**
  * @param $data
+ * @param $type
  * @return mixed
- * 获取购物券类别
+ * 获取优惠券类别
  */
 function getCouponCategory($data,$type){
     $goods_category = config('jufeel_config.goods_category');
-    //$data = $goods_category[$data[1]['coupon']['category']];
     for($i=0;$i<sizeof($data);$i++){
         if($type == 1){
             $data[$i]['category'] = $goods_category[$data[$i]['coupon']['category']];

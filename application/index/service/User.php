@@ -22,16 +22,22 @@ use think\facade\Cache;
 
 class User
 {
+    private $uid;
+
+    public function __construct()
+    {
+        $this->uid = TokenService::getCurrentUid();
+    }
+
     /**
      * @return mixed
      * 获取用户举办的派对
      */
     public function getUserHostParty()
     {
-        $uid = TokenService::getCurrentUid();
         $data = PartyModel::withCount('participants')
             ->withCount('message')
-            ->where('user_id', $uid)
+            ->where('user_id', $this->uid)
             ->where('status', 0)
             ->order('create_time desc')
             ->select();
@@ -44,13 +50,12 @@ class User
      */
     public function getUserJoinParty()
     {
-        $uid = TokenService::getCurrentUid();
         $data = PartyOrderModel::with(['party' => function ($query) {
             $query->withCount('participants')
                 ->withCount('message');
         }])
             ->where('status', 0)
-            ->where('user_id', $uid)
+            ->where('user_id', $this->uid)
             ->order('create_time desc')
             ->select();
         return $data;
@@ -65,7 +70,7 @@ class User
         $party = PartyModel::where('id',$data['id'])
             ->find();
         if($party){
-            if($party['user_id'] == TokenService::getCurrentUid()){
+            if($party['user_id'] == $this->uid){
                 $party['status'] = 1;
                 $party->save();
             }
@@ -90,8 +95,7 @@ class User
      */
     public function getUserDeliveryAddress()
     {
-        $uid = TokenService::getCurrentUid();
-        $data = DeliveryAddressModel::where('user_id', $uid)
+        $data = DeliveryAddressModel::where('user_id', $this->uid)
             ->select();
         $result = getAddressLabel($data);
         return $result;
@@ -103,11 +107,10 @@ class User
      */
     public function getUserCoupon()
     {
-        $uid = TokenService::getCurrentUid();
         //获取未使用且未过期的购物券
         $data['not_use'] = UserCouponModel::with('coupon')
             ->where('end_time', '>', time())
-            ->where('user_id', $uid)
+            ->where('user_id', $this->uid)
             ->where('status',0)
             ->where('state', 0)
             ->select();
@@ -115,7 +118,7 @@ class User
 
         //获取使用过的购物券
         $data['used'] = UserCouponModel::with('coupon')
-            ->where('user_id', $uid)
+            ->where('user_id', $this->uid)
             ->where('state', 1)
             ->select();
         $data['count']['used'] = sizeof($data['used']);
@@ -123,8 +126,9 @@ class User
         //获取过期且未使用过的购物券
         $data['overdue'] = UserCouponModel::with('coupon')
             ->where('end_time', '<', time())
-            ->where('user_id', $uid)
+            ->where('user_id', $this->uid)
             ->where('state', 0)
+            ->where('status',0)
             ->select();
         $data['count']['overdue'] = sizeof($data['overdue']);
         $data['not_use'] = getCouponCategory($data['not_use'], 1);
@@ -140,9 +144,9 @@ class User
     public function getUserGoods()
     {
         //获取用户使用过的商品
-        $data['used'] = OrderIdModel::getUserGoods(1, TokenService::getCurrentUid());
+        $data['used'] = OrderIdModel::getUserGoods(1, $this->uid);
         //获取用户未使用过的商品
-        $data['not_use'] = OrderIdModel::getUserGoods(0, TokenService::getCurrentUid());
+        $data['not_use'] = OrderIdModel::getUserGoods(0, $this->uid);
         return $data;
     }
 
@@ -155,7 +159,7 @@ class User
     {
         for($i=0;$i<sizeof($data['check']);$i++){
             $orderId[$i] = OrderIdModel::find((int)$data['check'][$i]);
-            if ($orderId[$i]['user_id'] != TokenService::getCurrentUid()) {
+            if ($orderId[$i]['user_id'] != $this->uid) {
                 throw new UserException([
                     'code' => 902,
                     'msg' => '您无权使用该商品'
@@ -184,7 +188,7 @@ class User
                 }]);
             }])
             ->withCount('goods')
-            ->where('user_id', TokenService::getCurrentUid())
+            ->where('user_id', $this->uid)
             ->select();
         return $order;
     }
@@ -198,7 +202,7 @@ class User
     {
         $order = GoodsOrderModel::find($data['id']);
         if ($order) {
-            if ($order['user_id'] == TokenService::getCurrentUid()) {
+            if ($order['user_id'] == $this->uid) {
                 $order->delete();
             } else {
                 throw new UserException([
@@ -237,9 +241,9 @@ class User
      *检测是否为新用户
      */
     public function checkNewUser(){
-        $user = UserModel::find(TokenService::getCurrentUid());
+        $user = UserModel::find($this->uid);
         if($user['state'] == 0){
-            $user['state'] == 1;
+            $user['state'] = 1;
             $user->save();
         }
     }
@@ -249,7 +253,7 @@ class User
      * 修改用户信息
      */
     public function saveUserInfo($data){
-        UserModel::where('id',TokenService::getCurrentUid())
+        UserModel::where('id',$this->uid)
             ->setField([
                'avatar'   => $data['avatar'],
                'nickname' => $data['nickname']

@@ -153,3 +153,5 @@ Route::group('order',function (){
 Route::group('banner',function (){
     Route::get('/','Banner/getBanner');
 });
+
+Route::get('test','Banner/test');

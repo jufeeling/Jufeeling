@@ -49,21 +49,66 @@ class Goods
     /**
      * @param $data
      * @return array|\PDOStatement|string|\think\Collection
-     * 发现BUG
+     * 发现BUG  还需要传category
      */
     public function conditionGoods($data){
-        $condition_value = config('jufeel_config.goods_condition_value');
-        $this->condition['name'] = $condition_value[1]['name'][$data['condition'][0]];
-        $this->condition['description'] = $condition_value[1]['description'][$data['condition'][1]];
-        $this->condition['price'] = $condition_value[1]['price'][$data['condition'][2]];
-        $goods = GoodsModel::with('category')
-            ->where('stock', '>', 0)
-            ->where('state',0)
-            ->where($this->condition)
-            ->field('id,name,thu_url,price,sale_price,category_id')
-            ->order('create_time desc')
-            ->select();
+        $this->getConditionValue($data);
+        if($data['sort'] == 0){
+            $goods = GoodsModel::with('category')
+                ->where('stock', '>', 0)
+                ->where('state',0)
+                ->where($this->condition)
+                ->field('id,name,thu_url,price,sale_price,category_id')
+                ->order('create_time desc')
+                ->select();
+        }elseif ($data['sort'] == 1){
+            $goods = GoodsModel::with('category')
+                ->where('stock', '>', 0)
+                ->where('state',0)
+                ->where($this->condition)
+                ->field('id,name,thu_url,price,sale_price,category_id')
+                ->order('price desc')
+                ->select();
+        }
+        else{
+            $goods = GoodsModel::with('category')
+                ->where('stock', '>', 0)
+                ->where('state',0)
+                ->where($this->condition)
+                ->field('id,name,thu_url,price,sale_price,category_id')
+                ->order('price asc')
+                ->select();
+        }
+
         return $goods;
+    }
+
+    /**
+     * @param $data
+     * @return array
+     * 得到筛选条件
+     */
+    private function getConditionValue($data){
+        if($data['category'] == 0){
+            $this->condition['name'] = $data['condition'][0];
+            $this->condition['description'] = $data['condition'][1];
+            $this->condition['price'] = $data['condition'][2];
+        }
+        else if($data['category'] == 1){
+            $this->condition['name'] = $data['condition'][0];
+            $this->condition['description'] = $data['condition'][1];
+            $this->condition['price'] = $data['condition'][2];
+        }
+        else if($data['category'] == 3){
+            $this->condition['name'] = $data['condition'][0];
+            $this->condition['description'] = $data['condition'][1];
+            $this->condition['price'] = $data['condition'][2];
+        }
+        else {
+            $this->condition['name'] = $data['condition'][0];
+            $this->condition['description'] = $data['condition'][1];
+            $this->condition['price'] = $data['condition'][2];
+        }
     }
 
     /**

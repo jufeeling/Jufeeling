@@ -15,6 +15,7 @@ class GoodsValidate extends BaseValidate
             'id'         => 'require|isPositiveInteger',
             'category'   => 'require',
             'content'    => 'require',
+            'sort'       => 'require|number'  //0默认时间排序,1价格降序,2价格升序
         ];
 
     protected $message =

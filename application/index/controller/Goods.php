@@ -41,6 +41,7 @@ class Goods extends BaseController
      * 筛选商品
      */
     public function conditionGoods(){
+        (new GoodsValidate())->scene('condition')->goCheck(Request::param());
         $data = $this->goods->conditionGoods(Request::param());
         return result($data);
     }

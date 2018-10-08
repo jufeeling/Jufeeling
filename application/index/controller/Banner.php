@@ -17,4 +17,9 @@ class Banner extends BaseController
             ->select();
         return result($data);
     }
+
+    public function test(){
+        $condition = config('jufeel_config.goods_condition');
+        return result($condition[0]);
+    }
 }
