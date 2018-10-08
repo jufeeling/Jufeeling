@@ -45,6 +45,12 @@ class Goods
         return $goods;
     }
 
+
+    /**
+     * @param $data
+     * @return array|\PDOStatement|string|\think\Collection
+     * 发现BUG
+     */
     public function conditionGoods($data){
         $condition_value = config('jufeel_config.goods_condition_value');
         $this->condition['name'] = $condition_value[1]['name'][$data['condition'][0]];

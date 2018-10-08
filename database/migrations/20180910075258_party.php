@@ -42,7 +42,7 @@ class Party extends Migrator
             ->addColumn('site',        'string')   //地点
             ->addColumn('create_time', 'integer')
             ->addColumn('update_time', 'integer')
-            ->addColumn('status',      'integer',array('default'=>'0'))  //标记派对是否被删除 1已过期
+            ->addColumn('status',      'integer',array('default'=>'0'))  //标记派对是否被删除 0未删除
             ->addColumn('state',       'integer',array('default'=>'0'))  //标记派对是否已过期 0未过期
             ->addForeignKey('user_id', 'user', 'id',['delete'=> 'SET_NULL', 'update'=> 'NO_ACTION'])
             ->create();

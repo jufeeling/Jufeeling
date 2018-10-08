@@ -25,6 +25,7 @@ Route::group('user',function (){
     Route::group('party',function (){
         Route::get('host','User/getUserHostParty');  //测试成功
         Route::get('join','User/getUserJoinParty');  //测试成功
+        Route::delete('delete','User/deleteUserParty');
     });
     Route::group('address',function (){
         Route::get('/','User/getUserDeliveryAddress'); //测试成功
@@ -35,18 +36,19 @@ Route::group('user',function (){
     });
     Route::group('goods',function (){
         //获取用户所有商品
-       Route::get('/',      'user/getUserGoods');    //测试成功
+       Route::get('/',      'User/getUserGoods');    //测试成功
         //用户选择聚会要使用的商品
-       Route::post('select','user/selectUserGoods'); //测试成功
+       Route::post('select','User/selectUserGoods'); //测试成功
     });
     Route::group('order',function (){
         //获取用户所有订单
-       Route::get('/',    'user/getUserOrder');  //测试成功
+       Route::get('/',    'User/getUserOrder');  //测试成功
        //获取用户单个订单详情
-       Route::get('info', 'user/getUserOrderInfo');
+       Route::get('info', 'User/getUserOrderInfo');
        //用户删除订单
-       Route::delete('/', 'user/deleteUserOrder');
+       Route::delete('/', 'User/deleteUserOrder');
     });
+    Route::post('info','User/saveUserInfo'); //修改用户头像昵称
 });
 
 /**
@@ -146,4 +148,8 @@ Route::group('order',function (){
     //生成订单
     Route::post('generate','Order/generateOrder');
 
+});
+
+Route::group('banner',function (){
+    Route::get('/','Banner/getBanner');
 });

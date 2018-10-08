@@ -78,7 +78,7 @@ class Cart
         $data['totalPrice'] = 0;
         $data['count'] = 0;
         foreach ($goods as $g){
-            if($g['select'] ===1){
+            if($g['select'] === 1){
                 $data['totalPrice'] += $g['goods']['price'] * $g['count'];
                 $data['count'] += $g['count'];
             }

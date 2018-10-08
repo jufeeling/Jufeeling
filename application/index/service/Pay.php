@@ -30,11 +30,12 @@ class Pay
     {
         $this->id = $data['id'];
         $this->checkOrderValid();
-        $status = (new OrderService())->checkOrderStock($this->order_id);
+        $status = (new OrderService())->checkOrderStock($this->id);
         if (!$status['pass']) {
             return $status;
         }
-        return $this->makeWxPreOrder($status['totalPrice']);
+        $order = GoodsOrderModel::find($this->id);
+        return $this->makeWxPreOrder($order['sale_price']);
     }
 
     /**
@@ -76,16 +77,19 @@ class Pay
 
     private function sign($wxOrder)
     {
+
         $jsApiPayData = new \WxPayJsApiPay();
         $jsApiPayData->SetAppid(config('wx.app_id'));
         $jsApiPayData->SetTimeStamp((string)time());
         $rand = md5(time() . mt_rand(0, 1000));
         $jsApiPayData->SetNonceStr($rand);
-        $jsApiPayData->SetPackage('prepay_id=' . $wxOrder['prepay_id']);
-        $jsApiPayData->SetSignType('md5');
+        $jsApiPayData->SetPackage('prepay_id='.$wxOrder['prepay_id']);
+        $jsApiPayData->SetSignType('MD5');
         $sign = $jsApiPayData->MakeSign();
         $rawValues = $jsApiPayData->GetValues();
         $rawValues['paySign'] = $sign;
+        $rawValues['appId'] = config('wx.app_id');
+        $rawValues['order_id'] = $this->id;
         unset($rawValues['appId']);
         return $rawValues;
     }

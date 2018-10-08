@@ -15,12 +15,16 @@ class UserValidate extends BaseValidate
         [
             'id'     => 'require|isPositiveInteger',
             'check'  => 'require',
+            'avatar' => 'require',
+            'nickname' => 'require'
         ];
 
     protected $message =
         [
             'check' => '请选择您要使用的商品',
             'id'    => '请传入正确的id',
+            'avatar' => '头像不能为空',
+            'nickname' => '昵称不能为空'
         ];
 
     protected $scene =
@@ -34,5 +38,11 @@ class UserValidate extends BaseValidate
                 [
                     'id'
                 ],
+
+            'info' =>
+                [
+                    'avatar',
+                    'nickname'
+                ]
         ];
 }

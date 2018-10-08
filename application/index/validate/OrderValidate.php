@@ -17,7 +17,7 @@ class OrderValidate extends BaseValidate
         [
             'id'         => 'isPositiveInteger',
             'goods'      => 'checkProducts',
-            'coupon_id'  => 'isPositiveInteger',
+            'coupon_id'  => 'require|number',
             'receipt_id' => 'isPositiveInteger',
             'delivery_address' => 'require',
             'count'      => 'require|number',
@@ -57,8 +57,8 @@ class OrderValidate extends BaseValidate
 
 
     protected $singleRule = [
-        'goods_id' => 'require|isPositiveInteger',
-        'count'    => 'require|isPositiveInteger',
+        'goods_id' => 'require|number',
+        'count'    => 'require|number',
     ];
 
 

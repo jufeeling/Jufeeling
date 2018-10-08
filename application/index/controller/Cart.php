@@ -11,7 +11,6 @@ namespace app\index\controller;
 use app\index\service\Cart as CartService;
 use app\index\validate\CartValidate;
 use think\App;
-use think\Controller;
 use think\facade\Request;
 
 class Cart extends BaseController

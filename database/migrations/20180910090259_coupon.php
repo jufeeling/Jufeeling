@@ -32,6 +32,7 @@ class Coupon extends Migrator
         $table = $this->table('coupon',array('engine'=>'MyISAM'));
         $table
             ->addIndex(array('id',), array('unique' => true))
+            ->addColumn('name',       'string')
             ->addColumn('rule',       'decimal') //规则
             ->addColumn('sale',       'decimal') //折扣价格
             ->addColumn('category',   'integer',array('default' => 0)) //折扣商品分类 默认全部商品

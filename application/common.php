@@ -162,6 +162,7 @@ function getAddressLabel($data){
  */
 function getCouponCategory($data,$type){
     $goods_category = config('jufeel_config.goods_category');
+    //$data = $goods_category[$data[1]['coupon']['category']];
     for($i=0;$i<sizeof($data);$i++){
         if($type == 1){
             $data[$i]['category'] = $goods_category[$data[$i]['coupon']['category']];

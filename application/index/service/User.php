@@ -57,6 +57,34 @@ class User
     }
 
     /**
+     * @param $data
+     * @throws UserException
+     * 用户删除派对
+     */
+    public function deleteUserParty($data){
+        $party = PartyModel::where('id',$data['id'])
+            ->find();
+        if($party){
+            if($party['user_id'] == TokenService::getCurrentUid()){
+                $party['status'] = 1;
+                $party->save();
+            }
+            else{
+                throw new UserException([
+                   'code' => 903,
+                   'msg'  => '你无权执行此操作',
+                ]);
+            }
+        }
+        else{
+            throw new UserException([
+                'code' => 904,
+                'msg'  => '该派对没有找到',
+            ]);
+        }
+    }
+
+    /**
      * @return array|\PDOStatement|string|\think\Collection
      * 获取用户收货地址
      */
@@ -214,5 +242,17 @@ class User
             $user['state'] == 1;
             $user->save();
         }
+    }
+
+    /**
+     * @param $data
+     * 修改用户信息
+     */
+    public function saveUserInfo($data){
+        UserModel::where('id',TokenService::getCurrentUid())
+            ->setField([
+               'avatar'   => $data['avatar'],
+               'nickname' => $data['nickname']
+            ]);
     }
 }

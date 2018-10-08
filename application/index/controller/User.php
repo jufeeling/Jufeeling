@@ -39,6 +39,20 @@ class User extends BaseController
 
     /**
      * @return \think\response\Json
+     * 用户删除派对
+     */
+    public function deleteUserParty(){
+        (new UserValidate())->scene('id')->goCheck(Request::param());
+        try{
+            $this->user->deleteUserParty(Request::param());
+        }catch (UserException $e){
+            return result('',$e->msg,$e->code);
+        }
+        return result();
+    }
+
+    /**
+     * @return \think\response\Json
      * 获取用户参加的派对
      */
     public function getUserJoinParty()
@@ -110,5 +124,15 @@ class User extends BaseController
     public function getUserOrder(){
         $data = $this->user->getUserOrder();
         return result($data);
+    }
+
+    /**
+     * @return \think\response\Json
+     * 保存用户信息
+     */
+    public function saveUserInfo(){
+        (new UserValidate())->scene('info')->goCheck(Request::param());
+        $this->user->saveUserInfo(Request::param());
+        return result();
     }
 }

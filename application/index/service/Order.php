@@ -37,6 +37,7 @@ class Order
 
     private $receipt_id;
 
+    private $sale_price ;
 
 
     /**
@@ -73,19 +74,29 @@ class Order
     public function createOrder($orderSnap)
     {
         $coupon = CouponModel::find($this->coupon_id);
+        if($coupon){
+            //修改购物券使用情况
+            $userCoupon = UserCoupon::where('user_id',TokenService::getCurrentUid())
+                ->where('coupon_id',$coupon['id'])
+                ->find();
+            $userCoupon['status'] = 1;
+            $userCoupon->save();
+            $this->sale_price = $coupon['sale'];
+        }
+        else{
+            $this->sale_price = 0;
+        }
 
-        //修改购物券使用情况
-        $userCoupon = UserCoupon::where('user_id',TokenService::getCurrentUid())
-            ->where('coupon_id',$coupon['id'])
-            ->find();
-        $userCoupon['status'] = 1;
-        $userCoupon->save();
         $orderId = $this->makeOrderNo();
         $order = new GoodsOrderModel();
         $order['order_id'] = $orderId;
         $order['user_id'] = $this->uid;
         $order['price'] = $orderSnap['price'];
-        $order['sale_price'] = $orderSnap['price'] - $coupon['sale'];
+        $salePrice = $orderSnap['price'] - $this->sale_price;
+        if($salePrice <0){
+            $salePrice = 0;
+        }
+        $order['sale_price'] = $salePrice;
         $order['receipt_name'] = $orderSnap['receipt']['receipt_name'];
         $order['receipt_phone'] = $orderSnap['receipt']['receipt_phone'];
         $order['receipt_address'] = $orderSnap['receipt']['receipt_address'];
@@ -169,22 +180,22 @@ class Order
     public function checkOrderStock($order_id)
     {
         $Goods = OrderId::where('order_id', $order_id)
-            ->field('goods_id,order_id')
             ->select();
         $this->oGoods = $Goods;
         $this->Goods = $this->getGoodsByOrder($this->oGoods);
-        $status = $this->getOrderStatus($order_id);
+        $status = $this->getOrderStatus();
         return $status;
     }
 
+
     /**
-     * @param $order_id
      * @return array
      */
-    private function getOrderStatus($order_id)
+    private function getOrderStatus()
     {
         $status =
             [
+                'orderPrice' => 0,
                 'pass' => true,
                 'pStatusArray' => []
             ];
@@ -193,11 +204,9 @@ class Order
             if (!$gStatus['haveStock']) {
                 $status['pass'] = false;
             }
+            $status['orderPrice'] += $gStatus['totalPrice'];
             array_push($status['pStatusArray'], $gStatus);
         }
-        $order = GoodsOrder::where('order_id',$order_id)
-                ->find();
-        $status['totalPrice'] = $order['price'];
         return $status;
     }
 
@@ -277,7 +286,10 @@ class Order
             //获取预数据
             $preData['goods'] = ShoppingCart::with(['goods'=>function($query){
                 $query->field('id,name,category_id,price,sale_price,stock,thu_url');
-            }])->select();
+            }])
+                ->where('user_id',TokenService::getCurrentUid())
+                ->where('select',1)
+                ->select();
             //将Count添加到预数据的goods中
             foreach ($preData['goods'] as $r){
                 $r['goods']['count'] = $r['count'];
