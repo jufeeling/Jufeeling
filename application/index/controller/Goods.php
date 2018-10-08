@@ -8,11 +8,11 @@
 
 namespace app\index\controller;
 
+use app\index\model\Title as TitleModel;
 use app\index\service\Goods as GoodsService;
 use app\index\validate\GoodsValidate;
 use app\lib\exception\GoodsException;
 use think\App;
-use think\Controller;
 use think\facade\Request;
 
 class Goods extends BaseController
@@ -25,6 +25,11 @@ class Goods extends BaseController
         parent::__construct($app);
     }
 
+
+    public function getRecommendTitle(){
+        $data = TitleModel::where('status',0)->find();
+        return result($data);
+    }
     /**
      * @return \think\response\Json
      * 获取所有商品
@@ -41,7 +46,7 @@ class Goods extends BaseController
      * 筛选商品
      */
     public function conditionGoods(){
-        (new GoodsValidate())->scene('condition')->goCheck(Request::param());
+        //(new GoodsValidate())->scene('condition')->goCheck(Request::param());
         $data = $this->goods->conditionGoods(Request::param());
         return result($data);
     }

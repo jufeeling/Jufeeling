@@ -23,6 +23,7 @@ class GoodsValidate extends BaseValidate
             'id'         => '请传入有效的id',
             'category'   => '请传入正确的分类',
             'content'    => '请输入搜索内容',
+            'sort'       => '请传入正确的筛选条件'
         ];
 
     protected $scene =
@@ -41,6 +42,12 @@ class GoodsValidate extends BaseValidate
                 [
                     'content'
                 ],
+
+            'condition' =>
+                [
+                    'sort',
+                    'category'
+                ]
 
         ];
 }
