@@ -26,6 +26,10 @@ class Goods extends BaseController
     }
 
 
+    /**
+     * @return \think\response\Json
+     * 获取推荐提示(聚小喵今日推荐)
+     */
     public function getRecommendTitle(){
         $data = TitleModel::where('status',0)->find();
         return result($data);
@@ -46,7 +50,7 @@ class Goods extends BaseController
      * 筛选商品
      */
     public function conditionGoods(){
-        //(new GoodsValidate())->scene('condition')->goCheck(Request::param());
+        (new GoodsValidate())->scene('condition')->goCheck(Request::param());
         $data = $this->goods->conditionGoods(Request::param());
         return result($data);
     }

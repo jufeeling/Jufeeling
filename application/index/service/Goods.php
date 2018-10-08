@@ -122,6 +122,7 @@ class Goods
                 ->field('id,name,thu_url,price,sale_price,category_id')
                 ->with('category');
         }])
+            ->order('create_time desc')
             ->select();
         return $goods;
     }
@@ -136,8 +137,7 @@ class Goods
     {
         //获取商品详情
         $goods = GoodsModel::with('category')
-            ->where('id', $data['id'])
-            ->find();
+            ->find($data['id']);
         if ($goods) {
             return $goods;
         }

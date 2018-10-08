@@ -93,6 +93,29 @@ class Party
     /**
      * @param $data
      * @throws PartyException
+     * 关闭聚会
+     */
+    public function closeParty($data){
+        $party = PartyModel::find($data['id']);
+        if($party){
+            if($party['user_id'] == TokenService::getCurrentUid()){
+                $party['state'] = 1;
+                $party->save();
+            }else{
+                throw new PartyException([
+                    'code' => 610,
+                    'msg' => '你没有权利执行此操作',
+                    'errorMsg' => 60008
+                ]);
+            }
+        }else{
+            throw new PartyException();
+        }
+    }
+
+    /**
+     * @param $data
+     * @throws PartyException
      * 评论派对
      */
     public function commentParty($data)
@@ -166,7 +189,6 @@ class Party
             }])
             ->where('id', $data['id'])
             ->find();
-        $party['way'] = config('jufeel_config.way')[$party['way']];
         $data = $this->getMessageIdentity($party);
         return $data;
     }

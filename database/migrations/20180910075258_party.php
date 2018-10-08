@@ -34,7 +34,7 @@ class Party extends Migrator
             ->addColumn('user_id',     'integer')  //用户id
             ->addColumn('image',       'string')   //封面图
             ->addColumn('description', 'string')   //聚说
-            ->addColumn('way',         'string') //方式
+            ->addColumn('way',         'string')   //方式
             ->addColumn('people_no',   'integer')  //人数
             ->addColumn('remaining_people_no', 'integer') //剩余可报名人数
             ->addColumn('date',        'string')   //日期
@@ -43,8 +43,8 @@ class Party extends Migrator
             ->addColumn('create_time', 'integer')
             ->addColumn('update_time', 'integer')
             ->addColumn('start_time',  'integer')  //开始时间
-            ->addColumn('status',      'integer',array('default'=> 0))  //标记派对是否被删除 0未删除
-            ->addColumn('state',       'integer',array('default'=> 0))  //标记派对是否被发起者关闭
+            ->addColumn('status',      'integer',array('default' => 0))  //标记派对是否被删除 0未删除
+            ->addColumn('state',       'integer',array('default' => 0))  //标记派对是否被发起者关闭
             ->addForeignKey('user_id', 'user', 'id')
             ->create();
     }

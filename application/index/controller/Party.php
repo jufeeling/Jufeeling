@@ -57,6 +57,20 @@ class Party extends BaseController
 
     /**
      * @return \think\response\Json
+     * 关闭聚会
+     */
+    public function closeParty(){
+        (new PartyValidate())->scene('id')->goCheck(Request::param());
+        try {
+            $this->party->closeParty(Request::param());
+        } catch (PartyException $e) {
+            return result('', $e->msg, $e->code);
+        }
+        return result('', '关闭成功');
+    }
+
+    /**
+     * @return \think\response\Json
      * 评论派对
      */
     public function commentParty()

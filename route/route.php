@@ -89,6 +89,8 @@ Route::group('party',function (){
     Route::get('get',      'Party/getParty');
     //参加派对
     Route::get('join',     'Party/joinParty');
+    //关闭聚会
+    Route::get('close',    'Party/closeParty');
     //获取派对所需要的商品
     Route::get('goods',    'Party/getPartyGoods'); //测试成功
     //举办派对
