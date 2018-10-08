@@ -74,7 +74,7 @@ Route::group('coupon',function (){
  */
 Route::group('goods',function (){
     Route::get('recommend',  'Goods/getRecommendGoods');
-    Route::get('title',      'Goods/getRecommendTitle'); 
+    Route::get('title',      'Goods/getRecommendTitle');
     Route::get('all',        'Goods/getAllGoods');     //测试成功
     Route::get('detail',     'Goods/getGoodsDetail');  //测试成功
     Route::post('search',    'Goods/getSearchGoods');
@@ -154,5 +154,3 @@ Route::group('order',function (){
 Route::group('banner',function (){
     Route::get('/','Banner/getBanner');
 });
-
-Route::get('test','Banner/test');

@@ -38,8 +38,8 @@ class UserCoupon extends Migrator
             ->addColumn('status',    'integer',array('default' => 0)) //该优惠券此时的状态 0可用1不可用
             ->addColumn('start_time', 'integer') //开始时间
             ->addColumn('end_time',   'integer') //结束时间
-            ->addForeignKey('user_id',   'user',  'id',['delete'=> 'SET_NULL', 'update'=> 'NO_ACTION'])
-            ->addForeignKey('coupon_id', 'coupon', 'id',['delete'=> 'SET_NULL', 'update'=> 'NO_ACTION'])
+            ->addForeignKey('user_id',   'user',  'id')
+            ->addForeignKey('coupon_id', 'coupon', 'id')
             ->create();
     }
 }

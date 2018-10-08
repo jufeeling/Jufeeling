@@ -10,6 +10,7 @@ namespace app\index\controller;
 
 use app\index\service\File as FileService;
 use think\Controller;
+use think\facade\Request;
 
 class File extends BaseController
 {

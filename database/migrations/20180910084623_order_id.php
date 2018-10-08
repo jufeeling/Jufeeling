@@ -1,4 +1,4 @@
-<?php
+'<?php
 
 use think\migration\Migrator;
 use think\migration\db\Column;
@@ -39,9 +39,9 @@ class OrderId extends Migrator
             ->addColumn('count',       'integer') //单个商品买的个数
             ->addColumn('create_time', 'integer')
             ->addColumn('update_time', 'integer')
-            ->addForeignKey('goods_id', 'goods', 'id',['delete'=> 'SET_NULL', 'update'=> 'NO_ACTION'])
-            ->addForeignKey('order_id', 'order', 'id',['delete'=> 'SET_NULL', 'update'=> 'NO_ACTION'])
-            ->addForeignKey('user_id',  'user', 'id',['delete'=> 'SET_NULL', 'update'=> 'NO_ACTION'])
+            ->addForeignKey('goods_id', 'goods', 'id')
+            ->addForeignKey('order_id', 'goods_order', 'id')
+            ->addForeignKey('user_id',  'user', 'id')
             ->create();
     }
 }

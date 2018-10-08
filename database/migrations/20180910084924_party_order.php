@@ -36,8 +36,8 @@ class PartyOrder extends Migrator
             ->addColumn('status',      'integer',array('default'=>'0')) //标记用户是否删除派对记录 0未删除1删除
             ->addColumn('create_time', 'integer')
             ->addColumn('update_time', 'integer')
-            ->addForeignKey('party_id', 'party', 'id',['delete'=> 'SET_NULL', 'update'=> 'NO_ACTION'])
-            ->addForeignKey('user_id',  'user',  'id',['delete'=> 'SET_NULL', 'update'=> 'NO_ACTION'])
+            ->addForeignKey('party_id', 'party', 'id')
+            ->addForeignKey('user_id',  'user',  'id')
             ->create();
     }
 }

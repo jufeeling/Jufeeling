@@ -46,7 +46,6 @@ class Goods extends Migrator
             ->addColumn('state',       'integer',array('default'=>0)) //状态 标记是否上架或下架 0上架1下架
             ->addColumn('create_time', 'integer')
             ->addColumn('update_time', 'integer')
-            ->addForeignKey('category_id', 'goods_category', 'id',['delete'=> 'SET_NULL', 'update'=> 'NO_ACTION'])
             ->create();
     }
 }

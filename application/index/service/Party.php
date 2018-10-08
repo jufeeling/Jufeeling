@@ -134,7 +134,7 @@ class Party
             'time' => $data['time'],
             'site' => $data['site'],
             'image' => $data['url'],
-            'user_id' => 1,
+            'user_id' => TokenService::getCurrentUid(),
             'people_no' => (int)$data['people_no'],
             'description' => $data['description'],
             'remaining_people_no' => (int)$data['people_no'] - 1,

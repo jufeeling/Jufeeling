@@ -44,7 +44,7 @@ class GoodsOrder extends Migrator
             ->addColumn('status',          'integer',array('default'=>0)) //标记订单是否已被支付 0未支付1支付
             ->addColumn('create_time',     'integer')
             ->addColumn('update_time',     'integer')
-            ->addForeignKey('user_id', 'user', 'id',['delete'=> 'SET_NULL', 'update'=> 'NO_ACTION'])
+            ->addForeignKey('user_id', 'user', 'id')
             ->create();
     }
 }

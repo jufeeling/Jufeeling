@@ -13,13 +13,13 @@ return [
     // 数据库类型
     'type'            => 'mysql',
     // 服务器地址
-    'hostname'        => 'jufeel.jufeeling.com',
+    'hostname'        => 'rm-bp187g0g947eh46jb7o.mysql.rds.aliyuncs.com',
     // 数据库名
     'database'        => 'jufeeling',
     // 用户名
     'username'        => 'jufeeling',
     // 密码
-    'password'        => 'jufeel20180808',
+    'password'        => 'Jufeel20180808',
     // 端口
     'hostport'        => '3306',
     // 连接dsn

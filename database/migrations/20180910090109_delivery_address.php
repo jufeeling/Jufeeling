@@ -38,7 +38,7 @@ class DeliveryAddress extends Migrator
             ->addColumn('receipt_phone',  'integer') //收获电话号码
             ->addColumn('label',          'integer',array('default'=> 1))  //标签(学校,公司)
             ->addColumn('state',          'integer') //标记是否为默认收货地址 0是1不是
-            ->addForeignKey('user_id', 'user', 'id',['delete'=> 'SET_NULL', 'update'=> 'NO_ACTION'])
+            ->addForeignKey('user_id', 'user', 'id')
             ->create();
     }
 }
