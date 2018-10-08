@@ -83,7 +83,7 @@ class Pay
         $jsApiPayData->SetTimeStamp((string)time());
         $rand = md5(time() . mt_rand(0, 1000));
         $jsApiPayData->SetNonceStr($rand);
-        $jsApiPayData->SetPackage('prepay_id='.$wxOrder['prepay_id']);
+        $jsApiPayData->SetPackage('prepay_id=' . $wxOrder['prepay_id']);
         $jsApiPayData->SetSignType('MD5');
         $sign = $jsApiPayData->MakeSign();
         $rawValues = $jsApiPayData->GetValues();
@@ -110,7 +110,7 @@ class Pay
     public function checkOrderValid()
     {
         $order = GoodsOrderModel::getOrderById($this->id);
-        if (!$order){
+        if (!$order) {
             throw new OrderException([
                 'code' => 511,
                 'msg' => '订单不存在'
@@ -131,7 +131,7 @@ class Pay
                     'code' => 400
                 ]);
         }
-        if($order['create_time'] - time() > 86400){
+        if ($order['create_time'] - time() > 86400) {
             throw new OrderException(
                 [
                     'msg' => '该订单已过期',
@@ -147,7 +147,8 @@ class Pay
      * @param $data
      * 支付成功后的处理
      */
-    public function paySuccess($data){
+    public function paySuccess($data)
+    {
         $order = GoodsOrderModel::getOrderById($data['id']);
         $order['status'] = OrderStatusEnum::PAID;
         $order->save();
@@ -157,12 +158,13 @@ class Pay
      * @param $data
      * 支付失败
      */
-    public function payFail($data){
-        $orderRecord = OrderId::where('order_id',$data['id'])
+    public function payFail($data)
+    {
+        $orderRecord = OrderId::where('order_id', $data['id'])
             ->select();
-        foreach ($orderRecord as $o){
+        foreach ($orderRecord as $o) {
             //恢复库存
-            $goods = GoodsModel::where('id',$o['goods_id'])
+            $goods = GoodsModel::where('id', $o['goods_id'])
                 ->find();
             $goods['stock'] += 1;
             $goods->save();

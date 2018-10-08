@@ -66,25 +66,24 @@ class User
      * @throws UserException
      * 用户删除派对
      */
-    public function deleteUserParty($data){
-        $party = PartyModel::where('id',$data['id'])
+    public function deleteUserParty($data)
+    {
+        $party = PartyModel::where('id', $data['id'])
             ->find();
-        if($party){
-            if($party['user_id'] == $this->uid){
+        if ($party) {
+            if ($party['user_id'] == $this->uid) {
                 $party['status'] = 1;
                 $party->save();
-            }
-            else{
+            } else {
                 throw new UserException([
-                   'code' => 903,
-                   'msg'  => '你无权执行此操作',
+                    'code' => 903,
+                    'msg' => '你无权执行此操作',
                 ]);
             }
-        }
-        else{
+        } else {
             throw new UserException([
                 'code' => 904,
-                'msg'  => '该派对没有找到',
+                'msg' => '该派对没有找到',
             ]);
         }
     }
@@ -111,7 +110,7 @@ class User
         $data['not_use'] = UserCouponModel::with('coupon')
             ->where('end_time', '>', time())
             ->where('user_id', $this->uid)
-            ->where('status',0)
+            ->where('status', 0)
             ->where('state', 0)
             ->select();
         $data['count']['not_use'] = sizeof($data['not_use']);
@@ -128,11 +127,11 @@ class User
             ->where('end_time', '<', time())
             ->where('user_id', $this->uid)
             ->where('state', 0)
-            ->where('status',0)
+            ->where('status', 0)
             ->select();
         $data['count']['overdue'] = sizeof($data['overdue']);
         $data['not_use'] = getCouponCategory($data['not_use'], 1);
-        $data['used']    = getCouponCategory($data['used'],    1);
+        $data['used'] = getCouponCategory($data['used'], 1);
         $data['overdue'] = getCouponCategory($data['overdue'], 1);
         return $data;
     }
@@ -157,7 +156,7 @@ class User
      */
     public function selectUserGoods($data)
     {
-        for($i=0;$i<sizeof($data['check']);$i++){
+        for ($i = 0; $i < sizeof($data['check']); $i++) {
             $orderId[$i] = OrderIdModel::find((int)$data['check'][$i]);
             if ($orderId[$i]['user_id'] != $this->uid) {
                 throw new UserException([
@@ -172,7 +171,7 @@ class User
                 ]);
             }
         }
-        Cache::set('select',$data['check']);
+        Cache::set('select', $data['check']);
     }
 
     /**
@@ -240,9 +239,10 @@ class User
     /**
      *检测是否为新用户
      */
-    public function checkNewUser(){
+    public function checkNewUser()
+    {
         $user = UserModel::find($this->uid);
-        if($user['state'] == 0){
+        if ($user['state'] == 0) {
             $user['state'] = 1;
             $user->save();
         }
@@ -252,11 +252,12 @@ class User
      * @param $data
      * 修改用户信息
      */
-    public function saveUserInfo($data){
-        UserModel::where('id',$this->uid)
+    public function saveUserInfo($data)
+    {
+        UserModel::where('id', $this->uid)
             ->setField([
-               'avatar'   => $data['avatar'],
-               'nickname' => $data['nickname']
+                'avatar' => $data['avatar'],
+                'nickname' => $data['nickname']
             ]);
     }
 }

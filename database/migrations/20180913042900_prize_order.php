@@ -33,7 +33,7 @@ class PrizeOrder extends Migrator
             ->addIndex(array('id',), array('unique' => true))
             ->addColumn('prize_id',   'integer')  //商品id
             ->addColumn('user_id',    'integer')  //管理员id
-            ->addColumn('state',      'integer',array('default'=>'0')) //0未中奖,1中奖
+            ->addColumn('state',      'integer',array('default' => 0)) //0未中奖,1中奖
             ->addColumn('create_time','integer')
             ->addColumn('update_time','integer')
             ->addForeignKey('prize_id','prize','id')

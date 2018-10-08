@@ -46,24 +46,21 @@ class Coupon
                     'msg' => '该优惠券已被全部领取',
                     'errorMsg' => 70003
                 ]);
-            }
-            //判断优惠券此时的状态,是否管理员设置不可领取
+            } //判断优惠券此时的状态,是否管理员设置不可领取
             else if ($coupon['state'] == 1) {
                 throw new CouponException([
                     'code' => 704,
                     'msg' => '该优惠券暂时不能领取',
                     'errorMsg' => 70004
                 ]);
-            }
-            //判断购物券是否过期
+            } //判断购物券是否过期
             else if ($coupon['end_time'] < time()) {
                 throw new CouponException([
                     'code' => 705,
                     'msg' => '该优惠券已过期',
                     'errorMsg' => 70005
                 ]);
-            }
-            //全部排除则领取成功
+            } //全部排除则领取成功
             else if (
             UserCouponModel::create([
                 'user_id' => TokenService::getCurrentUid(),

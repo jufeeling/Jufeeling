@@ -65,26 +65,26 @@ class DeliveryAddress
                 else {
                     throw new DeliveryAddressException(
                         [
-                            'code' => '100',
+                            'code' => 100,
                             'msg' => '服务器内部错误',
-                            'errorCode' => '10000'
+                            'errorCode' => 10000
                         ]
                     );
                 }
             }
             throw new DeliveryAddressException(
                 [
-                    'code' => '103',
+                    'code' => 103,
                     'msg' => '你无权删除此收货地址',
-                    'errorCode' => '10003'
+                    'errorCode' => 10003
                 ]
             );
         }
         throw new DeliveryAddressException(
             [
-                'code' => '102',
+                'code' => 102,
                 'msg' => '未找到该收货地址',
-                'errorCode' => '10002'
+                'errorCode' => 10002
             ]
         );
     }
@@ -114,25 +114,25 @@ class DeliveryAddress
                 ) ;
                 throw new DeliveryAddressException(
                     [
-                        'code' => '100',
+                        'code' => 100,
                         'msg' => '服务器内部错误',
-                        'errorCode' => '10000'
+                        'errorCode' => 10000
                     ]
                 );
             }
             throw new DeliveryAddressException(
                 [
-                    'code' => '103',
+                    'code' => 103,
                     'msg' => '你无权修改此收货地址',
-                    'errorCode' => '10003'
+                    'errorCode' => 10003
                 ]
             );
         }
         throw new DeliveryAddressException(
             [
-                'code' => '102',
+                'code' => 102,
                 'msg' => '未找到该收货地址',
-                'errorCode' => '10002'
+                'errorCode' => 10002
             ]
         );
     }
@@ -154,17 +154,17 @@ class DeliveryAddress
             }
             throw new DeliveryAddressException(
                 [
-                    'code' => '104',
+                    'code' => 104,
                     'msg' => '你无权获得此收货地址',
-                    'errorCode' => '10004'
+                    'errorCode' => 10004
                 ]
             );
         }
         throw new DeliveryAddressException(
             [
-                'code' => '102',
+                'code' => 102,
                 'msg' => '未找到该收货地址',
-                'errorCode' => '10002'
+                'errorCode' => 10002
             ]
         );
     }

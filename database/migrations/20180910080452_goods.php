@@ -43,7 +43,7 @@ class Goods extends Migrator
             ->addColumn('cov_url',     'string')  //封面图
             ->addColumn('det_url',     'string')  //详情图
             ->addColumn('shop_id',     'integer') //商家id
-            ->addColumn('state',       'integer',array('default'=>0)) //状态 标记是否上架或下架 0上架1下架
+            ->addColumn('state',       'integer',array('default'=> 0)) //状态 标记是否上架或下架 0上架1下架
             ->addColumn('create_time', 'integer')
             ->addColumn('update_time', 'integer')
             ->create();

@@ -37,7 +37,7 @@ class Order
 
     private $receipt_id;
 
-    private $sale_price ;
+    private $sale_price;
 
 
     /**
@@ -74,16 +74,15 @@ class Order
     public function createOrder($orderSnap)
     {
         $coupon = CouponModel::find($this->coupon_id);
-        if($coupon){
+        if ($coupon) {
             //修改购物券使用情况
-            $userCoupon = UserCoupon::where('user_id',TokenService::getCurrentUid())
-                ->where('coupon_id',$coupon['id'])
+            $userCoupon = UserCoupon::where('user_id', TokenService::getCurrentUid())
+                ->where('coupon_id', $coupon['id'])
                 ->find();
             $userCoupon['status'] = 1;
             $userCoupon->save();
             $this->sale_price = $coupon['sale'];
-        }
-        else{
+        } else {
             $this->sale_price = 0;
         }
 
@@ -93,7 +92,7 @@ class Order
         $order['user_id'] = $this->uid;
         $order['price'] = $orderSnap['price'];
         $salePrice = $orderSnap['price'] - $this->sale_price;
-        if($salePrice <0){
+        if ($salePrice < 0) {
             $salePrice = 0;
         }
         $order['sale_price'] = $salePrice;
@@ -274,24 +273,23 @@ class Order
         /**
          *保证两种数据格式一样
          */
-        if($data['goods_id'] !=0 || $data['count'] !=0){
+        if ($data['goods_id'] != 0 || $data['count'] != 0) {
             $result['goods'] = GoodsModel::where('id', $data['goods_id'])
                 ->field('name,category_id,price,sale_price,stock,thu_url')
                 ->select();
             $result['goods'][0]['count'] = $data['count'];
-        }
-        else{
+        } else {
             //定义新数组
             $result['goods'] = [];
             //获取预数据
-            $preData['goods'] = ShoppingCart::with(['goods'=>function($query){
+            $preData['goods'] = ShoppingCart::with(['goods' => function ($query) {
                 $query->field('id,name,category_id,price,sale_price,stock,thu_url');
             }])
-                ->where('user_id',TokenService::getCurrentUid())
-                ->where('select',1)
+                ->where('user_id', TokenService::getCurrentUid())
+                ->where('select', 1)
                 ->select();
             //将Count添加到预数据的goods中
-            foreach ($preData['goods'] as $r){
+            foreach ($preData['goods'] as $r) {
                 $r['goods']['count'] = $r['count'];
             }
             //组装新数组
@@ -300,12 +298,11 @@ class Order
             }
 
         }
-        if(($data['delivery_address']) == 0){
-            $result['address'] = DeliveryAddressModel::where('user_id',TokenService::getCurrentUid())
-                ->where('state',0)
+        if (($data['delivery_address']) == 0) {
+            $result['address'] = DeliveryAddressModel::where('user_id', TokenService::getCurrentUid())
+                ->where('state', 0)
                 ->find();
-        }
-        else{
+        } else {
             $result['address'] = DeliveryAddressModel::find($data['delivery_address']);
         }
         $result['coupon'] = $this->getOrderCoupon($result['goods']);
@@ -320,13 +317,15 @@ class Order
      * @return int
      *
      */
-    private function getGoodsInfo($data){
+    private function getGoodsInfo($data)
+    {
         $price = 0;
-        foreach ($data as $d){
+        foreach ($data as $d) {
             $price += $d['price'] * $d['count'];
         }
         return $price;
     }
+
     /**
      * @param $data
      * @return array
@@ -338,13 +337,13 @@ class Order
 
         $condition = [
             'user_id' => TokenService::getCurrentUid(),
-            'status'  => 0,
-            'state'   => 0
+            'status' => 0,
+            'state' => 0
         ];
         $coupons = UserCoupon::with('coupon')
             ->where($condition)
-            ->where('start_time','<',time())
-            ->where('end_time','>',time())
+            ->where('start_time', '<', time())
+            ->where('end_time', '>', time())
             ->select();
         foreach ($coupons as $c) {
             $count = sizeof($coupon);

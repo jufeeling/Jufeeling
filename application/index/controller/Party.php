@@ -25,15 +25,19 @@ class Party extends BaseController
         parent::__construct($app);
     }
 
+    /**
+     * @return \think\response\Json
+     * 举办聚会
+     */
     public function hostParty()
     {
         (new PartyValidate())->scene('host')->goCheck(Request::param());
         try {
-            $this->party->hostParty(Request::param());
+            $data = $this->party->hostParty(Request::param());
         } catch (PartyException $e) {
             return result('', $e->msg, $e->code);
         }
-        return result('', '举办成功');
+        return result($data, '举办成功');
     }
 
     /**

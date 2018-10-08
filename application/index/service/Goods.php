@@ -15,6 +15,7 @@ use app\lib\exception\GoodsException;
 class Goods
 {
     private $condition = array();
+
     /**
      * @param $data
      * @return array|\PDOStatement|string|\think\Collection
@@ -27,7 +28,7 @@ class Goods
         if ($data['category'] == 0) {
             $goods['data'] = GoodsModel::with('category')
                 ->where('stock', '>', 0)
-                ->where('state',0)
+                ->where('state', 0)
                 ->order('create_time desc')
                 ->field('id,name,thu_url,price,sale_price,category_id')
                 ->select();
@@ -35,7 +36,7 @@ class Goods
         else {
             $goods = GoodsModel::with('category')
                 ->where('stock', '>', 0)
-                ->where('state',0)
+                ->where('state', 0)
                 ->where('category_id', $data['category'])
                 ->field('id,name,thu_url,price,sale_price,category_id')
                 ->order('create_time desc')
@@ -51,29 +52,29 @@ class Goods
      * @return array|\PDOStatement|string|\think\Collection
      * 发现BUG  还需要传category
      */
-    public function conditionGoods($data){
+    public function conditionGoods($data)
+    {
         $this->getConditionValue($data);
-        if($data['sort'] == 0){
+        if ($data['sort'] == 0) {
             $goods = GoodsModel::with('category')
                 ->where('stock', '>', 0)
-                ->where('state',0)
+                ->where('state', 0)
                 ->where($this->condition)
                 ->field('id,name,thu_url,price,sale_price,category_id')
                 ->order('create_time desc')
                 ->select();
-        }elseif ($data['sort'] == 1){
+        } elseif ($data['sort'] == 1) {
             $goods = GoodsModel::with('category')
                 ->where('stock', '>', 0)
-                ->where('state',0)
+                ->where('state', 0)
                 ->where($this->condition)
                 ->field('id,name,thu_url,price,sale_price,category_id')
                 ->order('price desc')
                 ->select();
-        }
-        else{
+        } else {
             $goods = GoodsModel::with('category')
                 ->where('stock', '>', 0)
-                ->where('state',0)
+                ->where('state', 0)
                 ->where($this->condition)
                 ->field('id,name,thu_url,price,sale_price,category_id')
                 ->order('price asc')
@@ -88,23 +89,21 @@ class Goods
      * @return array
      * 得到筛选条件
      */
-    private function getConditionValue($data){
-        if($data['category'] == 0){
+    private function getConditionValue($data)
+    {
+        if ($data['category'] == 0) {
             $this->condition['name'] = $data['condition'][0];
             $this->condition['description'] = $data['condition'][1];
             $this->condition['price'] = $data['condition'][2];
-        }
-        else if($data['category'] == 1){
+        } else if ($data['category'] == 1) {
             $this->condition['name'] = $data['condition'][0];
             $this->condition['description'] = $data['condition'][1];
             $this->condition['price'] = $data['condition'][2];
-        }
-        else if($data['category'] == 3){
+        } else if ($data['category'] == 3) {
             $this->condition['name'] = $data['condition'][0];
             $this->condition['description'] = $data['condition'][1];
             $this->condition['price'] = $data['condition'][2];
-        }
-        else {
+        } else {
             $this->condition['name'] = $data['condition'][0];
             $this->condition['description'] = $data['condition'][1];
             $this->condition['price'] = $data['condition'][2];
@@ -115,10 +114,11 @@ class Goods
      * @return array|\PDOStatement|string|\think\Collection
      * 获取推荐商品
      */
-    public function getRecommendGoods(){
-        $goods = RecommendModel::with(['goods'=>function($query){
-            $query->where('stock','>',0)
-                ->where('state',0)
+    public function getRecommendGoods()
+    {
+        $goods = RecommendModel::with(['goods' => function ($query) {
+            $query->where('stock', '>', 0)
+                ->where('state', 0)
                 ->field('id,name,thu_url,price,sale_price,category_id')
                 ->with('category');
         }])
@@ -154,7 +154,7 @@ class Goods
         $goods = GoodsModel::with('category')
             ->where('stock', '>', 0)
             ->where('name|description', 'like', '%' . $data['content'] . '%')
-            ->where('state',0)
+            ->where('state', 0)
             ->field('name,thu_url,price,sale_price,category_id')
             ->order('create_time desc')
             ->select();

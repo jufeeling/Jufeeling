@@ -36,37 +36,36 @@ class Party
                 ->find();
             if ($party_order) {
                 throw new PartyException([
-                    'code' => '606',
+                    'code' => 606,
                     'msg' => '您已参加了该派对',
-                    'errorMsg' => '60006'
+                    'errorMsg' => 60006
                 ]);
             } else {
-                $start_time = $party['date'] . ' ' . $party['time'];
                 if ($party['user_id'] == TokenService::getCurrentUid()) {
                     throw new PartyException([
-                        'code' => '608',
+                        'code' => 608,
                         'msg' => '您是该派对的发起者,已参加',
-                        'errorMsg' => '60008'
+                        'errorMsg' => 60008
                     ]);
                 } else if ($party['state'] == PartyEnum::CLOSE) {
                     throw new PartyException([
-                        'code' => '602',
+                        'code' => 602,
                         'msg' => '该派对暂时不能参加',
-                        'errorMsg' => '60002'
+                        'errorMsg' => 60002
                     ]);
-                } else if (strtotime($start_time) < time()) {
+                } else if ($party['start_time'] < time()) {
                     throw new PartyException([
-                        'code' => '603',
+                        'code' => 603,
                         'msg' => '抱歉,已经过了报名时间',
-                        'errorMsg' => '60003'
+                        'errorMsg' => 60003
                     ]);
                 } //判断该聚会是否符合10人以上规格
                 else if ($party['people_no'] != 11) {
                     if ($party['remaining_people_no'] == 0) {
                         throw new PartyException([
-                            'code' => '604',
+                            'code' => 604,
                             'msg' => '抱歉,报名人数已满',
-                            'errorMsg' => '60004'
+                            'errorMsg' => 60004
                         ]);
                     }
                 } else if (
@@ -80,9 +79,9 @@ class Party
                     $party->save();
                 } else {
                     throw new PartyException([
-                        'code' => '605',
+                        'code' => 605,
                         'msg' => '服务器内部错误',
-                        'errorMsg' => '60005'
+                        'errorMsg' => 60005
                     ]);
                 }
             }
@@ -106,12 +105,12 @@ class Party
                 'party_id' => $data['id'],
                 'content' => $data['content']
             ])
-            );
+            ) ;
             else {
                 throw new PartyException([
-                    'code' => '605',
+                    'code' => 605,
                     'msg' => '服务器内部错误',
-                    'errorMsg' => '60005'
+                    'errorMsg' => 60005
                 ]);
             }
         } else {
@@ -127,33 +126,29 @@ class Party
      */
     public function hostParty($data)
     {
-        if (
-        PartyModel::create([
-            'way' => $data['way'],
-            'date' => $data['date'],
-            'time' => $data['time'],
-            'site' => $data['site'],
-            'image' => $data['url'],
-            'user_id' => TokenService::getCurrentUid(),
-            'people_no' => (int)$data['people_no'],
-            'description' => $data['description'],
-            'remaining_people_no' => (int)$data['people_no'] - 1,
-        ])
-        ) {
-            //获取并删除缓存
-            $check = Cache::pull('select');
+        $party = new PartyModel();
+        $party['way'] = $data['way'];
+        $party['date'] = $data['date'];
+        $party['time'] = $data['time'];
+        $party['site'] = $data['site'];
+        $party['image'] = $data['image'];
+        $party['user_id'] = TokenService::getCurrentUid();
+        $party['people_no'] = (int)$data['people_no'];
+        $party['description'] = $data['description'];
+        $start_time = $data['date'] . $data['time'];
+        $party['start_time'] = strtotime($start_time);
+        $party['remaining_people_no'] = (int)$data['people_no'] - 1;
+        $party->save();
+        //获取并删除缓存
+        $check = Cache::pull('select');
+        if ($check) {
             for ($i = 0; $i < sizeof($check); $i++) {
                 $orderId = OrderId::find($check[$i]);
                 $orderId['select'] = 1;
                 $orderId->save();
             }
-        } else {
-            throw new PartyException([
-                'code' => '607',
-                'msg' => '举办失败,可能是服务器内部错误',
-                'errorMsg' => '60007'
-            ]);
         }
+        return $party['id'];
     }
 
     /**
@@ -205,7 +200,7 @@ class Party
     {
         $data = [];
         $select = Cache::get('select');
-        if($select){
+        if ($select) {
             for ($i = 0; $i < sizeof($select); $i++) {
                 $data[$i] = OrderId::with(['goods' => function ($query) {
                     $query->field('id,name,pic_url');

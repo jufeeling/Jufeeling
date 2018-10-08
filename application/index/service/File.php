@@ -13,7 +13,7 @@ use app\lib\exception\PartyException;
 class File
 {
 
-    private $url = 'jufeel/jufeeling/public/static/image/upload/';
+    private $url = 'jufeel.jufeeling.com/static/image/upload/';
 
     /**
      * 多图片上传

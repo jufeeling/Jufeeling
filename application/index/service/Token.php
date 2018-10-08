@@ -50,7 +50,8 @@ class Token
      * @throws TokenException
      * 检测是否存在Token
      */
-    public static function checkExistToken(){
+    public static function checkExistToken()
+    {
         $token = Request::header('token');
         $vars = Cache::get($token);
         if (!$vars) {

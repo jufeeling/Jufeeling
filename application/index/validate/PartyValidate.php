@@ -8,7 +8,6 @@
 
 namespace app\index\validate;
 
-
 class PartyValidate extends BaseValidate
 {
     protected $rule =
@@ -16,9 +15,9 @@ class PartyValidate extends BaseValidate
             'id'          => 'require|isPositiveInteger',
             'content'     => 'require',
             'description' => 'require',
-            'url'         => 'require',
+            'image'       => 'require',
             'way'         => 'require',
-            'people_no'   => 'integer|require',
+            'people_no'   => 'require|isPositiveInteger',
             'date'        => 'require',
             'time'        => 'require',
             'site'        => 'require',
@@ -58,7 +57,7 @@ class PartyValidate extends BaseValidate
                     'date',
                     'time',
                     'site',
-                    'url'
+                    'image'
                 ]
         ];
 }
