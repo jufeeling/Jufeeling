@@ -17,7 +17,7 @@ use think\Controller;
 use think\facade\Cache;
 use think\facade\Request;
 
-class User extends BaseController
+class User extends Controller
 {
     private $user;
 
@@ -91,17 +91,17 @@ class User extends BaseController
         return result($data);
     }
 
+
     /**
      * @return \think\response\Json
-     * 用户选择使用的商品
+     * 删除来点feel界面的商品
      */
-    public function selectUserGoods()
-    {
-        (new UserValidate())->scene('check')->goCheck(Request::param());
-        try {
-           $this->user->selectUserGoods(Request::param());
-        } catch (UserException $e) {
-            return result('', $e->msg, $e->code);
+    public function deleteUserGoods(){
+        (new UserValidate())->scene('delete')->goCheck(Request::param());
+        try{
+            $this->user->deleteUserGoods(Request::param());
+        }catch (UserException $e){
+            return result('',$e->msg,$e->code);
         }
         return result();
     }
@@ -124,6 +124,19 @@ class User extends BaseController
     public function getUserOrder(){
         $data = $this->user->getUserOrder();
         return result($data);
+    }
+
+    /**
+     *用户确认收获
+     */
+    public function deliveryUserOrder(){
+        (new UserValidate())->scene('id')->goCheck(Request::param());
+        try{
+            $this->user->deliveryUserOrder(Request::param());
+        }catch (UserException $e){
+            return result('',$e->msg,$e->code);
+        }
+        return result();
     }
 
     /**

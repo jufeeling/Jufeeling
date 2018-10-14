@@ -32,6 +32,7 @@ class Prize
             }
             if (
             PrizeOrderModel::create([
+                'form_id'  => $data['form_id'],
                 'prize_id' => $data['id'],
                 'user_id' => TokenService::getCurrentUid()
             ])

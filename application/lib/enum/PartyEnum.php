@@ -16,4 +16,5 @@ class PartyEnum
 
     // 不能参加
     const CLOSE = 1;
+
 }

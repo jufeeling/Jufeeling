@@ -11,7 +11,6 @@ namespace app\index\controller;
 use app\index\validate\PartyValidate;
 use app\lib\exception\PartyException;
 use think\App;
-use think\Controller;
 use think\facade\Request;
 use app\index\service\Party as PartyService;
 
@@ -97,14 +96,5 @@ class Party extends BaseController
             return result('', $e->msg, $e->code);
         }
         return result($data, '查看成功');
-    }
-
-    /**
-     * @return \think\response\Json
-     * 获取派对所需要的商品
-     */
-    public function getPartyGoods(){
-        $data = $this->party->getPartyGoods();
-        return result($data);
     }
 }

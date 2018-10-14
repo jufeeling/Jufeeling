@@ -8,7 +8,6 @@
 
 namespace app\index\model;
 
-
 use think\Model;
 
 class Party extends Model
@@ -16,7 +15,9 @@ class Party extends Model
     protected $hidden =
         [
             'create_time',
-            'update_time'
+            'update_time',
+            'state',
+            'status'
         ];
 
     /**
@@ -45,4 +46,9 @@ class Party extends Model
     {
         return $this->hasOne('User', 'id', 'user_id');
     }
+
+    public function orderId(){
+        return $this->hasMany('OrderId', 'party_id', 'id');
+    }
+
 }

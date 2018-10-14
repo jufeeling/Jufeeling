@@ -21,4 +21,5 @@ class Banner extends BaseController
             ->select();
         return result($data);
     }
+
 }

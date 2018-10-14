@@ -20,7 +20,6 @@ use think\facade\Cache;
 
 class Party
 {
-
     /**
      * @param $data
      * @return array|null|\PDOStatement|string|\think\Model
@@ -40,53 +39,63 @@ class Party
                     'msg' => '您已参加了该派对',
                     'errorMsg' => 60006
                 ]);
+            }
+            $this->checkPartyValid($party);
+            if (
+            PartyOrder::create([
+                'party_id' => $party['id'],
+                'user_id' => TokenService::getCurrentUid(),
+                'status' => 0
+            ])
+            ) {
+                $party['remaining_people_no'] -= 1;
+                $party->save();
             } else {
-                if ($party['user_id'] == TokenService::getCurrentUid()) {
-                    throw new PartyException([
-                        'code' => 608,
-                        'msg' => '您是该派对的发起者,已参加',
-                        'errorMsg' => 60008
-                    ]);
-                } else if ($party['state'] == PartyEnum::CLOSE) {
-                    throw new PartyException([
-                        'code' => 602,
-                        'msg' => '该派对暂时不能参加',
-                        'errorMsg' => 60002
-                    ]);
-                } else if ($party['start_time'] < time()) {
-                    throw new PartyException([
-                        'code' => 603,
-                        'msg' => '抱歉,已经过了报名时间',
-                        'errorMsg' => 60003
-                    ]);
-                } //判断该聚会是否符合10人以上规格
-                else if ($party['people_no'] != 11) {
-                    if ($party['remaining_people_no'] == 0) {
-                        throw new PartyException([
-                            'code' => 604,
-                            'msg' => '抱歉,报名人数已满',
-                            'errorMsg' => 60004
-                        ]);
-                    }
-                } else if (
-                PartyOrder::create([
-                    'party_id' => $party['id'],
-                    'user_id' => TokenService::getCurrentUid(),
-                    'status' => 0
-                ])
-                ) {
-                    $party['remaining_people_no'] -= 1;
-                    $party->save();
-                } else {
-                    throw new PartyException([
-                        'code' => 605,
-                        'msg' => '服务器内部错误',
-                        'errorMsg' => 60005
-                    ]);
-                }
+                throw new PartyException([
+                    'code' => 605,
+                    'msg' => '服务器内部错误',
+                    'errorMsg' => 60005
+                ]);
             }
         } else {
             throw new PartyException();
+        }
+    }
+
+    /**
+     * @param $party
+     * @throws PartyException
+     * 判断派对是否合格
+     */
+    private function checkPartyValid($party)
+    {
+        if ($party['user_id'] == TokenService::getCurrentUid()) {
+            throw new PartyException([
+                'code' => 608,
+                'msg' => '您是该派对的发起者,已参加',
+                'errorMsg' => 60008
+            ]);
+        } else if ($party['state'] == PartyEnum::CLOSE) {
+            throw new PartyException([
+                'code' => 602,
+                'msg' => '该派对暂时不能参加',
+                'errorMsg' => 60002
+            ]);
+        } else if ($party['start_time'] < time()) {
+            throw new PartyException([
+                'code' => 603,
+                'msg' => '抱歉,已经过了报名时间',
+                'errorMsg' => 60003
+            ]);
+        } //判断该聚会是否符合10人以上规格
+        else if ($party['people_no'] != 11) {
+            if ($party['remaining_people_no'] == 0) {
+                throw new PartyException([
+                    'code' => 604,
+                    'msg' => '抱歉,报名人数已满',
+                    'errorMsg' => 60004
+                ]);
+            }
         }
     }
 
@@ -95,20 +104,21 @@ class Party
      * @throws PartyException
      * 关闭聚会
      */
-    public function closeParty($data){
+    public function closeParty($data)
+    {
         $party = PartyModel::find($data['id']);
-        if($party){
-            if($party['user_id'] == TokenService::getCurrentUid()){
+        if ($party) {
+            if ($party['user_id'] == TokenService::getCurrentUid()) {
                 $party['state'] = 1;
                 $party->save();
-            }else{
+            } else {
                 throw new PartyException([
                     'code' => 610,
                     'msg' => '你没有权利执行此操作',
                     'errorMsg' => 60008
                 ]);
             }
-        }else{
+        } else {
             throw new PartyException();
         }
     }
@@ -162,16 +172,14 @@ class Party
         $party['start_time'] = strtotime($start_time);
         $party['remaining_people_no'] = (int)$data['people_no'] - 1;
         $party->save();
-        //获取并删除缓存
-        $check = Cache::pull('select');
-        if ($check) {
-            for ($i = 0; $i < sizeof($check); $i++) {
-                $orderId = OrderId::find($check[$i]);
+        if($data['orders'][0]['order_id'] !=0){
+            foreach ($data['orders'] as $d){
+                $orderId = OrderId::find($d['order_id']);
                 $orderId['select'] = 1;
                 $orderId->save();
             }
         }
-        return $party['id'];
+        return (int)$party['id'];
     }
 
     /**
@@ -184,6 +192,12 @@ class Party
         $party = PartyModel::with(['participants' => function ($query) {
             $query->with('user');
         }])
+            ->with(['orderId' =>function($query){
+                $query->field('id,goods_id,party_id')
+                    ->with(['goods'=>function($query){
+                        $query->field('id,name,price,sale_price,thu_url');
+                    }]);
+            }])
             ->with(['message' => function ($query) {
                 $query->with('user');
             }])
@@ -210,28 +224,6 @@ class Party
                     $d_m['identity'] = IdentityEnum::PEDESTRIANS; //标记为路人
                 }
             }
-        }
-        return $data;
-    }
-
-    /**
-     * @return array|null|\PDOStatement|string|\think\Model
-     * 获取派对已选择的商品
-     */
-    public function getPartyGoods()
-    {
-        $data = [];
-        $select = Cache::get('select');
-        if ($select) {
-            for ($i = 0; $i < sizeof($select); $i++) {
-                $data[$i] = OrderId::with(['goods' => function ($query) {
-                    $query->field('id,name,pic_url');
-                }])
-                    ->order('create_time desc')
-                    ->field('goods_id')
-                    ->find($select[$i]);
-            }
-            return $data;
         }
         return $data;
     }

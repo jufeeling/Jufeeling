@@ -15,7 +15,6 @@ use think\Exception;
 use think\facade\Cache;
 use think\facade\Request;
 
-
 class Token
 {
     public static function generateToken()
@@ -65,33 +64,6 @@ class Token
         return $uid;
     }
 
-    public static function needPrimaryScope()
-    {
-        $scope = self::getCurrentTokenVar('scope');
-        if ($scope) {
-            if ($scope >= ScopeEnum::User) {
-                return true;
-            } else {
-                throw new ForbiddenException();
-            }
-        } else {
-            throw new TokenException();
-        }
-    }
-
-    public static function needExclusiveScope()
-    {
-        $scope = self::getCurrentTokenVar('scope');
-        if ($scope) {
-            if ($scope == ScopeEnum::User) {
-                return true;
-            } else {
-                throw new ForbiddenException();
-            }
-        } else {
-            throw new TokenException();
-        }
-    }
 
     public static function isValidOperate($checkedUID)
     {

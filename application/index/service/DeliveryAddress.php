@@ -33,20 +33,16 @@ class DeliveryAddress
                 $address->save();
             }
         }
-        if (
-        DeliveryAddressModel::create([
-            'user_id' => TokenService::getCurrentUid(),
-            'receipt_name' => $data['name'],
-            'receipt_phone' => $data['phone'],
-            'receipt_area' => $data['area'],
-            'receipt_address' => $data['address'],
-            'label' => $data['label'],
-            'state' => $data['state']
-        ])
-        ) ;
-        else {
-            throw new DeliveryAddressException();
-        }
+        $address = new DeliveryAddressModel();
+        $address['user_id'] = TokenService::getCurrentUid();
+        $address['receipt_name'] = $data['name'];
+        $address['receipt_phone'] = $data['phone'];
+        $address['receipt_area'] = $data['area'];
+        $address['receipt_address'] = $data['address'];
+        $address['label'] = $data['label'];
+        $address['state'] = $data['state'];
+        $address->save();
+        return $address['id'];
     }
 
     /**
@@ -101,40 +97,33 @@ class DeliveryAddress
         if ($address) {
             //判断此收货地址是否为该用户的
             if ($address['user_id'] == TokenService::getCurrentUid()) {
-                if (
-                $address->update([
-                    'id' => $data['id'],
-                    'receipt_name' => $data['name'],
-                    'receipt_phone' => $data['phone'],
-                    'receipt_area' => $data['area'],
-                    'receipt_address' => $data['address'],
-                    'label' => $data['label'],
-                    'state' => $data['state']
-                ])
-                ) ;
+                $address['id'] = $data['id'];
+                $address['receipt_name'] = $data['name'];
+                $address['receipt_phone'] = $data['phone'];
+                $address['receipt_area'] = $data['area'];
+                $address['receipt_address'] = $data['address'];
+                $address['label'] = $data['label'];
+                $address['state'] = $data['state'];
+                $address->save();
+            } else {
                 throw new DeliveryAddressException(
                     [
-                        'code' => 100,
-                        'msg' => '服务器内部错误',
-                        'errorCode' => 10000
+                        'code' => 103,
+                        'msg' => '你无权修改此收货地址',
+                        'errorCode' => 10003
                     ]
                 );
             }
+        } else {
             throw new DeliveryAddressException(
                 [
-                    'code' => 103,
-                    'msg' => '你无权修改此收货地址',
-                    'errorCode' => 10003
+                    'code' => 102,
+                    'msg' => '未找到该收货地址',
+                    'errorCode' => 10002
                 ]
             );
         }
-        throw new DeliveryAddressException(
-            [
-                'code' => 102,
-                'msg' => '未找到该收货地址',
-                'errorCode' => 10002
-            ]
-        );
+
     }
 
     /**

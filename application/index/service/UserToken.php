@@ -58,7 +58,6 @@ class UserToken extends Token
         // key: 令牌
         // value: wxResult,uid,scope
         $openid = $wxResult['openid'];
-        //var_dump($openid);
         $user = UserModel::getByOpenID($openid);
         if ($user) {
             $uid = $user->id;
@@ -92,7 +91,6 @@ class UserToken extends Token
     {
         $cachedValue = $wxResult;
         $cachedValue['uid'] = $uid;
-        $cachedValue['scope'] = ScopeEnum::User; //代表App用户权限数值
         return $cachedValue;
     }
 

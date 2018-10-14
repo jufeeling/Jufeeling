@@ -32,30 +32,8 @@ return [
         [
             0 =>
                 [
-                    'country'=>
-                        [
-                            [
-                                'name' => 'China',
-                                'value' => 0
-                            ],
-                            [
-                                'name' => 'UK',
-                                'value' => 1
-                            ],
-                            [
-                                'name' => 'USA',
-                                'value' => 2
-                            ],
-                            [
-                                'name' => 'Korea',
-                                'value' => 3
-                            ],
-                            [
-                                'name' => 'Japan',
-                                'value' => 4
-                            ],
-                        ],
-                    ''
+                    'country'=> ['China','Japan','America','England']
+
                 ],
         ],
 ];

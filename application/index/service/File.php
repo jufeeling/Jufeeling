@@ -12,9 +12,6 @@ use app\lib\exception\PartyException;
 
 class File
 {
-
-    private $url = 'jufeel.jufeeling.com/static/image/upload/';
-
     /**
      * 多图片上传
      */
@@ -26,7 +23,7 @@ class File
             $info = $file->move(ROOT_PATH . 'public' . DS . 'static' . DS . 'image' . DS . 'upload');
             if ($info) {
                 //组装url
-                $url = $this->url . str_replace('\\', '/', $info->getSaveName());
+                $url = 'https://jufeel.jufeeling.com/static/image/upload/' . str_replace('\\', '/', $info->getSaveName());
                 return $url;
             } else {
                 // 上传失败获取错误信息
@@ -38,6 +35,4 @@ class File
             ]);
         }
     }
-
-
 }

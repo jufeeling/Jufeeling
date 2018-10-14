@@ -139,6 +139,7 @@ class Goods
         $goods = GoodsModel::with('category')
             ->find($data['id']);
         if ($goods) {
+            $goods['id'] = (int)$goods['id'];
             return $goods;
         }
         throw new GoodsException();

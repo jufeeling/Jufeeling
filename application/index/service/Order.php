@@ -20,6 +20,7 @@ use app\lib\enum\OrderStatusEnum;
 use app\lib\exception\GoodsException;
 use app\index\model\DeliveryAddress as DeliveryAddressModel;
 use app\index\service\User as UserService;
+use app\lib\exception\OrderException;
 
 class Order
 {
@@ -68,7 +69,8 @@ class Order
 
     /**
      * @param $orderSnap
-     * @return string
+     * @return mixed
+     * @throws OrderException
      * 生成订单
      */
     public function createOrder($orderSnap)
@@ -85,15 +87,17 @@ class Order
         } else {
             $this->sale_price = 0;
         }
-
         $orderId = $this->makeOrderNo();
         $order = new GoodsOrderModel();
         $order['order_id'] = $orderId;
         $order['user_id'] = $this->uid;
         $order['price'] = $orderSnap['price'];
         $salePrice = $orderSnap['price'] - $this->sale_price;
-        if ($salePrice < 0) {
-            $salePrice = 0;
+        if ($salePrice <= 0) {
+            throw new OrderException([
+                'msg' => '支付金额必须大约0.01',
+                'code' => 520
+            ]);
         }
         $order['sale_price'] = $salePrice;
         $order['receipt_name'] = $orderSnap['receipt']['receipt_name'];
@@ -273,38 +277,16 @@ class Order
         /**
          *保证两种数据格式一样
          */
-        if ($data['goods_id'] != 0 || $data['count'] != 0) {
-            $result['goods'] = GoodsModel::where('id', $data['goods_id'])
-                ->field('name,category_id,price,sale_price,stock,thu_url')
-                ->select();
-            $result['goods'][0]['count'] = $data['count'];
-        } else {
-            //定义新数组
-            $result['goods'] = [];
-            //获取预数据
-            $preData['goods'] = ShoppingCart::with(['goods' => function ($query) {
-                $query->field('id,name,category_id,price,sale_price,stock,thu_url');
-            }])
-                ->where('user_id', TokenService::getCurrentUid())
-                ->where('select', 1)
-                ->select();
-            //将Count添加到预数据的goods中
-            foreach ($preData['goods'] as $r) {
-                $r['goods']['count'] = $r['count'];
-            }
-            //组装新数组
-            foreach ($preData['goods'] as $r) {
-                array_push($result['goods'], $r['goods']);
-            }
-
-        }
-        if (($data['delivery_address']) == 0) {
-            $result['address'] = DeliveryAddressModel::where('user_id', TokenService::getCurrentUid())
-                ->where('state', 0)
+        (new Cart())->saveCacheToDb();
+        for ($i = 0; $i < count($data['goods']); $i++) {
+            $result['goods'][$i] = GoodsModel::where('id', $data['goods'][$i]['goods_id'])
+                ->field('id,name,category_id,price,sale_price,stock,thu_url')
                 ->find();
-        } else {
-            $result['address'] = DeliveryAddressModel::find($data['delivery_address']);
+            $result['goods'][$i]['count'] = $data['goods'][$i]['count'];
         }
+        $result['address'] = DeliveryAddressModel::where('user_id', TokenService::getCurrentUid())
+            ->where('state', 0)
+            ->find();
         $result['coupon'] = $this->getOrderCoupon($result['goods']);
         $result['goods_count'] = count($result['goods']);
         $result['price'] = $this->getGoodsInfo($result['goods']);

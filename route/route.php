@@ -23,42 +23,43 @@ Route::group('token',function (){
  */
 Route::group('user',function (){
     Route::group('party',function (){
-        Route::get('host','User/getUserHostParty');  //测试成功
-        Route::get('join','User/getUserJoinParty');  //测试成功
-        Route::delete('delete','User/deleteUserParty');
+        Route::get('host',      'User/getUserHostParty');  //测试成功
+        Route::get('join',      'User/getUserJoinParty');  //测试成功
+        Route::delete('delete', 'User/deleteUserParty');
     });
     Route::group('address',function (){
-        Route::get('/','User/getUserDeliveryAddress'); //测试成功
+        Route::get('/', 'User/getUserDeliveryAddress'); //测试成功
     });
     Route::group('coupon',function (){
         //获取用户所有优惠券
-       Route::get('/','User/getUserCoupon') ;  //测试成功
+       Route::get('/',   'User/getUserCoupon') ;  //测试成功
     });
     Route::group('goods',function (){
         //获取用户所有商品
-       Route::get('/',      'User/getUserGoods');    //测试成功
-        //用户选择聚会要使用的商品
-       Route::post('select','User/selectUserGoods'); //测试成功
+        Route::get('/',      'User/getUserGoods');    //测试成功
+        Route::delete('/',   'User/deleteUserGoods');
     });
     Route::group('order',function (){
         //获取用户所有订单
-       Route::get('/',    'User/getUserOrder');  //测试成功
+       Route::get('/',         'User/getUserOrder');  //测试成功
        //获取用户单个订单详情
-       Route::get('info', 'User/getUserOrderInfo');
+       Route::get('info',      'User/getUserOrderInfo');
+       //用户执行确认收货操作
+       Route::post('delivery', 'User/deliveryUserOrder');
        //用户删除订单
-       Route::delete('/', 'User/deleteUserOrder');
+       Route::delete('/',      'User/deleteUserOrder');
     });
-    Route::post('info','User/saveUserInfo'); //修改用户头像昵称
+    Route::post('info', 'User/saveUserInfo'); //修改用户头像昵称
 });
 
 /**
  * 收货地址模块
  */
 Route::group('address',function (){
-    Route::get('get',      'DeliveryAddress/getDeliveryAddress'); //测试成功
-    Route::post('add',     'DeliveryAddress/addDeliveryAddress'); //测试成功
-    Route::post('update',  'DeliveryAddress/updateDeliveryAddress');
-    Route::delete('delete','DeliveryAddress/deleteDeliveryAddress');
+    Route::get('get',       'DeliveryAddress/getDeliveryAddress'); //测试成功
+    Route::post('add',      'DeliveryAddress/addDeliveryAddress'); //测试成功
+    Route::post('update',   'DeliveryAddress/updateDeliveryAddress');
+    Route::delete('delete', 'DeliveryAddress/deleteDeliveryAddress');
 });
 
 /**
@@ -74,7 +75,7 @@ Route::group('coupon',function (){
  */
 Route::group('goods',function (){
     Route::get('recommend',  'Goods/getRecommendGoods');
-    Route::get('title',      'Goods/getRecommendTitle');
+    Route::get('title',      'Goods/getRecommendTitle');  //...推荐 定时任务
     Route::get('all',        'Goods/getAllGoods');     //测试成功
     Route::get('detail',     'Goods/getGoodsDetail');  //测试成功
     Route::post('search',    'Goods/getSearchGoods');
@@ -91,8 +92,6 @@ Route::group('party',function (){
     Route::get('join',     'Party/joinParty');
     //关闭聚会
     Route::get('close',    'Party/closeParty');
-    //获取派对所需要的商品
-    Route::get('goods',    'Party/getPartyGoods'); //测试成功
     //举办派对
     Route::post('host',    'Party/hostParty');
     Route::post('comment', 'Party/commentParty');
@@ -102,7 +101,7 @@ Route::group('party',function (){
  * 抽奖模块
  */
 Route::group('prize',function (){
-    Route::get('draw','Prize/prizeDraw');
+    Route::get('draw', 'Prize/prizeDraw');
 });
 
 /**
@@ -110,7 +109,7 @@ Route::group('prize',function (){
  */
 Route::group('file',function (){
     //图片上传
-    Route::post('upload',    'File/uploadImage');
+    Route::post('upload', 'File/uploadImage');
 });
 
 /**
@@ -118,28 +117,31 @@ Route::group('file',function (){
  */
 Route::group('cart',function (){
     //添加商品到购物车
-    Route::post('add','Cart/addShoppingCart');    //测试成功
+    Route::post('add',        'Cart/addShoppingCart');    //测试成功
     //获取购物车商品信息
-    Route::get('info','Cart/getShoppingCartInfo');  //测试成功
+    Route::get('info',        'Cart/getShoppingCartInfo');  //测试成功
     //修改购物车商品数量
-    Route::post('count','Cart/changeCartCount');
+    Route::post('count',      'Cart/changeCartCount');
     //删除购物车
-    Route::delete('/','Cart/deleteCart');
+    Route::delete('/',        'Cart/deleteCart');
     //选择物车
-    Route::post('select','Cart/selectCart');
+    Route::post('select',     'Cart/selectCart');
     //全选
-    Route::post('all/select','Cart/selectAllCart');
+    Route::post('all/select', 'Cart/selectAllCart');
+    //将缓存中购物车的内容添加到数据库中
+    Route::get('db',          'Cart/saveCartToDb');
 });
 
 /**
  * 支付
  */
 Route::group('pay',function (){
+    Route::get('notify',   'Pay/redirectNotify');
     //支付
-    Route::post('/',      'Pay/payOrder');
-    Route::post('fail',   'Pay/payFail');
-    Route::post('success','Pay/paySuccess');
-    Route::get('notify',  'Pay/redirectNotify');
+    Route::post('/',       'Pay/payOrder');
+    Route::post('fail',    'Pay/payFail');
+    Route::post('success', 'Pay/paySuccess');
+
 });
 
 /**
@@ -147,12 +149,12 @@ Route::group('pay',function (){
  */
 Route::group('order',function (){
     //生成预订单
-    Route::post('pre',     'Order/generatePreOrder');
+    Route::post('pre',      'Order/generatePreOrder');
     //生成订单
-    Route::post('generate','Order/generateOrder');
+    Route::post('generate', 'Order/generateOrder');
 
 });
 
 Route::group('banner',function (){
-    Route::get('/','Banner/getBanner');
+    Route::get('/', 'Banner/getBanner');
 });

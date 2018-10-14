@@ -10,7 +10,6 @@ namespace app\index\controller;
 
 use app\lib\exception\DeliveryAddressException;
 use think\App;
-use think\Controller;
 use think\facade\Request;
 use app\index\validate\DeliveryAddressValidate;
 use app\index\service\DeliveryAddress as DeliveryAddressService;
@@ -33,11 +32,11 @@ class DeliveryAddress extends BaseController
     {
         (new DeliveryAddressValidate())->scene('add')->goCheck(Request::param());
         try {
-            $this->deliveryAddress->addDeliveryAddress(Request::param());
+            $data = $this->deliveryAddress->addDeliveryAddress(Request::param());
         } catch (DeliveryAddressException $e) {
             return result('', $e->msg, $e->code);
         }
-        return result('', '添加成功');
+        return result($data, '添加成功');
     }
 
     /**

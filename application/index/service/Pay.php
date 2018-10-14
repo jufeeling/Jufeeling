@@ -9,7 +9,7 @@
 namespace app\index\service;
 
 use app\index\model\GoodsOrder as GoodsOrderModel;
-use app\index\model\OrderId;
+use app\index\model\OrderId as OrderIdModel;
 use app\index\model\Goods as GoodsModel;
 use app\lib\enum\OrderStatusEnum;
 use app\lib\exception\OrderException;
@@ -77,7 +77,6 @@ class Pay
 
     private function sign($wxOrder)
     {
-
         $jsApiPayData = new \WxPayJsApiPay();
         $jsApiPayData->SetAppid(config('wx.app_id'));
         $jsApiPayData->SetTimeStamp((string)time());
@@ -96,6 +95,7 @@ class Pay
 
     private function recordPreOrder($wxOrder)
     {
+
         $order = GoodsOrderModel::getOrderById($this->id);
         $order['prepay_id'] = $wxOrder['prepay_id'];
         $order->save();
@@ -150,6 +150,13 @@ class Pay
     public function paySuccess($data)
     {
         $order = GoodsOrderModel::getOrderById($data['id']);
+        $orderIds = OrderIdModel::where('order_id',$data['id'])
+            ->select();
+        foreach ($orderIds as $o){
+            $orderId = OrderIdModel::find($o['id']);
+            $orderId['status'] = OrderStatusEnum::PAID;
+            $orderId->save();
+        }
         $order['status'] = OrderStatusEnum::PAID;
         $order->save();
     }
@@ -160,7 +167,7 @@ class Pay
      */
     public function payFail($data)
     {
-        $orderRecord = OrderId::where('order_id', $data['id'])
+        $orderRecord = OrderIdModel::where('order_id', $data['id'])
             ->select();
         foreach ($orderRecord as $o) {
             //恢复库存
@@ -169,7 +176,8 @@ class Pay
             $goods['stock'] += 1;
             $goods->save();
             //删除订单记录
-            $o->delete();
+            $orderId = OrderIdModel::find($o['id']);
+            $orderId->delete();
         }
     }
 }

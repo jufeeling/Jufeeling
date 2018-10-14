@@ -26,13 +26,13 @@ class OrderValidate extends BaseValidate
 
     protected $message =
         [
-            'id'         => '订单号不能为空',
-            'goods'      => '商品列表不能为空',
-            'totalPrice' => '支付价格不能为空',
-            'receipt_id' => '收获信息不能为空',
+            'id'               => '订单号不能为空',
+            'goods'            => '商品列表不能为空',
+            'totalPrice'       => '支付价格不能为空',
+            'receipt_id'       => '收获信息不能为空',
             'delivery_address' => '收货信息不能为空',
-            'count'      => '数量不能为空',
-            'goods_id' => 'goods_id不能为空'
+            'count'            => '数量不能为空',
+            'goods_id'         => 'goods_id不能为空'
         ];
 
     protected $scene =
@@ -43,22 +43,23 @@ class OrderValidate extends BaseValidate
                     'coupon_id',
                     'receipt_id'
                 ],
+
             'pay' =>
                 [
                     'id'
                 ],
+
             'pre' =>
                 [
                     'delivery_address',
-                    'goods_id',
-                    'count'
+                    'goods',
                 ]
         ];
 
 
     protected $singleRule = [
-        'goods_id' => 'require|number',
-        'count'    => 'require|number',
+        'goods_id' => 'require|isPositiveInteger',
+        'count'    => 'require|isPositiveInteger',
     ];
 
 
@@ -104,7 +105,4 @@ class OrderValidate extends BaseValidate
             ]);
         }
     }
-
-
-
 }

@@ -10,6 +10,7 @@ namespace app\index\controller;
 
 use app\index\service\Cart as CartService;
 use app\index\validate\CartValidate;
+use app\lib\exception\UserException;
 use think\App;
 use think\facade\Request;
 
@@ -47,7 +48,11 @@ class Cart extends BaseController
      */
     public function changeCartCount(){
         (new CartValidate())->scene('count')->goCheck(Request::param());
-        $this->cart->changeCartCount(Request::param());
+        try{
+            $this->cart->changeCartCount(Request::param());
+        }catch (UserException $e){
+            return result('',$e->msg,$e->code);
+        }
         return result();
     }
 
@@ -67,7 +72,11 @@ class Cart extends BaseController
      */
     public function selectCart(){
         (new CartValidate())->scene('select')->goCheck(Request::param());
-        $this->cart->selectCart(Request::param());
+        try{
+            $this->cart->selectCart(Request::param());
+        }catch (UserException $e){
+            return result('',$e->msg,$e->code);
+        }
         return result();
     }
 
@@ -78,6 +87,15 @@ class Cart extends BaseController
     public function selectAllCart(){
         (new CartValidate())->scene('all')->goCheck(Request::param());
         $this->cart->selectAllCart(Request::param());
+        return result();
+    }
+
+    /**
+     * @return \think\response\Json
+     * 将缓存放入数据库中
+     */
+    public function saveCartToDb(){
+        $this->cart->saveCacheToDb();
         return result();
     }
 }

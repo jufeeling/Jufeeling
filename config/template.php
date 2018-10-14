@@ -35,5 +35,5 @@ return [
     // 替换规则
     'tpl_replace_string'  =>  [
         '__STATIC__'=>'/static',
-    ]
+    ],
 ];

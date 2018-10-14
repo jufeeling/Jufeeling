@@ -9,6 +9,7 @@
 namespace app\index\model;
 
 
+use app\lib\enum\OrderStatusEnum;
 use think\Model;
 
 class OrderId extends Model
@@ -31,10 +32,12 @@ class OrderId extends Model
             $query->field('id,name,thu_url,sale_price');
         }])
             ->where('select', $type)
+            ->where('status',OrderStatusEnum::PAID)
             ->where('user_id', $user_id)
             ->order('update_time desc')
             ->field('id,price,goods_id')
             ->select();
         return $data;
     }
+
 }

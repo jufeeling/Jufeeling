@@ -8,6 +8,8 @@
 
 namespace app\index\validate;
 
+use app\lib\exception\ParameterException;
+
 class PartyValidate extends BaseValidate
 {
     protected $rule =
@@ -21,6 +23,7 @@ class PartyValidate extends BaseValidate
             'date'        => 'require',
             'time'        => 'require',
             'site'        => 'require',
+            'orders'      => 'checkOrders'
         ];
 
     protected $message =
@@ -33,7 +36,8 @@ class PartyValidate extends BaseValidate
             'date'        => '日期不能为空',
             'time'        => '时间不能为空',
             'site'        => '地点不能为空',
-            'url'         => '图片地址不能为空'
+            'url'         => '图片地址不能为空',
+            'orders'      => '订单列表不能为空'
         ];
 
     protected $scene =
@@ -51,13 +55,63 @@ class PartyValidate extends BaseValidate
 
             'host' =>
                 [
+
                     'description',
                     'way',
                     'people_no',
                     'date',
                     'time',
                     'site',
-                    'image'
-                ]
+                    'image',
+                    'orders'
+                ],
         ];
+
+    protected $singleRule = [
+        'order_id' => 'require|number',
+    ];
+
+
+
+    /**
+     * @param $values
+     * @return bool
+     * @throws ParameterException
+     * 商品信息检查
+     */
+    protected function checkOrders($values)
+    {
+        if (!is_array($values))
+        {
+            throw new ParameterException(
+                [
+                    'msg' => '订单参数不正确'
+                ]);
+        }
+
+        if (empty($values))
+        {
+            throw new ParameterException(
+                [
+                    'msg' => '订单列表不能为空'
+                ]);
+        }
+
+        foreach ($values as $value)
+        {
+            $this->checkOrder($value);
+        }
+        return true;
+    }
+
+    protected function checkOrder($value)
+    {
+        $validate = new BaseValidate($this->singleRule);
+        $result = $validate->check($value);
+        if(!$result){
+            throw new ParameterException([
+                'msg' => '商品列表参数错误',
+            ]);
+        }
+    }
 }

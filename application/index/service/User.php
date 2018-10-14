@@ -11,14 +11,15 @@ namespace app\index\service;
 use app\index\model\DeliveryAddress as DeliveryAddressModel;
 use app\index\model\GoodsOrder as GoodsOrderModel;
 use app\index\model\OrderId as OrderIdModel;
+use app\index\model\OrderId;
 use app\index\model\UserCoupon as UserCouponModel;
 use app\index\model\User as UserModel;
 use app\index\service\Token as TokenService;
 use app\index\model\Party as PartyModel;
 use app\index\model\PartyOrder as PartyOrderModel;
+use app\lib\enum\OrderStatusEnum;
+use app\lib\enum\PartyEnum;
 use app\lib\exception\UserException;
-use think\Exception;
-use think\facade\Cache;
 
 class User
 {
@@ -38,7 +39,7 @@ class User
         $data = PartyModel::withCount('participants')
             ->withCount('message')
             ->where('user_id', $this->uid)
-            ->where('status', 0)
+            ->where('status', PartyEnum::OPEN)
             ->order('create_time desc')
             ->select();
         return $data;
@@ -54,7 +55,7 @@ class User
             $query->withCount('participants')
                 ->withCount('message');
         }])
-            ->where('status', 0)
+            ->where('status', PartyEnum::OPEN)
             ->where('user_id', $this->uid)
             ->order('create_time desc')
             ->select();
@@ -69,6 +70,7 @@ class User
     public function deleteUserParty($data)
     {
         $party = PartyModel::where('id', $data['id'])
+            ->field('id,user_id,status')
             ->find();
         if ($party) {
             if ($party['user_id'] == $this->uid) {
@@ -76,13 +78,11 @@ class User
                 $party->save();
             } else {
                 throw new UserException([
-                    'code' => 903,
                     'msg' => '你无权执行此操作',
                 ]);
             }
         } else {
             throw new UserException([
-                'code' => 904,
                 'msg' => '该派对没有找到',
             ]);
         }
@@ -151,27 +151,28 @@ class User
 
     /**
      * @param $data
-     * @throws Exception
-     * 用户选择使用的商品
+     * @throws UserException
+     * 删除来点feel界面商品
      */
-    public function selectUserGoods($data)
+    public function deleteUserGoods($data)
     {
-        for ($i = 0; $i < sizeof($data['check']); $i++) {
-            $orderId[$i] = OrderIdModel::find((int)$data['check'][$i]);
-            if ($orderId[$i]['user_id'] != $this->uid) {
+        foreach ($data['orders'] as $d) {
+            $orderId = OrderId::find($d['order_id']);
+            if ($orderId) {
+                if ($orderId['user_id'] == TokenService::getCurrentUid()) {
+                    $orderId->delete();
+                } else {
+                    throw new UserException([
+                        'msg' => '你无权删除此商品'
+                    ]);
+                }
+            } else {
                 throw new UserException([
-                    'code' => 902,
-                    'msg' => '您无权使用该商品'
+                    'msg' => '未找到该商品'
                 ]);
             }
-            if ($orderId[$i]['select'] == 1) {
-                throw new UserException([
-                    'code' => 903,
-                    'msg' => '该商品已使用'
-                ]);
-            }
+
         }
-        Cache::set('select', $data['check']);
     }
 
     /**
@@ -180,16 +181,41 @@ class User
      */
     public function getUserOrder()
     {
-        $order = GoodsOrderModel::field('id,order_id,price,status,overdue')
-            ->with(['goods' => function ($query) {
-                $query->with(['goods' => function ($query) {
-                    $query->field('id,thu_url');
-                }]);
-            }])
-            ->withCount('goods')
-            ->where('user_id', $this->uid)
-            ->select();
+        $order['done'] = GoodsOrderModel::getUserGoods(OrderStatusEnum::PAID, $this->uid);
+        $order['unfinished'] = GoodsOrderModel::getUserGoods(OrderStatusEnum::UNPAID, $this->uid);
+        $order['overdue'] = GoodsOrderModel::getUserGoods(OrderStatusEnum::Overdue, $this->uid);
         return $order;
+    }
+
+    /**
+     * @param $data
+     * @throws UserException
+     * 用户确认收获
+     */
+    public function deliveryUserOrder($data)
+    {
+        $order = GoodsOrderModel::getOrderById($data['id']);
+        if ($order) {
+            if ($order['user_id'] == TokenService::getCurrentUid()) {
+                if ($order['sign'] == OrderStatusEnum::Deliveried) {
+                    $order['sign'] = 2;
+                    $order->save();
+                } else {
+                    throw new UserException([
+                        'msg' => '该订单不能暂时不能收获...'
+                    ]);
+                }
+            } else {
+                throw new UserException([
+                    'msg' => '这不是你的订单...'
+                ]);
+            }
+        } else {
+            throw new UserException([
+                'msg' => '未找到该订单...'
+            ]);
+        }
+
     }
 
     /**
