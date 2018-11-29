@@ -13,5 +13,7 @@ use think\Model;
 
 class PrizeOrder extends Model
 {
-
+    public function user(){
+        return $this->hasOne('user','id','user_id');
+    }
 }

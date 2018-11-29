@@ -30,5 +30,9 @@ class PrizeValidate extends BaseValidate
                     'id',
                     'form_id'
                 ],
+
+            'info' => [
+                'id'
+            ]
         ];
 }

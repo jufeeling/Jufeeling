@@ -66,6 +66,25 @@ function curl_post($url, array $params = array())
     return ($data);
 }
 
+function curl_message_post($url, $post_data)
+{
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+    curl_setopt($ch, CURLOPT_URL, $url);
+    // post数据
+    curl_setopt($ch, CURLOPT_POST, 1);
+    // post的变量
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data);
+    $response = curl_exec($ch);
+    curl_close($ch);
+    //-------请求为空
+    if(empty($response)){
+        exit("50001");
+    }
+    return $response;
+}
+
 function getRandChar($length)
 {
     $str = null;
@@ -163,13 +182,25 @@ function getAddressLabel($data){
  */
 function getCouponCategory($data,$type){
     $goods_category = config('jufeel_config.goods_category');
-    for($i=0;$i<sizeof($data);$i++){
-        if($type == 1){
-            $data[$i]['category'] = $goods_category[$data[$i]['coupon']['category']];
+    if($data)
+    {
+        for($i=0;$i<sizeof($data);$i++){
+            if($type == 1){
+                $data[$i]['category'] = $goods_category[$data[$i]['coupon']['category']];
+            }
+            else{
+                $data[$i]['category'] = $goods_category[$data[$i]['category']];
+            }
         }
-        else{
-            $data[$i]['category'] = $goods_category[$data[$i]['category']];
-        }
+    }
+    return $data;
+}
+
+function base64Decode($data)
+{
+    foreach ($data as $item)
+    {
+        $item['nickname'] = base64_decode($item['nickname']);
     }
     return $data;
 }

@@ -8,7 +8,6 @@
 
 namespace app\index\model;
 
-
 use think\Model;
 
 class UserCoupon extends Model
@@ -25,6 +24,20 @@ class UserCoupon extends Model
     public function coupon()
     {
         return $this->belongsTo('Coupon', 'coupon_id', 'id');
+    }
+
+    /**
+     * @param $data
+     * @param $uid
+     * @return array|\PDOStatement|string|\think\Collection
+     * 获取用户的优惠券
+     */
+    public static function getUserCoupon($data,$uid){
+        $result = self::with('coupon')
+            ->where('user_id',$uid)
+            ->where($data)
+            ->select();
+        return $result;
     }
 
 }

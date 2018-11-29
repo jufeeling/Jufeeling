@@ -22,6 +22,7 @@ class OrderValidate extends BaseValidate
             'delivery_address' => 'require',
             'count'      => 'require|number',
             'goods_id' => 'require|number',
+            'carriage' => 'require|number'
         ];
 
     protected $message =
@@ -32,7 +33,8 @@ class OrderValidate extends BaseValidate
             'receipt_id'       => '收获信息不能为空',
             'delivery_address' => '收货信息不能为空',
             'count'            => '数量不能为空',
-            'goods_id'         => 'goods_id不能为空'
+            'goods_id'         => 'goods_id不能为空',
+            'carriage'         => '运费不能为空'
         ];
 
     protected $scene =
@@ -41,7 +43,8 @@ class OrderValidate extends BaseValidate
                 [
                     'goods',
                     'coupon_id',
-                    'receipt_id'
+                    'receipt_id',
+                    'carriage'
                 ],
 
             'pay' =>

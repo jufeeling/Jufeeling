@@ -255,16 +255,16 @@
         },
         {
             "name": "topthink/think-worker",
-            "version": "v2.0.10",
+            "version": "v2.0.9",
             "source": {
                 "type": "git",
                 "url": "https://github.com/top-think/think-worker.git",
-                "reference": "d3355b38c2c4242cd3a51fd208ec4586be1a0e0d"
+                "reference": "8ce1d14e7945a9bf5abfc4cca100d423c1a4d94d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/top-think/think-worker/zipball/d3355b38c2c4242cd3a51fd208ec4586be1a0e0d",
-                "reference": "d3355b38c2c4242cd3a51fd208ec4586be1a0e0d",
+                "url": "https://api.github.com/repos/top-think/think-worker/zipball/8ce1d14e7945a9bf5abfc4cca100d423c1a4d94d",
+                "reference": "8ce1d14e7945a9bf5abfc4cca100d423c1a4d94d",
                 "shasum": ""
             },
             "require": {
@@ -300,7 +300,7 @@
                 }
             ],
             "description": "workerman extend for thinkphp5.1",
-            "time": "2018-08-24T06:35:22+00:00"
+            "time": "2018-07-30T11:03:47+00:00"
         },
         {
             "name": "workerman/gateway-worker",

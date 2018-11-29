@@ -11,21 +11,23 @@ namespace app\index\service;
 use app\index\model\ShoppingCart;
 use app\index\service\Token as TokenService;
 use app\lib\exception\UserException;
-use think\Exception;
 use think\facade\Cache;
 
 class Cart
 {
+    private $openid;
+    private $cache_name;
 
     /**
      * Cart constructor.
-     * 判断是否有Cart的缓存    */
+     * 判断是否有Cart的缓存
+     */
     public function __construct()
     {
-        $uid = TokenService::getCurrentUid();
-        $token = Cache::get($uid);
-        if($token);
-        else{
+        $this->openid = TokenService::getCurrentTokenVar('openid');
+        $this->cache_name = 'cart' . $this->openid;
+        $val = Cache::get($this->cache_name);
+        if (empty($val)) {
             $data = $this->getShoppingCart();
             $this->saveCartToCache($data);
         }
@@ -35,28 +37,18 @@ class Cart
      * @param $data
      * 存进缓存
      */
-    private function saveCartToCache($data){
-        $uid = TokenService::getCurrentUid();
-        $token = Cache::get($uid);
-        if($token){
-            Cache::set($token,$data,3600);
-        }else{
-            $token = TokenService::generateToken();
-            //先将token缓存(唯一区识)
-            Cache::set(TokenService::getCurrentUid(),$token,3600);
-            Cache::set($token,$data,3600);
-        }
-
+    private function saveCartToCache($data)
+    {
+        Cache::set($this->cache_name, $data);
     }
 
     /**
      * @return mixed
      * 得到缓存内容
      */
-    private function getCartCacheInfo(){
-        $uid = TokenService::getCurrentUid();
-        $token = Cache::get($uid);
-        $cartInfo = Cache::get($token);
+    private function getCartCacheInfo()
+    {
+        $cartInfo = Cache::get($this->cache_name);
         return $cartInfo;
     }
 
@@ -64,9 +56,10 @@ class Cart
      * @return int
      * 从数据库中获取购物车信息
      */
-    public function getShoppingCart(){
+    public function getShoppingCart()
+    {
         $data['goods'] = ShoppingCart::with(['goods' => function ($query) {
-            $query->field('id,name,thu_url,stock,price');
+            $query->field('id,name,thu_url,stock,sale_price');
         }])
             ->field('id,goods_id,count,select')
             ->order('update_time desc')
@@ -85,29 +78,27 @@ class Cart
      */
     public function addShoppingCart($data)
     {
-        $status = [
-            'isExist' => false
-        ];
-        $cartInfo = $this->getCartCacheInfo();
-        foreach ($cartInfo['goods'] as $c){
-            if($c['goods_id'] == $data['goods_id']){
-                $c['count'] += $data['count'];
-                $status['isExist'] = true;
-            }
-        }
-        if($status['isExist'] == false){
-            ShoppingCart::create(
-                [
+        //先将缓存中的内容入库
+        //遍历要加入购物车的商品
+        //判断购物车中是否存在该商品
+        //如果存在只需要改变数量
+        //如果不存在则新增记录
+        $this->saveCacheToDb();
+        foreach ($data['goods'] as $g) {
+            $cart = ShoppingCart::where('user_id', TokenService::getCurrentUid())
+                ->where('goods_id', $g['goods_id'])
+                ->find();
+            if ($cart) {
+                $cart['count'] += $g['count'];
+                $cart['select'] = 1;
+                $cart->save();
+            } else {
+                ShoppingCart::create([
                     'user_id' => TokenService::getCurrentUid(),
-                    'goods_id' => $data['goods_id'],
-                    'count' => $data['count']
-                ]
-            );
-            $this->saveCacheToDb();
-        }
-        else{
-            $cartInfo = $this->getShoppingCartTotalPrice($cartInfo['goods']);
-            $this->saveCartToCache($cartInfo);
+                    'goods_id' => $g['goods_id'],
+                    'count' => $g['count']
+                ]);
+            }
         }
     }
 
@@ -117,7 +108,7 @@ class Cart
      */
     public function getShoppingCartInfo()
     {
-       // 从缓存中取出购物车信息
+        // 从缓存中取出购物车信息
         $data = $this->getCartCacheInfo();
         return $data;
     }
@@ -146,11 +137,18 @@ class Cart
      */
     private function getShoppingCartTotalPrice($goods)
     {
+        //遍历传进来的数据
+        //如果该条记录为勾选状态
+        //将该条记录的价格(单价*数量)加入总价
+        //将数量加入总数量
+        //返回数据
+
         $data['totalPrice'] = 0;
         $data['count'] = 0;
         foreach ($goods as $g) {
-            if ($g['select'] === true) {
-                $data['totalPrice'] += $g['goods']['price'] * $g['count'];
+            if ($g['select'] == true) {
+                $nowPrice = bcmul ($g['goods']['sale_price'],$g['count'] ,1);
+                $data['totalPrice'] = bcadd($data['totalPrice'],$nowPrice,1);
                 $data['count'] += $g['count'];
             }
         }
@@ -160,31 +158,32 @@ class Cart
 
     /**
      * @param $data
-     * @throws Exception
-     * 修改购物车数量
+     * @return mixed
+     * @throws UserException
      */
     public function changeCartCount($data)
     {
-        $status = [
-            'isExist' => false
-        ];
+        //标记状态
+        //取出购物车信息
+        //遍历信息,如果存在该条记录,则改变状态
+        //判断状态,如果存在该条记录,则重新计算购物车总价以及数量并将新的记录存于缓存
+        //如果不存在,抛异常(执行此操作必定是在购物车界面,所以如果不存在该条记录必定出现异常)
+
+        $status = ['isExist' => false];
         $cartInfo = $this->getCartCacheInfo();
-        foreach ($cartInfo['goods'] as $c){
-            if($c['id'] == $data['id']){
-                $c['count'] = $data['count'];
+        foreach ($cartInfo['goods'] as $c) {
+            if ($c['id'] == $data['id']) {
+                $c['count'] = (int)$data['count'];
                 $status['isExist'] = true;
             }
         }
-        if($status['isExist'] == true){
-            $cartInfo = $this->getShoppingCartTotalPrice($cartInfo['goods']);
-            $this->saveCartToCache($cartInfo);
+        if ($status['isExist'] == true) {
+            $data = $this->getShoppingCartTotalPrice($cartInfo['goods']);
+            $this->saveCartToCache($data);
+            return $data;
+        } else {
+            throw new UserException(['msg' => '购物车中没有该商品']);
         }
-        else{
-            throw new UserException([
-               'msg' => '购物车中没有该商品'
-            ]);
-        }
-
     }
 
     /**
@@ -194,51 +193,55 @@ class Cart
      */
     public function deleteCart($data)
     {
+        //先将购物车信息入库
+        //在数据库中删除该条记录
+
         $this->saveCacheToDb();
         $cart = ShoppingCart::find($data['id']);
         if ($cart['user_id'] !== TokenService::getCurrentUid()) {
-            throw new UserException([
-                'msg' => '你无权删除购物车'
-            ]);
+            throw new UserException(['msg' => '你无权删除购物车']);
         }
         $cart->delete();
     }
 
     /**
      * @param $data
+     * @return int|mixed
      * @throws UserException
-     * 选择购物车数量
+     * 选择购物车
      */
     public function selectCart($data)
     {
-        $status = [
-            'isExist' => false
-        ];
+        //标记状态并取出购物车信息
+        //遍历 如果存在该条记录,判断此时勾选状态
+        //1=>true,2=>false
+        //再将新的信息存于缓存
+
+        $status = ['isExist' => false];
         $cartInfo = $this->getCartCacheInfo();
-        foreach ($cartInfo['goods'] as $c){
-            if($c['id'] == $data['id']){
-                if($data['select'] == 1){
+        foreach ($cartInfo['goods'] as $c) {
+            if ($c['id'] == $data['id']) {
+                if ($data['select'] == 1) {
                     $c['select'] = true;
-                }
-                else{
+                } else {
                     $c['select'] = false;
                 }
             }
             $status['isExist'] = true;
         }
-        if($status['isExist'] == true){
+        if ($status['isExist'] == true) {
+            $cartInfo = $this->getShoppingCartTotalPrice($cartInfo['goods']);
             $this->saveCartToCache($cartInfo);
-        }
-        else{
-            throw new UserException([
-                'msg' => '购物车中没有该商品'
-            ]);
+            return $cartInfo;
+        } else {
+            throw new UserException(['msg' => '购物车中没有该商品']);
         }
     }
 
     /**
      * @param $data
-     * 全选修改
+     * @return array|\PDOStatement|string|\think\Collection
+     * 全选
      */
     public function selectAllCart($data)
     {
@@ -250,21 +253,31 @@ class Cart
                 $c['select'] = false;
             }
         }
-        $this->saveCartToCache($cartInfo);
+        $data = $this->getShoppingCartTotalPrice($cartInfo['goods']);
+        $this->saveCartToCache($data);
+        return $data;
     }
 
     /**
      *将缓存中的数据添加到数据库
      */
-    public function saveCacheToDb(){
+    public function saveCacheToDb()
+    {
+        //得到缓存中的数据
+        //如果存在缓存
+        //遍历缓存中的数据
+        //在数据库中找到该条数据
+        //将勾选状态以及数量更新
+        //保存并删除缓存中的购物车
+
         $data = $this->getCartCacheInfo();
-        if($data){
-            foreach ($data['goods'] as $d){
-                $cart = ShoppingCart::where('id',$d['id'])->find();
-                $cart['count'] = $d['count'];
-                if($d['select'] == true){
+        if ($data) {
+            foreach ($data['goods'] as $d) {
+                $cart = ShoppingCart::where('id', $d['id'])->find();
+                $cart['count'] = (int)$d['count'];
+                if ($d['select'] == true) {
                     $cart['select'] = 1;
-                }else{
+                } else {
                     $cart['select'] = 0;
                 }
                 $cart->save();
@@ -276,9 +289,8 @@ class Cart
     /**
      * 删除缓存
      */
-    private function deleteCache(){
-        $token = Cache::get(TokenService::getCurrentUid());
-        Cache::rm($token);
-        Cache::rm(TokenService::getCurrentUid());
+    private function deleteCache()
+    {
+        Cache::rm($this->cache_name);
     }
 }

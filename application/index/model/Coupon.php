@@ -13,4 +13,6 @@ use think\Model;
 
 class Coupon extends Model
 {
+    const NOT_FIXED = 1;
+    const FIXEXD = 2;
 }

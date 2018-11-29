@@ -40,12 +40,14 @@ class Party extends Migrator
             ->addColumn('date',        'string')   //日期
             ->addColumn('time',        'string')   //时间
             ->addColumn('site',        'string')   //地点
+            ->addColumn('longitude',   'string')   //经度
+            ->addColumn('latitude',    'string')   //纬度
             ->addColumn('create_time', 'integer')
             ->addColumn('update_time', 'integer')
             ->addColumn('start_time',  'integer')  //开始时间
+            ->addColumn('is_delete',   'integer',array('default' => 0))  //标记派对是否被管理员删除 0未删除1删除
             ->addColumn('status',      'integer',array('default' => 0))  //标记派对是否被删除 0未删除
-            ->addColumn('state',       'integer',array('default' => 0))  //标记派对是否被发起者关闭
-            ->addForeignKey('user_id', 'user', 'id')
+            ->addColumn('state',       'integer',array('default' => 0))  //标记派对是否被发起者关闭 0未关闭1关闭2提前成群
             ->create();
     }
 }

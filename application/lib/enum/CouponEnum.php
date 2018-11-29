@@ -21,4 +21,8 @@ class CouponEnum
     // 路人
     const End_time = 1999999999;
 
+    const Can_Be_Used = 0;
+
+    const Not_to_Use = 1;
+
 }

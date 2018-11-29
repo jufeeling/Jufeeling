@@ -16,7 +16,6 @@ class Party extends Model
         [
             'create_time',
             'update_time',
-            'state',
             'status'
         ];
 
@@ -47,8 +46,8 @@ class Party extends Model
         return $this->hasOne('User', 'id', 'user_id');
     }
 
-    public function orderId(){
-        return $this->hasMany('OrderId', 'party_id', 'id');
+    public function goods(){
+        return $this->hasMany('PartyGoods', 'party_id', 'id');
     }
 
 }

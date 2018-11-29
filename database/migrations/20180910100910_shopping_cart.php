@@ -37,8 +37,6 @@ class ShoppingCart extends Migrator
             ->addColumn('select',  'integer',array('default'=> 1)) //是否被勾选 默认被勾选
             ->addColumn('create_time', 'integer')
             ->addColumn('update_time', 'integer')
-            ->addForeignKey('user_id', 'user', 'id')
-            ->addForeignKey('goods_id','goods','id')
             ->create();
     }
 }

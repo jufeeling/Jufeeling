@@ -23,8 +23,11 @@ class DeliveryAddress
     public function addDeliveryAddress($data)
     {
         //判断用户是否设置为用户地址
+        //如果是则判断用户是否已有默认地址
+        //如果有则修改默认地址
+        //入库并返回id
+
         if ($data['state'] == 0) {
-            //判断用户是否已有默认地址
             $address = DeliveryAddressModel::where('user_id', TokenService::getCurrentUid())
                 ->where('state', 0)
                 ->find();
@@ -33,16 +36,16 @@ class DeliveryAddress
                 $address->save();
             }
         }
-        $address = new DeliveryAddressModel();
-        $address['user_id'] = TokenService::getCurrentUid();
-        $address['receipt_name'] = $data['name'];
-        $address['receipt_phone'] = $data['phone'];
-        $address['receipt_area'] = $data['area'];
-        $address['receipt_address'] = $data['address'];
-        $address['label'] = $data['label'];
-        $address['state'] = $data['state'];
-        $address->save();
-        return $address['id'];
+        $value = [
+            'user_id' => TokenService::getCurrentUid(),
+            'receipt_name' => $data['name'],
+            'receipt_phone' => $data['phone'],
+            'receipt_area' => $data['area'],
+            'receipt_address' => $data['address'],
+            'label' => $data['label'],
+            'state' => $data['state']
+        ];
+        return DeliveryAddressModel::insertGetId($value);
     }
 
     /**
@@ -53,36 +56,12 @@ class DeliveryAddress
      */
     public function deleteDeliveryAddress($data)
     {
-        $address = DeliveryAddressModel::getDeliveryAddress($data['id']);
-        if ($address) {
-            //判断此默认地址是否为该用户的
-            if ($address['user_id'] == TokenService::getCurrentUid()) {
-                if ($address->delete()) ;
-                else {
-                    throw new DeliveryAddressException(
-                        [
-                            'code' => 100,
-                            'msg' => '服务器内部错误',
-                            'errorCode' => 10000
-                        ]
-                    );
-                }
-            }
-            throw new DeliveryAddressException(
-                [
-                    'code' => 103,
-                    'msg' => '你无权删除此收货地址',
-                    'errorCode' => 10003
-                ]
-            );
+        $result = DeliveryAddressModel::where('id', $data['id'])
+            ->where('user_id', TokenService::getCurrentUid())
+            ->delete();
+        if ($result == false) {
+            throw new DeliveryAddressException(['msg' => '删除失败...请重试']);
         }
-        throw new DeliveryAddressException(
-            [
-                'code' => 102,
-                'msg' => '未找到该收货地址',
-                'errorCode' => 10002
-            ]
-        );
     }
 
     /**
@@ -93,37 +72,25 @@ class DeliveryAddress
      */
     public function updateDeliveryAddress($data)
     {
-        $address = DeliveryAddressModel::getDeliveryAddress($data['id']);
-        if ($address) {
-            //判断此收货地址是否为该用户的
-            if ($address['user_id'] == TokenService::getCurrentUid()) {
-                $address['id'] = $data['id'];
-                $address['receipt_name'] = $data['name'];
-                $address['receipt_phone'] = $data['phone'];
-                $address['receipt_area'] = $data['area'];
-                $address['receipt_address'] = $data['address'];
-                $address['label'] = $data['label'];
-                $address['state'] = $data['state'];
+        if ($data['state'] == 0) {
+            $address = DeliveryAddressModel::where('user_id', TokenService::getCurrentUid())
+                ->where('state', 0)
+                ->find();
+            if ($address) {
+                $address['state'] = 1;
                 $address->save();
-            } else {
-                throw new DeliveryAddressException(
-                    [
-                        'code' => 103,
-                        'msg' => '你无权修改此收货地址',
-                        'errorCode' => 10003
-                    ]
-                );
             }
-        } else {
-            throw new DeliveryAddressException(
-                [
-                    'code' => 102,
-                    'msg' => '未找到该收货地址',
-                    'errorCode' => 10002
-                ]
-            );
         }
-
+        DeliveryAddressModel::where('id', $data['id'])
+            ->where('user_id', TokenService::getCurrentUid())
+            ->setField([
+                    'label' => $data['label'],
+                    'state' => $data['state'],
+                    'receipt_name' => $data['name'],
+                    'receipt_area' => $data['area'],
+                    'receipt_phone' => $data['phone'],
+                    'receipt_address' => $data['address']]
+            );
     }
 
     /**
@@ -134,27 +101,18 @@ class DeliveryAddress
      */
     public function getDeliveryAddress($data)
     {
-        $address = DeliveryAddressModel::getDeliveryAddress($data['id']);
-        if ($address) {
-            if ($address['user_id'] == TokenService::getCurrentUid()) {
-                $labels = config('jufeel_config.label');
-                $address['label'] = $labels[$address['label']];
-                return $address;
-            }
-            throw new DeliveryAddressException(
-                [
-                    'code' => 104,
-                    'msg' => '你无权获得此收货地址',
-                    'errorCode' => 10004
-                ]
-            );
+        if ($data['id'] != 0) {
+            $address = DeliveryAddressModel::getDeliveryAddress($data['id']);
         }
-        throw new DeliveryAddressException(
-            [
-                'code' => 102,
-                'msg' => '未找到该收货地址',
-                'errorCode' => 10002
-            ]
-        );
+        else
+        {
+            $address = DeliveryAddressModel::getDefaultAddress(TokenService::getCurrentUid());
+            if(empty($address))
+            {
+                $address = DeliveryAddressModel::where('user_id',TokenService::getCurrentUid())
+                    ->find();
+            }
+        }
+        return $address;
     }
 }

@@ -48,14 +48,19 @@ class BaseValidate extends Validate
         }
     }
 
+    /**
+     * @param $value
+     * @return bool
+     * 验证手机号或者座机号
+     */
     protected function isMobile($value)
     {
-        $rule = '^1(3|4|5|7|8)[0-9]\d{8}$^';
-        $result = preg_match($rule, $value);
-        if ($result) {
-            return true;
-        } else {
+        $isMob="/^1[34578]{1}\d{9}$/";
+        $isTel="/^([0-9]{3,4}-)?[0-9]{7,8}$/";
+        if(!preg_match($isMob,$value) && !preg_match($isTel,$value)){
             return false;
+        }else{
+            return true;
         }
     }
 

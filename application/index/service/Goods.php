@@ -11,11 +11,10 @@ namespace app\index\service;
 use app\index\model\Goods as GoodsModel;
 use app\index\model\Recommend as RecommendModel;
 use app\lib\exception\GoodsException;
+use think\facade\Cache;
 
 class Goods
 {
-    private $condition = array();
-
     /**
      * @param $data
      * @return array|\PDOStatement|string|\think\Collection
@@ -23,91 +22,106 @@ class Goods
      */
     public function getAllGoods($data)
     {
+        $cache_name = 'goods_all' . $data['category'];
+//        $cacheValue = Cache::get($cache_name);
+//        if($cacheValue)
+//        {
+//            return $cacheValue;
+//        }
+        if ($data['category'] == 0) {
+            $val = [['state', '=', 0], ['stock', '>', 0]];
+        } else {
+            $val = [['stock', '>', 0], ['state', '=', 0], ['category_id', '=', $data['category']]];
+        }
+        $goods['data'] = GoodsModel::with('category')
+            ->with('label')
+            ->where($val)
+            ->order('create_time desc')
+            ->field('id,name,thu_url,price,sale_price,category_id')
+            ->select();
+        foreach ($goods['data'] as $item)
+        {
+            $item['name'] = html_entity_decode($item['name']);
+        }
+        //判断缓存中是否有goods
+        //如果有则返回,没有则得到数据、存缓存并返回数据
+        if($data['category'] == 0)
+        {
+            return $goods;
+        }
         $condition = config('jufeel_config.goods_condition');
         //获取全部商品
-        if ($data['category'] == 0) {
-            $goods['data'] = GoodsModel::with('category')
-                ->where('stock', '>', 0)
-                ->where('state', 0)
-                ->order('create_time desc')
-                ->field('id,name,thu_url,price,sale_price,category_id')
-                ->select();
-        } //获取分类下的商品
-        else {
-            $goods = GoodsModel::with('category')
-                ->where('stock', '>', 0)
-                ->where('state', 0)
-                ->where('category_id', $data['category'])
-                ->field('id,name,thu_url,price,sale_price,category_id')
-                ->order('create_time desc')
-                ->select();
-        }
         $goods['condition'] = $condition[$data['category']];
+        Cache::set($cache_name,$goods,7200);
         return $goods;
     }
-
 
     /**
      * @param $data
      * @return array|\PDOStatement|string|\think\Collection
-     * 发现BUG  还需要传category
      */
     public function conditionGoods($data)
     {
-        $this->getConditionValue($data);
-        if ($data['sort'] == 0) {
-            $goods = GoodsModel::with('category')
-                ->where('stock', '>', 0)
-                ->where('state', 0)
-                ->where($this->condition)
-                ->field('id,name,thu_url,price,sale_price,category_id')
-                ->order('create_time desc')
-                ->select();
-        } elseif ($data['sort'] == 1) {
-            $goods = GoodsModel::with('category')
-                ->where('stock', '>', 0)
-                ->where('state', 0)
-                ->where($this->condition)
-                ->field('id,name,thu_url,price,sale_price,category_id')
-                ->order('price desc')
-                ->select();
-        } else {
-            $goods = GoodsModel::with('category')
-                ->where('stock', '>', 0)
-                ->where('state', 0)
-                ->where($this->condition)
-                ->field('id,name,thu_url,price,sale_price,category_id')
-                ->order('price asc')
-                ->select();
+        //拿到筛选条件
+        //拿到排序条件
+        //查询
+        $val = $this->getScreeningCondition($data['category'], $data['value']);
+        switch ($data['sort']) {
+            case 0:
+                $order = ['create_time desc'];
+                break;
+            case 1:
+                $order = ['sale_price asc'];
+                break;
+            case 2:
+                $order = ['sale_price desc'];
+                break;
         }
-
+        $goods['data'] = GoodsModel::with('category')
+            ->with('label')
+            ->where('stock', '>', 0)
+            ->where('state', 0)
+            ->where('category_id',$data['category'])
+            ->where($val)
+            ->field('id,name,thu_url,price,sale_price,category_id,degrees')
+            ->order($order)
+            ->select();
+        foreach ($goods['data'] as $item)
+        {
+            $item['name'] = html_entity_decode($item['name']);
+        }
         return $goods;
     }
 
     /**
-     * @param $data
+     * @param $category
+     * @param $value
      * @return array
-     * 得到筛选条件
+     * 获取筛选条件的值
      */
-    private function getConditionValue($data)
+    private function getScreeningCondition($category, $value)
     {
-        if ($data['category'] == 0) {
-            $this->condition['name'] = $data['condition'][0];
-            $this->condition['description'] = $data['condition'][1];
-            $this->condition['price'] = $data['condition'][2];
-        } else if ($data['category'] == 1) {
-            $this->condition['name'] = $data['condition'][0];
-            $this->condition['description'] = $data['condition'][1];
-            $this->condition['price'] = $data['condition'][2];
-        } else if ($data['category'] == 3) {
-            $this->condition['name'] = $data['condition'][0];
-            $this->condition['description'] = $data['condition'][1];
-            $this->condition['price'] = $data['condition'][2];
-        } else {
-            $this->condition['name'] = $data['condition'][0];
-            $this->condition['description'] = $data['condition'][1];
-            $this->condition['price'] = $data['condition'][2];
+        //根据商品分类得到不同的筛选条件
+        //确定筛选条件后返回
+        //将筛选条件为0的剔除数组
+        switch ($category) {
+            case 1:
+                $data = ['brand' => $value[1], 'degrees' => html_entity_decode($value[2])];
+                break;
+            case 2:
+                $data = ['type' => $value[1], 'degrees' => html_entity_decode($value[2])];
+                break;
+            case 3:
+                $data = ['type' => $value[1], 'specifications' => $value[2]];
+                break;
+            case 4:
+                $data = ['type' => $value[1], 'flavor' => $value[2]];
+                break;
         }
+        //将不符合条件的剔除
+        $data['country'] = $value[0];
+        $result = array_diff($data, [0]);
+        return $result;
     }
 
     /**
@@ -116,15 +130,26 @@ class Goods
      */
     public function getRecommendGoods()
     {
+        //判断缓存中是否存在recommendGoods
+        //如果没有则查询并存缓存
+//        $cacheGoods = Cache::get('recommend');
+//        if ($cacheGoods) {
+//            return $cacheGoods;
+//        }
         $goods = RecommendModel::with(['goods' => function ($query) {
-            $query->where('stock', '>', 0)
-                ->where('state', 0)
-                ->field('id,name,thu_url,price,sale_price,category_id')
-                ->with('category');
+            $query->with('label')
+                  ->field('id,name,thu_url,price,sale_price,category_id')
+                  ->with('category');
         }])
+            ->field('goods_id')
             ->order('create_time desc')
             ->select();
-        return $goods;
+        foreach ($goods as $item)
+        {
+            $item['goods']['name'] = html_entity_decode($item['goods']['name']);
+        }
+        Cache::set('recommend', $goods, 7200);
+        return Cache::get('recommend');
     }
 
     /**
@@ -135,14 +160,35 @@ class Goods
      */
     public function getGoodsDetail($data)
     {
+        $cache_name = 'goods_detail' . $data['id'];
+
+//        $cacheValue = Cache::get($cache_name);
+//        if($cacheValue)
+//        {
+//            return $cacheValue;
+//        }
+        $field = [
+            'id',
+            'name',
+            'carriage',
+            'category_id',
+            'price',
+            'sale_price',
+            'thu_url',
+            'cov_url',
+            'det_url',
+            'delivery_place',
+            'state'
+        ];
         //获取商品详情
-        $goods = GoodsModel::with('category')
+        $goodsDetail = GoodsModel::with('category')
+            ->with('images')
+            ->with('label')
+            ->field($field)
             ->find($data['id']);
-        if ($goods) {
-            $goods['id'] = (int)$goods['id'];
-            return $goods;
-        }
-        throw new GoodsException();
+        $goodsDetail['name'] = html_entity_decode($goodsDetail['name']);
+        Cache::set($cache_name,$goodsDetail,7200);
+        return $goodsDetail;
     }
 
     /**
@@ -153,12 +199,14 @@ class Goods
     public function getSearchGoods($data)
     {
         $goods = GoodsModel::with('category')
+            ->with('label')
             ->where('stock', '>', 0)
-            ->where('name|description', 'like', '%' . $data['content'] . '%')
+            ->where('name', 'like', '%' . $data['content'] . '%')
             ->where('state', 0)
-            ->field('name,thu_url,price,sale_price,category_id')
+            ->field('name,thu_url,price,sale_price,category_id,id')
             ->order('create_time desc')
             ->select();
         return $goods;
     }
+
 }

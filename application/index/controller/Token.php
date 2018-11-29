@@ -1,6 +1,5 @@
 <?php
 
-
 namespace app\index\controller;
 
 use app\index\service\UserToken;

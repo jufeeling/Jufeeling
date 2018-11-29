@@ -23,4 +23,11 @@ class Goods extends Model
     {
         return $this->belongsTo('GoodsCategory', 'category_id', 'id');
     }
+    public function label(){
+        return $this->hasMany('GoodsLabel', 'goods_id', 'id');
+    }
+    public function images()
+    {
+        return $this->hasMany('GoodsImage', 'goods_id', 'id');
+    }
 }

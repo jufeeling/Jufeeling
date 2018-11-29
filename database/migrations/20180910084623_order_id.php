@@ -34,16 +34,13 @@ class OrderId extends Migrator
             ->addColumn('order_id', 'integer')//订单id
             ->addColumn('goods_id', 'integer')//商品id
             ->addColumn('user_id', 'integer')//数量
-            ->addColumn('party_id', 'integer', array('default' => 0))
-            ->addColumn('status', 'integer', array('default' => 0))
+            ->addColumn('status', 'integer', array('default' => 0)) //标记订单下的该订单商品是否支付(订单已支付即支付)
+            ->addColumn('state','integer',array('default' => 0)) //标记用户是否删除该商品
             ->addColumn('select', 'integer')//是否已使用 0未使用1使用
             ->addColumn('price', 'decimal')//购买时的价格
             ->addColumn('count', 'integer')//单个商品买的个数
             ->addColumn('create_time', 'integer')
             ->addColumn('update_time', 'integer')
-            ->addForeignKey('goods_id', 'goods', 'id')
-            ->addForeignKey('order_id', 'goods_order', 'id')
-            ->addForeignKey('user_id', 'user', 'id')
             ->create();
     }
 }

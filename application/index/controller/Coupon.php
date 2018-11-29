@@ -32,7 +32,11 @@ class Coupon extends BaseController
     public function getAllCoupon()
     {
         $data = $this->coupon->getAllCoupon();
-        return result($data);
+        if(sizeof($data) > 0)
+        {
+            return result($data);
+        }
+        return result('','没有优惠券可以领取',100);
     }
 
     /**

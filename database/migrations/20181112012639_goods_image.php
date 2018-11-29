@@ -1,8 +1,9 @@
 <?php
 
 use think\migration\Migrator;
+use think\migration\db\Column;
 
-class User extends Migrator
+class GoodsImage extends Migrator
 {
     /**
      * Change Method.
@@ -27,15 +28,12 @@ class User extends Migrator
      */
     public function change()
     {
-        $table = $this->table('user',array('engine'=>'MyISAM'));
+        $table = $this->table('goods_image',array('engine'=>'MyISAM'));
         $table
             ->addIndex(array('id',), array('unique' => true))
-            ->addColumn('openid',     'string')   //微信id
-            ->addColumn('nickname',   'string')   //昵称
-            ->addColumn('avatar',     'string')   //头像
-            ->addColumn('state',      'integer',array('default' => 0)) //0为新用户,1为老用户
-            ->addColumn('create_time','integer')
-            ->addColumn('update_time','integer')
+            ->addColumn('goods_id', 'integer') //商品id
+            ->addColumn('url',      'string')  //图片地址
+            ->addColumn('order',    'integer') //顺序
             ->create();
     }
 }

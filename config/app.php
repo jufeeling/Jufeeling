@@ -74,15 +74,6 @@ return [
     // 自动搜索控制器
     'controller_auto_search' => false,
 
-    // +----------------------------------------------------------------------
-    // | URL设置
-    // +----------------------------------------------------------------------
-    'view_replace_str'       => [
-        '__STATIC__' => '/base/public/static',
-        '__IMAGE__' => '/base/public/static/image',
-        '__CSS__' => '/base/public/static/css',
-        '__JS__' => '/base/public/static/js',
-    ],
     // PATHINFO变量名 用于兼容模式
     'var_pathinfo'           => 's',
     // 兼容PATH_INFO获取
@@ -140,7 +131,7 @@ return [
     'exception_tmpl'         => Env::get('think_path') . 'tpl/think_exception.tpl',
 
     // 错误显示信息,非调试模式有效
-    'error_message'          => '页面错误！请稍后再试～',
+    'error_message'          => '404 NOT FOUND',
     // 显示错误信息
     'show_error_msg'         => false,
     // 异常处理handle类 留空使用 \think\exception\Handle

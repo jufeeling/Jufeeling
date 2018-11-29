@@ -11,6 +11,7 @@ namespace app\index\controller;
 use app\index\validate\PartyValidate;
 use app\lib\exception\PartyException;
 use think\App;
+use think\Controller;
 use think\facade\Request;
 use app\index\service\Party as PartyService;
 
@@ -37,6 +38,16 @@ class Party extends BaseController
             return result('', $e->msg, $e->code);
         }
         return result($data, '举办成功');
+    }
+
+    /**
+     * @return \think\response\Json
+     * 绑定来点feel的物品到聚会
+     */
+    public function bindGoodsToParty(){
+        (new PartyValidate())->scene('id')->goCheck(Request::param());
+        $this->party->bindGoodsToParty(Request::param('id'));
+        return result();
     }
 
     /**
@@ -70,17 +81,31 @@ class Party extends BaseController
 
     /**
      * @return \think\response\Json
+     * 提前成行
+     */
+    public function doneParty(){
+        (new PartyValidate())->scene('id')->goCheck(Request::param());
+        try {
+            $this->party->doneParty(Request::param());
+        } catch (PartyException $e) {
+            return result('', $e->msg, $e->code);
+        }
+        return result('', '操作成功');
+    }
+
+    /**
+     * @return \think\response\Json
      * 评论派对
      */
     public function commentParty()
     {
         (new PartyValidate())->scene('comment')->goCheck(Request::param());
         try {
-            $this->party->commentParty(Request::param());
+            $data = $this->party->commentParty(Request::param());
         } catch (PartyException $e) {
             return result('', $e->msg, $e->code);
         }
-        return result('', '评论成功');
+        return result($data, '评论成功');
     }
 
     /**

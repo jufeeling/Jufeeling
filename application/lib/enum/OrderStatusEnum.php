@@ -23,4 +23,17 @@ class OrderStatusEnum
     //订单已完成
 
     const Done = 2;
+
+    //OrderId下的删除
+    const Delete = 1;
+
+    const Undelete = 0;
+
+    //未使用过的
+    const NotUse = 0;
+
+    //使用过的
+    const Used = 1;
+
+    const Cancel = 3;
 }

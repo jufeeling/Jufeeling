@@ -37,8 +37,6 @@ class PrizeOrder extends Migrator
             ->addColumn('state',      'integer',array('default' => 0)) //0未中奖,1中奖
             ->addColumn('create_time','integer')
             ->addColumn('update_time','integer')
-            ->addForeignKey('prize_id','prize','id')
-            ->addForeignKey('user_id', 'user', 'id')
             ->create();
     }
 }

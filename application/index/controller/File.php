@@ -9,6 +9,7 @@
 namespace app\index\controller;
 
 use app\index\service\File as FileService;
+use OSS\Core\OssException;
 
 class File extends BaseController
 {

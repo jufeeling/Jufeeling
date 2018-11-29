@@ -23,4 +23,16 @@ class DeliveryAddress extends Model
         $address = self::find($id);
         return $address;
     }
+
+    /**
+     * @param $uid
+     * @return array|null|\PDOStatement|string|Model
+     * 获取用户默认地址
+     */
+    public static function getDefaultAddress($uid){
+        $address = self::where('user_id', $uid)
+            ->where('state', 0)
+            ->find();
+        return $address;
+    }
 }

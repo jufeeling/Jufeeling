@@ -9,6 +9,7 @@
 namespace app\index\service;
 
 use app\index\model\GoodsOrder as GoodsOrderModel;
+use app\index\model\GoodsOrder;
 use app\index\model\OrderId as OrderIdModel;
 use app\index\model\Goods as GoodsModel;
 use app\lib\enum\OrderStatusEnum;
@@ -22,9 +23,10 @@ require '../extend/pay/wxpay/lib/WxPay.Api.php';
 
 class Pay
 {
-    private $id;       //订单表中的主键id
-
-    private $order_id; //自己定义的order_id
+    private $id;
+    //订单表中的主键id
+    private $order_id;
+    //自己定义的order_id
 
     public function payOrder($data)
     {
@@ -35,7 +37,7 @@ class Pay
             return $status;
         }
         $order = GoodsOrderModel::find($this->id);
-        return $this->makeWxPreOrder($order['sale_price']);
+        return $this->makeWxPreOrder($order['sale_price'] + $order['carriage']);
     }
 
     /**
@@ -53,7 +55,8 @@ class Pay
         $wxOrderData = new \WxPayUnifiedOrder();
         $wxOrderData->SetOut_trade_no($this->order_id);
         $wxOrderData->SetTrade_type('JSAPI');
-        $wxOrderData->SetTotal_fee($totalPrice * 100);
+        //$wxOrderData->SetTotal_fee($totalPrice * 100);
+        $wxOrderData->SetTotal_fee(1);
         $wxOrderData->SetBody('Jufeel');
         $wxOrderData->SetOpenid($openid);
         $wxOrderData->SetNotify_url(config('jufeel_config.redirect_notify'));
@@ -63,9 +66,7 @@ class Pay
     private function getPaySignature($wxOrderData)
     {
         $wxOrder = \WxPayApi::unifiedOrder($wxOrderData);
-        if ($wxOrder['return_code'] != 'SUCCESS' ||
-            $wxOrder['result_code'] != 'SUCCESS'
-        ) {
+        if ($wxOrder['return_code'] != 'SUCCESS' || $wxOrder['result_code'] != 'SUCCESS') {
             Log::record($wxOrder, 'error');
             Log::record('获取预支付订单失败', 'error');
         }
@@ -95,7 +96,7 @@ class Pay
 
     private function recordPreOrder($wxOrder)
     {
-
+        //将prepay_id存进数据库
         $order = GoodsOrderModel::getOrderById($this->id);
         $order['prepay_id'] = $wxOrder['prepay_id'];
         $order->save();
@@ -109,53 +110,38 @@ class Pay
      */
     public function checkOrderValid()
     {
+        //判断是否存在该订单
+        //判断该订单是否属于该用户
+        //判断该订单状态是否属于未支付
+        //判断该订单是否已被建立超过24小时
         $order = GoodsOrderModel::getOrderById($this->id);
-        if (!$order) {
-            throw new OrderException([
-                'code' => 511,
-                'msg' => '订单不存在'
-            ]);
+        if ($order &&
+            Token::isValidOperate($order['user_id']) &&
+            $order['status'] == OrderStatusEnum::UNPAID &&
+            time() - $order['create_time'] < 86400
+        )
+        {
+            $this->order_id = $order['order_id'];
+            return true;
         }
-        if (!Token::isValidOperate($order['user_id'])) {
-            throw new TokenException(
-                [
-                    'msg' => '订单与用户不匹配',
-                    'errorCode' => 10003
-                ]);
-        }
-        if ($order['status'] != OrderStatusEnum::UNPAID) {
-            throw new OrderException(
-                [
-                    'msg' => '订单已支付过啦',
-                    'errorCode' => 80003,
-                    'code' => 400
-                ]);
-        }
-        if ($order['create_time'] - time() > 86400) {
-            throw new OrderException(
-                [
-                    'msg' => '该订单已过期',
-                    'errorCode' => 80003,
-                    'code' => 403
-                ]);
-        }
-        $this->order_id = $order['order_id'];
-        return true;
+        throw new OrderException(['msg' => '支付错误,请重试']);
     }
 
     /**
      * @param $data
+     * @throws OrderException
      * 支付成功后的处理
      */
     public function paySuccess($data)
     {
+        //找到该订单
+        //将该订单下属的orderId找到并修改状态
+        //将该订单的状态改为已支付
         $order = GoodsOrderModel::getOrderById($data['id']);
-        $orderIds = OrderIdModel::where('order_id',$data['id'])
-            ->select();
-        foreach ($orderIds as $o){
-            $orderId = OrderIdModel::find($o['id']);
-            $orderId['status'] = OrderStatusEnum::PAID;
-            $orderId->save();
+        $orderIds = OrderIdModel::where('order_id', $data['id'])
+            ->setField(['status' => OrderStatusEnum::PAID]);
+        if ($orderIds == 0) {
+            throw new OrderException(['msg' => '修改失败']);
         }
         $order['status'] = OrderStatusEnum::PAID;
         $order->save();
@@ -167,17 +153,40 @@ class Pay
      */
     public function payFail($data)
     {
-        $orderRecord = OrderIdModel::where('order_id', $data['id'])
-            ->select();
+        //将该订单下属的orderId找到
+        //遍历找到orderId下的真实商品
+        //返回库存
+        $orderRecord = OrderIdModel::where('order_id', $data['id'])->select();
         foreach ($orderRecord as $o) {
-            //恢复库存
-            $goods = GoodsModel::where('id', $o['goods_id'])
-                ->find();
-            $goods['stock'] += 1;
+            $goods = GoodsModel::where('id', $o['goods_id'])->find();
+            $goods['stock'] = $goods['stock'] + $o['count'];
             $goods->save();
-            //删除订单记录
-            $orderId = OrderIdModel::find($o['id']);
-            $orderId->delete();
         }
+    }
+
+    /**
+     * @param $id
+     * @return array
+     * 重新支付
+     */
+    public function rePay($id){
+        $order = GoodsOrder::with(['goods'=>function($query){
+            $query->field('goods_id,count,order_id');
+        }])
+            ->find($id);
+        $goods = [];
+        foreach ($order['goods'] as $key => $item){
+            array_push($goods,$item);
+        }
+        $data['id'] = (new OrderService())->generateOrder(
+            $goods,
+            $order['coupon_id'],
+            $order['receipt_id'],
+            $order['carriage']
+        );
+        $result = (new Pay())->payOrder($data);
+        $order['isDeleteAdmin'] = 1;
+        $order->save();
+        return $result;
     }
 }

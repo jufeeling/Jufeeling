@@ -31,6 +31,7 @@ class Pay extends BaseController
     {
         (new OrderValidate())->scene('pay')->goCheck(Request::param());
         $result = $this->pay->payOrder(Request::param());
+      //  return result('','',404);
         return result($result);
     }
 
@@ -65,5 +66,15 @@ class Pay extends BaseController
         $xmlData = file_get_contents('php://input');
         $result = curl_post('http:/z.cn/api/v1/pay/re_notify?XDEBUG_SESSION_START=13322',
             $xmlData);
+    }
+
+    /**
+     * @return \think\response\Json
+     * 重新支付
+     */
+    public function rePay(){
+        (new OrderValidate())->scene('pay')->goCheck(Request::param());
+        $data = $this->pay->rePay(Request::param());
+        return result($data);
     }
 }

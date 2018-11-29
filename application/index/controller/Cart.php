@@ -17,6 +17,7 @@ use think\facade\Request;
 class Cart extends BaseController
 {
     private $cart;
+
     public function __construct(App $app = null,CartService $cart)
     {
         $this->cart = $cart;
@@ -27,7 +28,8 @@ class Cart extends BaseController
      * @return \think\response\Json
      * 新增购物车商品
      */
-    public function addShoppingCart(){
+    public function addShoppingCart()
+    {
         (new CartValidate())->scene('add')->goCheck(Request::param());
         $this->cart->addShoppingCart(Request::param());
         return result();
@@ -37,7 +39,8 @@ class Cart extends BaseController
      * @return \think\response\Json
      * 获取购物车商品
      */
-    public function getShoppingCartInfo(){
+    public function getShoppingCartInfo()
+    {
         $data = $this->cart->getShoppingCartInfo();
         return result($data);
     }
@@ -46,7 +49,8 @@ class Cart extends BaseController
      * @return \think\response\Json
      * 修改购物车商品个数
      */
-    public function changeCartCount(){
+    public function changeCartCount()
+    {
         (new CartValidate())->scene('count')->goCheck(Request::param());
         try{
             $this->cart->changeCartCount(Request::param());
@@ -60,7 +64,8 @@ class Cart extends BaseController
      * @return \think\response\Json
      * 删除购物车内容
      */
-    public function deleteCart(){
+    public function deleteCart()
+    {
         (new CartValidate())->scene('id')->goCheck(Request::param());
         $this->cart->deleteCart(Request::param());
         return result();
@@ -70,32 +75,36 @@ class Cart extends BaseController
      * @return \think\response\Json
      * 修改购物车选择状态
      */
-    public function selectCart(){
+    public function selectCart()
+    {
         (new CartValidate())->scene('select')->goCheck(Request::param());
         try{
-            $this->cart->selectCart(Request::param());
+           $data =  $this->cart->selectCart(Request::param());
         }catch (UserException $e){
             return result('',$e->msg,$e->code);
         }
-        return result();
+        return result($data);
     }
 
     /**
      * @return \think\response\Json
      * 全选
      */
-    public function selectAllCart(){
+    public function selectAllCart()
+    {
         (new CartValidate())->scene('all')->goCheck(Request::param());
-        $this->cart->selectAllCart(Request::param());
-        return result();
+        $data = $this->cart->selectAllCart(Request::param());
+        return result($data);
     }
 
     /**
      * @return \think\response\Json
      * 将缓存放入数据库中
      */
-    public function saveCartToDb(){
+    public function saveCartToDb()
+    {
         $this->cart->saveCacheToDb();
-        return result();
+        $data = Request::header('token');
+        return result($data);
     }
 }

@@ -12,9 +12,7 @@ use app\index\validate\UserValidate;
 use app\lib\exception\UserException;
 use think\App;
 use app\index\service\User as UserService;
-use think\cache\driver\Redis;
 use think\Controller;
-use think\facade\Cache;
 use think\facade\Request;
 
 class User extends Controller
@@ -45,6 +43,20 @@ class User extends Controller
         (new UserValidate())->scene('id')->goCheck(Request::param());
         try{
             $this->user->deleteUserParty(Request::param());
+        }catch (UserException $e){
+            return result('',$e->msg,$e->code);
+        }
+        return result();
+    }
+
+    /**
+     * @return \think\response\Json
+     * 删除用户派对订单
+     */
+    public function deleteUserPartyOrder(){
+        (new UserValidate())->scene('id')->goCheck(Request::param());
+        try{
+            $this->user->deleteUserPartyOrder(Request::param());
         }catch (UserException $e){
             return result('',$e->msg,$e->code);
         }
@@ -106,6 +118,8 @@ class User extends Controller
         return result();
     }
 
+
+
     /**
      * @return \think\response\Json
      * 获取订单详情
@@ -124,6 +138,34 @@ class User extends Controller
     public function getUserOrder(){
         $data = $this->user->getUserOrder();
         return result($data);
+    }
+
+    /**
+     * @return \think\response\Json
+     * 用户删除订单
+     */
+    public function deleteUserOrder(){
+        (new UserValidate())->scene('id')->goCheck(Request::param());
+        try{
+            $this->user->deleteUserOrder(Request::param());
+        }catch (UserException $e){
+            return result('',$e->msg,$e->code);
+        }
+        return result();
+    }
+
+    /**
+     * @return \think\response\Json
+     * 用户取消订单
+     */
+    public function cancelUserOrder(){
+        (new UserValidate())->scene('id')->goCheck(Request::param());
+        try{
+            $this->user->cancelUserOrder(Request::param());
+        }catch (UserException $e){
+            return result('',$e->msg,$e->code);
+        }
+        return result();
     }
 
     /**
@@ -146,6 +188,17 @@ class User extends Controller
     public function saveUserInfo(){
         (new UserValidate())->scene('info')->goCheck(Request::param());
         $this->user->saveUserInfo(Request::param());
-        return result();
+        $data = Request::header('token');
+        return result($data);
     }
+
+    /**
+     * @return \think\response\Json
+     * 得到用户的状态,用户标记用户是否为新用户
+     */
+    public function getUserState(){
+        $user = $this->user->getUserState();
+        return result($user);
+    }
+
 }

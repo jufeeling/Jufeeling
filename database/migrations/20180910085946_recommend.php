@@ -35,7 +35,6 @@ class Recommend extends Migrator
             ->addColumn('goods_id',     'integer') //商品id
             ->addColumn('create_time','integer')
             ->addColumn('update_time','integer')
-            ->addForeignKey('goods_id', 'goods', 'id')
             ->create();
     }
 }

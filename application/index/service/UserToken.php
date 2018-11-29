@@ -10,7 +10,6 @@ namespace app\index\service;
 
 use app\index\model\UserCoupon;
 use app\lib\enum\CouponEnum;
-use app\lib\enum\ScopeEnum;
 use app\lib\exception\TokenException;
 use app\lib\exception\WeChatException;
 use think\Exception;
@@ -74,7 +73,6 @@ class UserToken extends Token
         $key = self::generateToken();
         $value = json_encode($cachedValue);
         $expire_in = config('setting.token_expire_in');  //缓存过期时间
-
         $request = cache($key, $value, $expire_in);
         if (!$request) {
             throw new TokenException(
@@ -101,12 +99,6 @@ class UserToken extends Token
                 'openid' => $openid
             ]
         );
-        UserCoupon::create([
-            'user_id' => $user['id'],
-            'coupon_id' => CouponEnum::ID,
-            'start_time' => CouponEnum::Start_time,  //新用户立减券
-            'end_time' => CouponEnum::End_time //新用户立减券
-        ]);
         return $user->id;
     }
 

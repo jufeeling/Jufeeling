@@ -13,12 +13,12 @@ class DeliveryAddressValidate extends BaseValidate
 {
     protected $rule =
         [
-            'id'      => 'require|isPositiveInteger',
+            'id'      => 'require|integer|min:0',
             'name'    => 'require',
             'phone'   => 'require|isMobile',
             'area'    => 'require',
             'address' => 'require',
-            'label'   => 'require|number|between:1,3',
+            'label'   => 'require|number|between:0,3',
             'state'   => 'require|number|between:0,1'
         ];
 

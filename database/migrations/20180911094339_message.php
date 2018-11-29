@@ -36,8 +36,6 @@ class Message extends Migrator
             ->addColumn('content',    'string')  //内容
             ->addColumn('create_time','integer')
             ->addColumn('update_time','integer')
-            ->addForeignKey('user_id', 'user', 'id')
-            ->addForeignKey('party_id','party','id')
             ->create();
     }
 }

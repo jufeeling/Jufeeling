@@ -28,7 +28,7 @@ class UserValidate extends BaseValidate
             'id'       => '请传入正确的id',
             'avatar'   => '头像不能为空',
             'nickname' => '昵称不能为空',
-            'goods'    => 'checkOrders'
+            'orders'   => 'id不能为空'
         ];
 
     protected $scene =

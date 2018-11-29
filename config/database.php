@@ -13,11 +13,11 @@ return [
     // 数据库类型
     'type'            => 'mysql',
     // 服务器地址
-    'hostname'        => 'rm-bp187g0g947eh46jb7o.mysql.rds.aliyuncs.com',
+    'hostname'        => '47.96.155.221',
     // 数据库名
-    'database'        => 'jufeeling',
+    'database'        => 'Joofeel',
     // 用户名
-    'username'        => 'jufeeling',
+    'username'        => 'Joofeel',
     // 密码
     'password'        => 'Jufeel20180808',
     // 端口

@@ -23,7 +23,10 @@ class PartyValidate extends BaseValidate
             'date'        => 'require',
             'time'        => 'require',
             'site'        => 'require',
-            'orders'      => 'checkOrders'
+            'orders'      => 'checkOrders',
+            'latitude'    => 'require',
+            'longitude'   => 'require',
+            'code'        => 'require'
         ];
 
     protected $message =
@@ -37,7 +40,10 @@ class PartyValidate extends BaseValidate
             'time'        => '时间不能为空',
             'site'        => '地点不能为空',
             'url'         => '图片地址不能为空',
-            'orders'      => '订单列表不能为空'
+            'orders'      => '订单列表不能为空',
+            'latitude'    => '纬度不能为空',
+            'longitude'   => '经度不能为空',
+            'code'        => 'code不能为空'
         ];
 
     protected $scene =
@@ -55,7 +61,6 @@ class PartyValidate extends BaseValidate
 
             'host' =>
                 [
-
                     'description',
                     'way',
                     'people_no',
@@ -63,13 +68,16 @@ class PartyValidate extends BaseValidate
                     'time',
                     'site',
                     'image',
-                    'orders'
+                    'orders',
+                    'latitude',
+                    'longitude'
                 ],
         ];
 
-    protected $singleRule = [
-        'order_id' => 'require|number',
-    ];
+    protected $singleRule =
+        [
+            'order_id' => 'require|number',
+        ];
 
 
 

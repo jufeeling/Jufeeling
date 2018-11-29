@@ -39,4 +39,25 @@ class Prize extends BaseController
         }
         return result();
     }
+
+    /**
+     * @return \think\response\Json
+     * 获取当前试手气数据
+     */
+    public function getPrizeInfo()
+    {
+        try {
+            $data = $this->prize->getPrizeInfo();
+        } catch (PrizeException $e) {
+            return result('', $e->msg, $e->code);
+        }
+        return result($data);
+    }
+
+    public function getPrizeInfoById()
+    {
+        (new PrizeValidate())->scene('info')->goCheck(Request::param());
+        $data = $this->prize->getPrizeInfoById(Request::param());
+        return result($data);
+    }
 }

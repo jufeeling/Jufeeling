@@ -36,7 +36,7 @@ class Admin extends Migrator
             ->addColumn('nickname',   'string',  array('default' => 'Jufeel'))
             ->addColumn('avatar',     'string' , array('default'=> 0))
             ->addColumn('scope',      'integer', array('default'=> 16)) //权限
-            ->addColumn('status',     'integer', array('default'=> 0))
+            ->addColumn('status',     'integer', array('default'=> 0))  //是否被禁用
             ->addColumn('login_time', 'integer')
             ->addColumn('create_time','integer')
             ->addColumn('update_time','integer')

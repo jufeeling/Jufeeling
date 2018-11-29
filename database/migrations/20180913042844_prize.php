@@ -34,9 +34,9 @@ class Prize extends Migrator
             ->addColumn('goods_id',       'integer')  //商品id
             ->addColumn('open_prize_time','integer')  //开奖时间
             ->addColumn('state',          'integer',array('default' => 0)) //0还可以参与抽奖,1抽奖结束
+            ->addColumn('share_url',      'string')   //分享图
             ->addColumn('create_time',    'integer')
             ->addColumn('update_time',    'integer')
-            ->addForeignKey('goods_id','goods','id')
             ->create();
     }
 }
