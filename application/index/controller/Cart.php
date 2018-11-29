@@ -12,9 +12,10 @@ use app\index\service\Cart as CartService;
 use app\index\validate\CartValidate;
 use app\lib\exception\UserException;
 use think\App;
+use think\Controller;
 use think\facade\Request;
 
-class Cart extends Controller
+class Cart extends BaseController
 {
     private $cart;
 

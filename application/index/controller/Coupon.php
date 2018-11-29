@@ -15,7 +15,7 @@ use think\App;
 use think\Controller;
 use think\facade\Request;
 
-class Coupon extends Controller
+class Coupon extends BaseController
 {
     private $coupon;
 

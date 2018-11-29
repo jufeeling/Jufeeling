@@ -15,7 +15,7 @@ use think\Controller;
 use think\facade\Request;
 use app\index\service\Prize as PrizeService;
 
-class Prize extends Controller
+class Prize extends BaseController
 {
     private $prize;
 

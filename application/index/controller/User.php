@@ -15,7 +15,7 @@ use app\index\service\User as UserService;
 use think\Controller;
 use think\facade\Request;
 
-class User extends Controller
+class User extends BaseController
 {
     private $user;
 
