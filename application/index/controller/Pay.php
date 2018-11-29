@@ -11,9 +11,10 @@ namespace app\index\controller;
 use app\index\service\Pay as PayService;
 use app\index\validate\OrderValidate;
 use think\App;
+use think\Controller;
 use think\facade\Request;
 
-class Pay extends BaseController
+class Pay extends Controller
 {
     private $pay;
 

@@ -14,7 +14,7 @@ use app\lib\exception\UserException;
 use think\App;
 use think\facade\Request;
 
-class Cart extends BaseController
+class Cart extends Controller
 {
     private $cart;
 

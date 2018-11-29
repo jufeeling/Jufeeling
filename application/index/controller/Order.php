@@ -16,7 +16,7 @@ use think\App;
 use think\Controller;
 use think\facade\Request;
 
-class Order extends BaseController
+class Order extends Controller
 {
     private $order;
 
