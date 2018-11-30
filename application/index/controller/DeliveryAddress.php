@@ -15,7 +15,7 @@ use think\facade\Request;
 use app\index\validate\DeliveryAddressValidate;
 use app\index\service\DeliveryAddress as DeliveryAddressService;
 
-class DeliveryAddress extends BaseController
+class DeliveryAddress extends Controller
 {
     private $deliveryAddress;
 

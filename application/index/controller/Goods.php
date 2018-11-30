@@ -64,6 +64,10 @@ class Goods extends Controller
         (new GoodsValidate())->scene('condition')->goCheck(Request::param());
         $data = $goods->conditionGoods(Request::param());
       //  return result('','商品全部下架',404);
+        if(count($data['data']) == 0)
+        {
+            return result($data,'',100);
+        }
         return result($data);
     }
 

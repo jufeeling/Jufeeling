@@ -14,7 +14,7 @@ use think\App;
 use think\Controller;
 use think\facade\Request;
 
-class Pay extends BaseController
+class Pay extends Controller
 {
     private $pay;
 

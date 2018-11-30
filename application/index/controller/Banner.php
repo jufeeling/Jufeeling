@@ -13,7 +13,7 @@ use app\lib\exception\base\BaseException;
 use think\Controller;
 use think\facade\Cache;
 
-class Banner extends BaseController
+class Banner extends Controller
 {
     /**
      * @return \think\response\Json
@@ -30,6 +30,7 @@ class Banner extends BaseController
             ->select();
         Cache::set('banner',$data);
         return result($data);
+      //  Cache::clear();
 
     }
 }

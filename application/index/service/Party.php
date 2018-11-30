@@ -37,10 +37,10 @@ class Party
         //判断是否还有名额
         if ($party && $party['user_id'] != TokenService::getCurrentUid() && $party['state'] == PartyEnum::OPEN) {
             if ($party['start_time'] < time()) {
-                throw new PartyException(['msg' => '已经过了派对的开始时间']);
+                throw new PartyException(['msg' => '已经过了派对的开始时间了哦!']);
             }
             if ($party['remaining_people_no'] <= 0) {
-                throw new PartyException(['msg' => '报名人数已满']);
+                throw new PartyException(['msg' => '抱歉,报名人数已满!']);
             }
             //一起没问题
             //判断是否重复参加
@@ -63,7 +63,7 @@ class Party
         }
         else
         {
-            throw new PartyException(['msg' => '请刷新界面重试']);
+            throw new PartyException(['msg' => '请刷新界面']);
         }
     }
 

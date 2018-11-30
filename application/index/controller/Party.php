@@ -15,7 +15,7 @@ use think\Controller;
 use think\facade\Request;
 use app\index\service\Party as PartyService;
 
-class Party extends BaseController
+class Party extends Controller
 {
     private $party;
 

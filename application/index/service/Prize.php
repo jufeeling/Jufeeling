@@ -62,14 +62,13 @@ class Prize
         }
         else
         {
-            $prize = PrizeModel::with(['goods' => function ($query) {
+            $prizeInfo = PrizeModel::with(['goods' => function ($query) {
                 $query->field('id,thu_url,name');
             }])
                 ->withCount('orders')
                 ->where('open_prize_time','>',time())
                 ->where('state', 0)
                 ->find();
-            $prizeInfo = $prize;
         }
         if ($prizeInfo) {
             Cache::set('prize', $prizeInfo);

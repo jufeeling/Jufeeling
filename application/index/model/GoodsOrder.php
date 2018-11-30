@@ -74,7 +74,7 @@ class GoodsOrder extends Model
         //获取商品的个数(共有多少款)
         //state=0标记用户未删除该订单
 
-        $result = self::field('id,order_id,price,status')
+        $result = self::field('id,order_id,price,status,sale_price')
             ->with(['goods' => function ($query) {
                 $query->field('id,order_id,goods_id')
                     ->with(['goods' => function ($query) {

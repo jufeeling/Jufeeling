@@ -15,7 +15,7 @@ use think\App;
 use think\Controller;
 use think\facade\Request;
 
-class Cart extends BaseController
+class Cart extends Controller
 {
     private $cart;
 
@@ -54,11 +54,11 @@ class Cart extends BaseController
     {
         (new CartValidate())->scene('count')->goCheck(Request::param());
         try{
-            $this->cart->changeCartCount(Request::param());
+            $data = $this->cart->changeCartCount(Request::param());
         }catch (UserException $e){
             return result('',$e->msg,$e->code);
         }
-        return result();
+        return result($data);
     }
 
     /**
