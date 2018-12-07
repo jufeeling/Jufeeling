@@ -23,22 +23,22 @@ class Goods
     public function getAllGoods($data)
     {
         $cache_name = 'goods_all' . $data['category'];
-//        $cacheValue = Cache::get($cache_name);
-//        if($cacheValue)
-//        {
-//            return $cacheValue;
-//        }
+        $cacheValue = Cache::get($cache_name);
+        if($cacheValue)
+        {
+            return $cacheValue;
+        }
         if ($data['category'] == 0) {
             $val = [['state', '=', 0], ['stock', '>', 0]];
         } else {
             $val = [['stock', '>', 0], ['state', '=', 0], ['category_id', '=', $data['category']]];
         }
         $goods['data'] = GoodsModel::with('category')
-            ->with('label')
-            ->where($val)
-            ->order('create_time desc')
-            ->field('id,name,thu_url,price,sale_price,category_id')
-            ->select();
+                                   ->with('label')
+                                   ->where($val)
+                                   ->order('create_time desc')
+                                   ->field('id,name,thu_url,price,sale_price,category_id')
+                                   ->select();
         foreach ($goods['data'] as $item)
         {
             $item['name'] = html_entity_decode($item['name']);
@@ -132,10 +132,10 @@ class Goods
     {
         //判断缓存中是否存在recommendGoods
         //如果没有则查询并存缓存
-//        $cacheGoods = Cache::get('recommend');
-//        if ($cacheGoods) {
-//            return $cacheGoods;
-//        }
+        $cacheGoods = Cache::get('recommend');
+        if ($cacheGoods) {
+            return $cacheGoods;
+        }
         $goods = RecommendModel::with(['goods' => function ($query) {
             $query->with('label')
                   ->field('id,name,thu_url,price,sale_price,category_id')
@@ -149,7 +149,7 @@ class Goods
             $item['goods']['name'] = html_entity_decode($item['goods']['name']);
         }
         Cache::set('recommend', $goods, 7200);
-        return Cache::get('recommend');
+        return $goods;
     }
 
     /**
@@ -162,11 +162,11 @@ class Goods
     {
         $cache_name = 'goods_detail' . $data['id'];
 
-//        $cacheValue = Cache::get($cache_name);
-//        if($cacheValue)
-//        {
-//            return $cacheValue;
-//        }
+        $cacheValue = Cache::get($cache_name);
+        if($cacheValue)
+        {
+            return $cacheValue;
+        }
         $field = [
             'id',
             'name',
@@ -199,13 +199,13 @@ class Goods
     public function getSearchGoods($data)
     {
         $goods = GoodsModel::with('category')
-            ->with('label')
-            ->where('stock', '>', 0)
-            ->where('name', 'like', '%' . $data['content'] . '%')
-            ->where('state', 0)
-            ->field('name,thu_url,price,sale_price,category_id,id')
-            ->order('create_time desc')
-            ->select();
+                           ->with('label')
+                           ->where('stock', '>', 0)
+                           ->where('name', 'like', '%' . $data['content'] . '%')
+                           ->where('state', 0)
+                           ->field('name,thu_url,price,sale_price,category_id,id')
+                           ->order('create_time desc')
+                           ->select();
         return $goods;
     }
 

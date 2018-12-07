@@ -223,6 +223,10 @@ class Order
     public function checkOrderStock($order_id)
     {
         $Goods = OrderId::where('order_id', $order_id)->select();
+        foreach ($Goods as $item)
+        {
+            $item['id'] = $item['goods_id'];
+        }
         $this->oGoods = $Goods;
         $this->Goods = $this->getGoodsByOrder($this->oGoods);
         $status = $this->getOrderStatus();

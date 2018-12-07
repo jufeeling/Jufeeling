@@ -55,13 +55,13 @@ class Prize
     {
         //判定是否存在(存在返回,不存在从数据库拿数据)
         //设置缓存
-        $cachePrize = Cache::get('prize');
-        if ($cachePrize)
-        {
-            $prizeInfo = $cachePrize;
-        }
-        else
-        {
+//        $cachePrize = Cache::get('prize');
+//        if ($cachePrize)
+//        {
+//            $prizeInfo = $cachePrize;
+//        }
+//        else
+//        {
             $prizeInfo = PrizeModel::with(['goods' => function ($query) {
                 $query->field('id,thu_url,name');
             }])
@@ -69,9 +69,9 @@ class Prize
                 ->where('open_prize_time','>',time())
                 ->where('state', 0)
                 ->find();
-        }
+       // }
         if ($prizeInfo) {
-            Cache::set('prize', $prizeInfo);
+     //       Cache::set('prize', $prizeInfo);
             return $this->assemblePrizeData($prizeInfo);
         }
         throw new PrizeException(['code' => 802, 'msg' => '暂时没有奖品参与抽奖']);

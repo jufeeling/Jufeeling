@@ -16,6 +16,7 @@ class PartyValidate extends BaseValidate
         [
             'id'          => 'require|isPositiveInteger',
             'content'     => 'require',
+            'details'     => 'require',
             'description' => 'require',
             'image'       => 'require',
             'way'         => 'require',
@@ -33,6 +34,7 @@ class PartyValidate extends BaseValidate
         [
             'id'          => '请传入正确的id',
             'content'     => '评论内容不能为空',
+            'details'     => '描述不能为空',
             'description' => '聚说不能为空',
             'way'         => '方式不能为空',
             'people_no'   => '人数不能为空',

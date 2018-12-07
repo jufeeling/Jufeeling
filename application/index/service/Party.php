@@ -137,11 +137,19 @@ class Party
      */
     public function hostParty($data)
     {
-
         /**
          * 注意 此时聚会状态为Close,点击确定按钮以后修改状态
          */
         $start_time = $data['date'] . $data['time'];
+        $now = date('Y-m-d H:i');
+        $timeStamp = strtotime($start_time) - strtotime($now);
+        if($timeStamp < 1800)
+        {
+            throw new PartyException([
+                'msg' => '聚会开始时间至少大于当前时间30分钟'
+            ]);
+        }
+
         $value = [
             'way' => $data['way'],
             'date' => $data['date'],
@@ -220,7 +228,7 @@ class Party
             ->where('is_delete', PartyEnum::OPEN)
             ->find($data['id']);
         if ($party) {
-            $party['site'] =html_entity_decode(base64_decode($party['site']));
+            $party['site'] = html_entity_decode(base64_decode($party['site']));
             $party['description'] = html_entity_decode(base64_decode($party['description']));
             //前端需要参与者的个数(加上发起者)
             $party['participants_count'] = count($party['participants']) + 1;

@@ -28,17 +28,17 @@ class Coupon
         //则将该条记录从data剔除
         //返回data
 
-      //  $data = Cache::get('coupon');
-      //  if(!$data)
-      //  {
+        $data = Cache::get('coupon');
+        if(!$data)
+        {
             $data = CouponModel::where('count', '>', 0)
                 ->where('start_time','<',time())
                 ->where('end_time', '>', time())
                 ->where('state', 0)
                 ->select()
                 ->toArray();
-          //  Cache::set('coupon',$data);
-       // }
+            Cache::set('coupon',$data,7200);
+        }
         $result = array();
         foreach ($data as $key => $d) {
             $userCoupon = UserCouponModel::where('user_id', TokenService::getCurrentUid())
