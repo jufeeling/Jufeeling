@@ -55,8 +55,8 @@ class Pay
         $wxOrderData = new \WxPayUnifiedOrder();
         $wxOrderData->SetOut_trade_no($this->order_id);
         $wxOrderData->SetTrade_type('JSAPI');
-        //$wxOrderData->SetTotal_fee($totalPrice * 100);
-        $wxOrderData->SetTotal_fee(1);
+        $wxOrderData->SetTotal_fee($totalPrice * 100);
+      //  $wxOrderData->SetTotal_fee(1);
         $wxOrderData->SetBody('Jufeel');
         $wxOrderData->SetOpenid($openid);
         $wxOrderData->SetNotify_url(config('jufeel_config.redirect_notify'));
