@@ -108,10 +108,10 @@ return [
         ],
 
     'oss_config' => [
-       'accessKeyId'   => 'LTAIjfhhjAEa69tU',
-       'accessKeySecret'  => 'z9jMoqELKVfFwzJUtJVsh304Cwq1LD',
-       'endpoint'    => 'jufeeloss.oss-cn-hangzhou.aliyuncs.com',
-       'bucket' => 'jufeeloss',
+       'accessKeyId'   => '',
+       'accessKeySecret'  => '',
+       'endpoint'    => '',
+       'bucket' => '',
     ],
 
     //热门搜索内容
